@@ -1,0 +1,110 @@
+<template>
+  <el-dialog v-model="loginDialogVisible" title="登录掘金畅享更多权益" width="24%" center>
+    <el-form>
+      <el-form-item>
+        <el-input v-model="username" placeholder="用户名" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="password" placeholder="密 码" type="password" clearable></el-input>
+      </el-form-item>
+      <el-form-item v-if="!isLogin">
+        <el-input v-model="password" placeholder="确认密码" type="password" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="loginOrRegister()">{{ title }}</el-button>
+      </el-form-item>
+      <el-form-item class="loginMethod">
+        <span>
+          <ul>
+            <li>其他登录：</li>
+            <li><img src="@/assets/github.svg" alt="" /></li>
+            <li><img src="@/assets/weixin.svg" alt="" /></li>
+            <li><img src="@/assets/weibo.svg" alt="" /></li>
+          </ul>
+        </span>
+        <span @click="isLogin = !isLogin" style="cursor: pointer"
+          >立即{{ title }}</span
+        ></el-form-item
+      >
+    </el-form>
+    <div class="policy">
+      注册登录即表示同意 <a href="javascript:void(0)">用户协议</a> 和
+      <a href="javascript:void(0)">隐私政策</a>
+    </div>
+  </el-dialog>
+</template>
+
+<script setup>
+// 对话框显式双向绑定
+import { ref, computed } from 'vue'
+import { login } from '@/api/user.js'
+let props = defineProps(['loginDialogVisible'])
+let emits = defineEmits(['update:loginDialogVisible'])
+let loginDialogVisible = computed({
+  get() {
+    return props.loginDialogVisible
+  },
+  set(value) {
+    emits('update:loginDialogVisible', value)
+  }
+})
+
+const username = ref('')
+const password = ref('')
+const isLogin = ref(true)
+const title = computed({
+  get() {
+    return isLogin.value ? '登录' : '注册'
+  }
+})
+
+let loginOrRegister = async () => {
+  let result=await login()
+  console.log(result)
+}
+</script>
+
+<style lang="less">
+.el-dialog__header {
+  border-bottom: 1px solid #f1f2f5;
+  margin: 0;
+}
+.el-button--primary {
+  //需要更改的按钮类型 type='primary'
+  background: #1e80ff !important;
+  border-color: #1e80ff !important;
+  width: 100%;
+}
+//移入时按钮样式 type='primary'
+.el-button--primary:hover {
+  background: #0e5bc0 !important;
+  border-color: #0e5bc0 !important;
+  color: #fff !important;
+  opacity: 0.8;
+}
+.el-dialog__body {
+  padding: 25px calc(var(--el-dialog-padding-primary) + 70px) 30px !important;
+}
+.loginMethod {
+  .el-form-item__content {
+    justify-content: space-between;
+    ul {
+      display: flex;
+      padding: 0;
+      li {
+        display: flex;
+        img {
+          cursor: pointer;
+          width: 15px;
+          margin: 0 3px;
+          align-items: center;
+        }
+      }
+    }
+  }
+}
+.policy {
+  text-align: center;
+  color: #8a919f;
+}
+</style>
