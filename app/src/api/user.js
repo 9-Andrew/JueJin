@@ -1,5 +1,21 @@
-import request from '@/utils/request';
+import request from '@/utils/request'
 
-export const login=()=>request({
-  url:'/api/login',
-})
+export const login = ({ username, password }) =>
+  request({
+    url: '/api/login',
+    method: 'post',
+    data: {
+      username,
+      password
+    }
+  })
+
+export const register = ({ username, password }) =>
+  request({
+    url: '/api/register',
+    method: 'post',
+    data: {
+      username,
+      password
+    }
+  })

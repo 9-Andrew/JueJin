@@ -8,14 +8,14 @@
         <el-input v-model="password" placeholder="密 码" type="password" clearable></el-input>
       </el-form-item>
       <el-form-item v-if="!isLogin">
-        <el-input v-model="password" placeholder="确认密码" type="password" clearable></el-input>
+        <el-input v-model="password2" placeholder="确认密码" type="password" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="loginOrRegister()">{{ title }}</el-button>
+        <el-button type="primary" @click="loginOrRegister()">{{ buttonTitle }}</el-button>
       </el-form-item>
       <el-form-item class="loginMethod">
         <span>
-          <ul>
+          <ul v-show="isLogin">
             <li>其他登录：</li>
             <li><img src="@/assets/github.svg" alt="" /></li>
             <li><img src="@/assets/weixin.svg" alt="" /></li>
@@ -23,7 +23,7 @@
           </ul>
         </span>
         <span @click="isLogin = !isLogin" style="cursor: pointer"
-          >立即{{ title }}</span
+          >立即{{ linkTitle }}</span
         ></el-form-item
       >
     </el-form>
@@ -35,9 +35,10 @@
 </template>
 
 <script setup>
+import { ref, computed, watchEffect } from 'vue'
+import { login, register } from '@/api/user.js'
+import {ElMessage} from 'element-plus';
 // 对话框显式双向绑定
-import { ref, computed } from 'vue'
-import { login } from '@/api/user.js'
 let props = defineProps(['loginDialogVisible'])
 let emits = defineEmits(['update:loginDialogVisible'])
 let loginDialogVisible = computed({
@@ -48,19 +49,27 @@ let loginDialogVisible = computed({
     emits('update:loginDialogVisible', value)
   }
 })
-
+// 初始化数据
 const username = ref('')
 const password = ref('')
+const password2 = ref('')
 const isLogin = ref(true)
-const title = computed({
-  get() {
-    return isLogin.value ? '登录' : '注册'
-  }
+let buttonTitle = ref(),
+  linkTitle = ref()
+watchEffect(() => {
+  buttonTitle.value = isLogin.value ? '登录' : '注册'
+  linkTitle.value = isLogin.value ? '注册' : '登录'
+  username.value = ''
+  password.value = ''
+  password2.value = ''
 })
 
 let loginOrRegister = async () => {
-  let result=await login()
-  console.log(result)
+  ElMessage({
+    message: 'Warning, this is a warning message.',
+    type: 'warning',
+  })
+  
 }
 </script>
 

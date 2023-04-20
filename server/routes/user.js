@@ -3,6 +3,7 @@ let router = express.Router()
 let userHandler=require('../router_handler/user')
 
 
-router.get('/login',userHandler.login )
+router.post('/login',userHandler.login )
+router.post('/register',userHandler.register)
 
 module.exports = router
