@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 let service = axios.create({
   baseURL: 'http://localhost:3000',
@@ -21,6 +22,9 @@ service.interceptors.response.use((response) => {
     }
     return Promise.resolve(response.data)
   }
+},err=>{
+    ElMessage.error(err.message)
+  return Promise.reject(err)
 })
 
 export default service

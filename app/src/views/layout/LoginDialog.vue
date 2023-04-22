@@ -37,7 +37,7 @@
 <script setup>
 import { ref, computed, watchEffect } from 'vue'
 import { login, register } from '@/api/user.js'
-import {ElMessage} from 'element-plus';
+import { ElMessage } from 'element-plus'
 // 对话框显式双向绑定
 let props = defineProps(['loginDialogVisible'])
 let emits = defineEmits(['update:loginDialogVisible'])
@@ -65,11 +65,22 @@ watchEffect(() => {
 })
 
 let loginOrRegister = async () => {
-  ElMessage({
-    message: 'Warning, this is a warning message.',
-    type: 'warning',
-  })
-  
+  let result
+  if (isLogin.value) {
+    result = await login({
+      username: username.value,
+      password: password.value
+    })
+    //TODO getUserInfo
+    emits('update:loginDialogVisible', false)
+  } else {
+    result = await register({
+      username: username.value,
+      password: password.value
+    })
+    isLogin.value=true
+  }
+  ElMessage.success(result.message)
 }
 </script>
 
