@@ -72,16 +72,25 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: none; /* firefox */
+  /* 隐藏滚动条 */
+  -ms-overflow-style: none; /* IE 10+ */
+  overflow-x: hidden;
+  overflow-y: auto;
 }
-ul{
-  list-style:none;
+body::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
 }
-a{
+
+ul {
+  list-style: none;
+}
+a {
   text-decoration: none;
   color: #1e80ff;
 }
-.bx{
-    width: 1440px;
-    margin: 0 auto;
+.bx {
+  width: 1440px;
+  margin: 0 auto;
 }
 

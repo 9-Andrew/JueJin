@@ -1,6 +1,6 @@
 let express = require('express')
 let router = express.Router()
-let userHandler=require('../router_handler/user')
+let userHandler=require('../routes_handler/user')
 
 
 router.post('/login',userHandler.login )

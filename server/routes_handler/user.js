@@ -18,7 +18,7 @@ exports.login = (req, res) => {
       message: '登陆成功！',
       status: 0,
       token:
-        'Bear ' +
+        'Bearer ' +
         jwt.sign({ username: userInfo.username }, config.jwtSecretKey, {
           expiresIn: config.expiresIn
         })

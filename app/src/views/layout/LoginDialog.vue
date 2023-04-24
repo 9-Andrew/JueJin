@@ -40,7 +40,7 @@ import { login, register } from '@/api/user.js'
 import { ElMessage } from 'element-plus'
 // 对话框显式双向绑定
 let props = defineProps(['loginDialogVisible'])
-let emits = defineEmits(['update:loginDialogVisible'])
+let emits = defineEmits(['update:loginDialogVisible','initUserInfo'])
 let loginDialogVisible = computed({
   get() {
     return props.loginDialogVisible
@@ -71,14 +71,14 @@ let loginOrRegister = async () => {
       username: username.value,
       password: password.value
     })
-    //TODO getUserInfo
     emits('update:loginDialogVisible', false)
+    emits('initUserInfo')
   } else {
     result = await register({
       username: username.value,
       password: password.value
     })
-    isLogin.value=true
+    isLogin.value = true
   }
   ElMessage.success(result.message)
 }

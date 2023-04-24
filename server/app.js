@@ -39,6 +39,8 @@ app.use(
 
 let userRouter = require('./routes/user')
 app.use('/api', userRouter)
+let userinfoRouter = require('./routes/userinfo')
+app.use('/my', userinfoRouter)
 
 // error handler
 app.use((err, req, res, next) => {

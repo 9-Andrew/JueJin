@@ -29,9 +29,42 @@
         </el-col>
         <el-col :span="4" class="flexContainer" :offset="2">
           <el-button type="primary">写文章</el-button>
-          <el-button type="default" @click="loginDialogVisible = true">登录 | 注册</el-button>
+          <el-button v-if="!userInfo.username" type="default" @click="loginDialogVisible = true"
+            >登录 | 注册</el-button
+          >
+
+          <div v-else class="userInfo">
+            <el-dropdown>
+              <el-badge :value="2" class="item">
+                <el-icon :size="24">
+                  <BellFilled />
+                </el-icon>
+              </el-badge>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item>评论</el-dropdown-item>
+                  <el-dropdown-item>赞和收藏</el-dropdown-item>
+                  <el-dropdown-item>新增粉丝</el-dropdown-item>
+                  <el-dropdown-item>私信</el-dropdown-item>
+                  <el-dropdown-item>系统通知</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+            <el-dropdown trigger="click" size="large">
+              <el-avatar :size="36"> {{ userInfo.username }}</el-avatar>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item>我的主页</el-dropdown-item>
+                  <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
           <teleport to="body"
-            ><LoginDialog v-model:loginDialogVisible="loginDialogVisible"></LoginDialog
+            ><LoginDialog
+              v-model:loginDialogVisible="loginDialogVisible"
+              @initUserInfo="initUserInfo"
+            ></LoginDialog
           ></teleport>
         </el-col>
       </el-row>
@@ -51,10 +84,14 @@ import { ref, onMounted } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import LoginDialog from '@/views/layout/LoginDialog.vue'
 import _ from 'lodash'
+import { useUserInfo } from '@/stores/index.js'
+import { getUserInfo } from '@/api/userinfo.js'
 
 const input1 = ref('')
 const loginDialogVisible = ref(false)
 const isShowHeader = ref(true)
+const userInfo = ref({})
+let store = useUserInfo()
 
 // 获取滚动条高度
 function getScrollTop() {
@@ -77,7 +114,21 @@ function initScroll() {
 }
 onMounted(() => {
   initScroll()
+  initUserInfo()
 })
+
+async function initUserInfo() {
+  if (localStorage.getItem('Token')) {
+    let { data } = await getUserInfo()
+    store.setUserInfo(data)
+    userInfo.value = store.getUserInfo
+  }
+}
+
+function logout() {
+  localStorage.clear()
+  userInfo.value = {}
+}
 </script>
 
 <style lang="less" scoped>
@@ -152,6 +203,7 @@ onMounted(() => {
   //需要更改的按钮类型 type='primary'
   background: #1e80ff !important;
   border-color: #1e80ff !important;
+  width: 130px;
 }
 //移入时按钮样式 type='primary'
 .el-button--primary:hover {
@@ -172,5 +224,16 @@ onMounted(() => {
   border-color: #45a3fc !important;
   color: #3599f5 !important;
   opacity: 0.8;
+}
+.userInfo {
+  display: flex;
+  align-items: center;
+  .el-dropdown {
+    margin: 0 18px;
+    .el-badge,
+    .el-avatar {
+      cursor: pointer;
+    }
+  }
 }
 </style>
