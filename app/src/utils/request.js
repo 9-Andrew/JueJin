@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import {useUserInfo} from '@/stores/index';
 
 let service = axios.create({
   baseURL: 'http://localhost:3000',
@@ -16,6 +17,11 @@ service.interceptors.request.use((config) => {
 service.interceptors.response.use(
   (response) => {
     if (response.data.status) {
+      if(response.data.status===401){
+        //TODO test
+        let store=useUserInfo()
+        store.userInfo={}
+      }
       ElMessage.error(response.data.message)
       return Promise.reject(response.data)
     } else {

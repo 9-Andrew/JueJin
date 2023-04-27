@@ -34,7 +34,7 @@ app.use(
   jwt({
     secret: config.jwtSecretKey,
     algorithms: ['HS256']
-  }).unless({ path: [/^\/api\//] })
+  }).unless({ path: [/^\/api\//,/^\/article\//] })
 )
 
 let userRouter = require('./routes/user')
@@ -47,7 +47,7 @@ app.use('/article',articleRouter)
 // error handler
 app.use((err, req, res, next) => {
   // 身份认证失败后的错误
-  if (err.name === 'UnauthorizedError') return res.cc('身份认证失败！')
+  if (err.name === 'UnauthorizedError') return res.cc('登录超时，请重新登录！',401)
   // 未知的错误
   if(err) res.cc(err)
 })

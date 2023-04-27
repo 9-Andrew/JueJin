@@ -11,12 +11,11 @@
               <router-link to="/">首页</router-link>
             </li>
             <li>
-              <router-link to="/follow">关注</router-link>
+              <router-link to="/home/follow">关注</router-link>
             </li>
-            <li>
-              <router-link to="/collect">收藏集</router-link>
+            <li v-for="at in articleType" :key="at.id">
+              <router-link :to="`/home/${at.path}`">{{ at.name }}</router-link>
             </li>
-            
           </ul>
         </el-col>
         <el-col :span="6" class="flexContainer"
@@ -75,17 +74,19 @@
 
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,reactive } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import LoginDialog from '@/views/layout/LoginDialog.vue'
 import _ from 'lodash'
 import { useUserInfo } from '@/stores/index.js'
 import { getUserInfo } from '@/api/userinfo.js'
+import { getArticleType } from '@/api/article.js'
 
 const input1 = ref('')
 const loginDialogVisible = ref(false)
 const isShowHeader = ref(true)
 const userInfo = ref({})
+const articleType = reactive([])
 let store = useUserInfo()
 
 // 获取滚动条高度
@@ -108,8 +109,9 @@ function initScroll() {
   )
 }
 onMounted(() => {
-  initScroll()
+  initArticleType()
   initUserInfo()
+  initScroll()
 })
 
 async function initUserInfo() {
@@ -123,6 +125,11 @@ async function initUserInfo() {
 function logout() {
   localStorage.clear()
   userInfo.value = {}
+}
+
+async function initArticleType() {
+  const result = await getArticleType()
+  articleType.splice(0,...result.data)
 }
 </script>
 
