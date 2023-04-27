@@ -11,17 +11,12 @@
               <router-link to="/">首页</router-link>
             </li>
             <li>
-              <router-link to="specialColumn">专栏</router-link>
+              <router-link to="/follow">关注</router-link>
             </li>
             <li>
               <router-link to="/collect">收藏集</router-link>
             </li>
-            <li>
-              <router-link to="/discover">发现</router-link>
-            </li>
-            <li>
-              <router-link to="/openSource">开源库</router-link>
-            </li>
+            
           </ul>
         </el-col>
         <el-col :span="6" class="flexContainer"

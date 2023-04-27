@@ -41,6 +41,8 @@ let userRouter = require('./routes/user')
 app.use('/api', userRouter)
 let userinfoRouter = require('./routes/userinfo')
 app.use('/my', userinfoRouter)
+let articleRouter=require('./routes/article.js')
+app.use('/article',articleRouter)
 
 // error handler
 app.use((err, req, res, next) => {
