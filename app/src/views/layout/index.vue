@@ -1,6 +1,6 @@
 <template>
   <el-container class="common-layout">
-    <el-header v-if="isShowHeader">
+    <el-header :class="{ HideHeader: isHideHeader }">
       <el-row class="bx navbar">
         <el-col :span="2" class="flexContainer">
           <router-link class="logo" to="/"></router-link>
@@ -74,7 +74,7 @@
 
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import { ref, onMounted,reactive } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import LoginDialog from '@/views/layout/LoginDialog.vue'
 import _ from 'lodash'
@@ -84,7 +84,7 @@ import { getArticleType } from '@/api/article.js'
 
 const input1 = ref('')
 const loginDialogVisible = ref(false)
-const isShowHeader = ref(true)
+const isHideHeader = ref(false)
 const userInfo = ref({})
 const articleType = reactive([])
 let store = useUserInfo()
@@ -99,10 +99,10 @@ function initScroll() {
     'scroll',
     _.debounce(() => {
       let currentScrollTop = getScrollTop()
-      if (currentScrollTop > initScrollTop && currentScrollTop > 200) {
-        isShowHeader.value = false
+      if (currentScrollTop > initScrollTop && currentScrollTop > 500) {
+        isHideHeader.value = true
       } else {
-        isShowHeader.value = true
+        isHideHeader.value = false
       }
       initScrollTop = currentScrollTop
     }, 50)
@@ -129,7 +129,7 @@ function logout() {
 
 async function initArticleType() {
   const result = await getArticleType()
-  articleType.splice(0,...result.data)
+  articleType.splice(0, ...result.data)
 }
 </script>
 
@@ -138,8 +138,9 @@ async function initArticleType() {
   background: #fff;
   position: fixed;
   top: 0;
+  transition: top;
   width: 100%;
-  z-index: 1;
+  z-index: 999;
   .navbar {
     margin: 0 auto;
   }
@@ -150,7 +151,7 @@ async function initArticleType() {
     .logo {
       background: url('@/assets/logo.png') no-repeat;
       background-size: contain;
-      height: 30px;
+      height: 45px;
       width: 100%;
     }
   }
@@ -185,6 +186,7 @@ async function initArticleType() {
 }
 .el-main {
   margin-top: 60px;
+  padding: 0;
 }
 .el-row {
   height: 100%;
@@ -237,5 +239,8 @@ async function initArticleType() {
       cursor: pointer;
     }
   }
+}
+.HideHeader {
+  top: -60px;
 }
 </style>

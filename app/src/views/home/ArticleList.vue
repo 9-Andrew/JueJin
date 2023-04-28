@@ -1,8 +1,8 @@
 <template>
-  收藏集
+  123
 </template>
 <script setup>
 </script>
-<style>
+<style lang="less">
   
 </style>
