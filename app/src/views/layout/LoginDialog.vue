@@ -1,37 +1,39 @@
 <template>
-  <el-dialog v-model="loginDialogVisible" title="登录掘金畅享更多权益" width="24%" center>
-    <el-form>
-      <el-form-item>
-        <el-input v-model="username" placeholder="用户名" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="password" placeholder="密 码" type="password" clearable></el-input>
-      </el-form-item>
-      <el-form-item v-if="!isLogin">
-        <el-input v-model="password2" placeholder="确认密码" type="password" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="loginOrRegister()">{{ buttonTitle }}</el-button>
-      </el-form-item>
-      <el-form-item class="loginMethod">
-        <span>
-          <ul v-show="isLogin">
-            <li>其他登录：</li>
-            <li><img src="@/assets/github.svg" alt="" /></li>
-            <li><img src="@/assets/weixin.svg" alt="" /></li>
-            <li><img src="@/assets/weibo.svg" alt="" /></li>
-          </ul>
-        </span>
-        <span @click="isLogin = !isLogin" style="cursor: pointer"
-          >立即{{ linkTitle }}</span
-        ></el-form-item
-      >
-    </el-form>
-    <div class="policy">
-      注册登录即表示同意 <a href="javascript:void(0)">用户协议</a> 和
-      <a href="javascript:void(0)">隐私政策</a>
-    </div>
-  </el-dialog>
+  <div>
+    <el-dialog v-model="loginDialogVisible" title="登录掘金畅享更多权益" width="24%" center>
+      <el-form>
+        <el-form-item>
+          <el-input v-model="username" placeholder="用户名" clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="password" placeholder="密 码" type="password" clearable></el-input>
+        </el-form-item>
+        <el-form-item v-if="!isLogin">
+          <el-input v-model="password2" placeholder="确认密码" type="password" clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="loginOrRegister()">{{ buttonTitle }}</el-button>
+        </el-form-item>
+        <el-form-item class="loginMethod">
+          <span>
+            <ul v-show="isLogin">
+              <li>其他登录：</li>
+              <li><img src="@/assets/github.svg" alt="" /></li>
+              <li><img src="@/assets/weixin.svg" alt="" /></li>
+              <li><img src="@/assets/weibo.svg" alt="" /></li>
+            </ul>
+          </span>
+          <span @click="isLogin = !isLogin" style="cursor: pointer"
+            >立即{{ linkTitle }}</span
+          ></el-form-item
+        >
+      </el-form>
+      <div class="policy">
+        注册登录即表示同意 <a href="javascript:void(0)">用户协议</a> 和
+        <a href="javascript:void(0)">隐私政策</a>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup>
@@ -89,7 +91,7 @@ function reset() {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .el-dialog__header {
   border-bottom: 1px solid #f1f2f5;
   margin: 0;
@@ -107,11 +109,11 @@ function reset() {
   color: #fff !important;
   opacity: 0.8;
 }
-.el-dialog__body {
+:deep(.el-dialog__body) {
   padding: 25px calc(var(--el-dialog-padding-primary) + 70px) 30px !important;
 }
 .loginMethod {
-  .el-form-item__content {
+  :deep(.el-form-item__content) {
     justify-content: space-between;
     ul {
       display: flex;

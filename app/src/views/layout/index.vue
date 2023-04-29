@@ -23,7 +23,10 @@
         </el-col>
         <el-col :span="4" class="flexContainer" :offset="2">
           <el-button type="primary">写文章</el-button>
-          <el-button  v-if="!store.userInfo.username" type="default" @click="loginDialogVisible = true"
+          <el-button
+            v-if="!store.userInfo.username"
+            type="default"
+            @click="loginDialogVisible = true"
             >登录 | 注册</el-button
           >
 
@@ -49,7 +52,19 @@
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item>我的主页</el-dropdown-item>
-                  <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
+                  <el-dropdown-item>
+                    <el-popconfirm
+                      width="220"
+                      confirm-button-text="确认"
+                      cancel-button-text="取消"
+                      :icon="InfoFilled"
+                      icon-color="#626AEF"
+                      title="确定登出吗？"
+                      @confirm="logout"
+                    >
+                      <template #reference>退出登录</template>
+                    </el-popconfirm></el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -81,6 +96,7 @@ import _ from 'lodash'
 import { useUserInfo } from '@/stores/index.js'
 import { getUserInfo } from '@/api/userinfo.js'
 import { getArticleType } from '@/api/article.js'
+import { InfoFilled } from '@element-plus/icons-vue'
 
 const input1 = ref('')
 const loginDialogVisible = ref(false)
@@ -136,6 +152,7 @@ async function initArticleType() {
   background: #fff;
   position: fixed;
   top: 0;
+  left:0;
   transition: top;
   width: 100%;
   z-index: 999;
