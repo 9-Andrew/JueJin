@@ -18,11 +18,12 @@ service.interceptors.response.use(
   (response) => {
     if (response.data.status) {
       if (response.data.status === 401) {
-        //TODO test
-        // alert(1)
-        let store = useUserInfo()
-        store.userInfo = {}
-        ElMessage.error(response.data.message)
+        if (localStorage.getItem('Token')) {
+          ElMessage.error(response.data.message)
+          let store = useUserInfo()
+          store.$reset()
+          localStorage.clear()
+        }
       }
       return Promise.reject(response.data)
     } else {

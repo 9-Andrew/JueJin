@@ -40,13 +40,14 @@ import { login, register } from '@/api/user.js'
 import { ElMessage } from 'element-plus'
 // 对话框显式双向绑定
 let props = defineProps(['loginDialogVisible'])
-let emits = defineEmits(['update:loginDialogVisible','initUserInfo'])
+let emits = defineEmits(['update:loginDialogVisible', 'initUserInfo'])
 let loginDialogVisible = computed({
   get() {
     return props.loginDialogVisible
   },
   set(value) {
     emits('update:loginDialogVisible', value)
+    reset()
   }
 })
 // 初始化数据
@@ -59,9 +60,7 @@ let buttonTitle = ref(),
 watchEffect(() => {
   buttonTitle.value = isLogin.value ? '登录' : '注册'
   linkTitle.value = isLogin.value ? '注册' : '登录'
-  username.value = ''
-  password.value = ''
-  password2.value = ''
+  reset()
 })
 
 let loginOrRegister = async () => {
@@ -81,6 +80,12 @@ let loginOrRegister = async () => {
     isLogin.value = true
   }
   ElMessage.success(result.message)
+}
+
+function reset() {
+  username.value = ''
+  password.value = ''
+  password2.value = ''
 }
 </script>
 

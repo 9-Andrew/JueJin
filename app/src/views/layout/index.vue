@@ -23,7 +23,7 @@
         </el-col>
         <el-col :span="4" class="flexContainer" :offset="2">
           <el-button type="primary">写文章</el-button>
-          <el-button v-if="!userInfo.username" type="default" @click="loginDialogVisible = true"
+          <el-button  v-if="!store.userInfo.username" type="default" @click="loginDialogVisible = true"
             >登录 | 注册</el-button
           >
 
@@ -45,7 +45,7 @@
               </template>
             </el-dropdown>
             <el-dropdown trigger="click" size="large">
-              <el-avatar :size="36"> {{ userInfo.username }}</el-avatar>
+              <el-avatar :size="36"> {{ store.userInfo.username }}</el-avatar>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item>我的主页</el-dropdown-item>
@@ -85,7 +85,6 @@ import { getArticleType } from '@/api/article.js'
 const input1 = ref('')
 const loginDialogVisible = ref(false)
 const isHideHeader = ref(false)
-const userInfo = ref({})
 const articleType = reactive([])
 let store = useUserInfo()
 
@@ -118,13 +117,12 @@ async function initUserInfo() {
   if (localStorage.getItem('Token')) {
     let { data } = await getUserInfo()
     store.setUserInfo(data)
-    userInfo.value = store.getUserInfo
   }
 }
 
 function logout() {
   localStorage.clear()
-  userInfo.value = {}
+  store.$reset()
 }
 
 async function initArticleType() {
