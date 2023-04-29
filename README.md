@@ -1,5 +1,5 @@
 # 简介
-![image](./app/src/assets/logo.png)
+![image](./app/src/assets/logo.png)<br/>
 🔥 Vue+ Express + Mysql 前后端分离的论坛系统
 
 ## 快速开始
