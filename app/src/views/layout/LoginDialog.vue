@@ -18,9 +18,21 @@
           <span>
             <ul v-show="isLogin">
               <li>其他登录：</li>
-              <li><img src="@/assets/github.svg" alt="" /></li>
-              <li><img src="@/assets/weixin.svg" alt="" /></li>
-              <li><img src="@/assets/weibo.svg" alt="" /></li>
+              <li>
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-github"></use>
+                </svg>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-weixin"></use>
+                </svg>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-weibo"></use>
+                </svg>
+              </li>
             </ul>
           </span>
           <span @click="isLogin = !isLogin" style="cursor: pointer"
@@ -120,11 +132,10 @@ function reset() {
       padding: 0;
       li {
         display: flex;
-        img {
+        align-items: center;
+        svg {
           cursor: pointer;
-          width: 15px;
           margin: 0 3px;
-          align-items: center;
         }
       }
     }

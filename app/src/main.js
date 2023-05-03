@@ -9,6 +9,7 @@ import '@/assets/main.css'
 import 'element-plus/theme-chalk/el-loading.css'
 import 'element-plus/theme-chalk/el-message.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import  '@/assets/icon/iconfont.js';
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

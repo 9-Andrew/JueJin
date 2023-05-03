@@ -13,6 +13,32 @@
       <div class="content_main">
         <div class="title">{{ article.title }}</div>
         <div class="article_content">{{ article.content }}</div>
+        <ul class="action_list">
+          <li>
+            <router-link to="">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-yanjing"></use>
+              </svg>
+              {{ article.view_num }}</router-link
+            >
+          </li>
+          <li>
+            <router-link to="">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-dianzan"></use>
+              </svg>
+              {{ article.like_num }}</router-link
+            >
+          </li>
+          <li>
+            <router-link to="">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-pinglun"></use>
+              </svg>
+              123</router-link
+            >
+          </li>
+        </ul>
       </div>
       <div class="cover"></div>
     </div>
@@ -52,6 +78,7 @@ a {
   }
   .content_container {
     border-bottom: 1px solid rgba(228, 230, 235, 0.5);
+    padding-bottom: 10px;
     .content_main {
       .title {
         font-weight: bolder;
@@ -65,6 +92,18 @@ a {
         color: #8a919f;
         font-size: 13px;
         line-height: 2.7;
+      }
+      .action_list {
+        display: flex;
+        padding: 0;
+        font-size: 13px;
+        a{
+          padding-right: 20px;
+          &:hover{
+            color:#1e80ff;
+          }
+        }
+        
       }
     }
   }
