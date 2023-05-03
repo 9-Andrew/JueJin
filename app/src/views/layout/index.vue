@@ -11,10 +11,10 @@
               <router-link to="/">首页</router-link>
             </li>
             <li>
-              <router-link to="/home/follow">关注</router-link>
+              <router-link to="/forum/follow">关注</router-link>
             </li>
             <li v-for="at in articleType" :key="at.id">
-              <router-link :to="`/home/${at.path}`">{{ at.name }}</router-link>
+              <router-link :to="`/forum/${at.path}`">{{ at.name }}</router-link>
             </li>
           </ul>
         </el-col>
@@ -81,8 +81,6 @@
 
     <el-main class="bx">
       <RouterView />
-      <!--TODO delete -->
-      <div style="height: 2000px"></div>
     </el-main>
   </el-container>
 </template>
@@ -114,7 +112,7 @@ function initScroll() {
     'scroll',
     _.debounce(() => {
       let currentScrollTop = getScrollTop()
-      if (currentScrollTop > initScrollTop && currentScrollTop > 500) {
+      if (currentScrollTop > initScrollTop && currentScrollTop > 300) {
         isHideHeader.value = true
       } else {
         isHideHeader.value = false

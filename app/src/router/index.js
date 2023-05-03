@@ -6,16 +6,16 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('@/views/layout/index.vue'),
-      redirect: '/home',
+      redirect: '/forum',
       children: [
         {
           path: '',
-          alias: '/home',
-          component: () => import('@/views/home/index.vue')
+          alias: '/forum',
+          component: () => import('@/views/forum/index.vue')
         },
         {
-          path: 'home/:type',
-          component: () => import('@/views/home/index.vue')
+          path: 'forum/:type',
+          component: () => import('@/views/forum/index.vue')
         }
       ]
     },

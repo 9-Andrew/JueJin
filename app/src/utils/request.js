@@ -24,6 +24,8 @@ service.interceptors.response.use(
           store.$reset()
           localStorage.clear()
         }
+      } else {
+        ElMessage.error(response.data.message)
       }
       return Promise.reject(response.data)
     } else {

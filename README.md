@@ -56,7 +56,7 @@
 |  |  |   ├─layout
 |  |  |   |   ├─index.vue
 |  |  |   |   └LoginDialog.vue
-|  |  |   ├─home
+|  |  |   ├─forum
 |  |  |   |  ├─ArticleList.vue
 |  |  |   |  └index.vue
 |  |  ├─utils
