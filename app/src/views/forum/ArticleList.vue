@@ -40,7 +40,9 @@
           </li>
         </ul>
       </div>
-      <div class="cover"></div>
+      <div class="cover">
+        <el-image src="http://localhost:3000/images/default.png"></el-image>
+      </div>
     </div>
   </div>
 </template>
@@ -77,34 +79,41 @@ a {
     }
   }
   .content_container {
+    display: flex;
     border-bottom: 1px solid rgba(228, 230, 235, 0.5);
     padding-bottom: 10px;
     .content_main {
+      width: 100%;
       .title {
         font-weight: bolder;
         font-size: 17px;
         padding: 5px 0;
       }
       .article_content {
-        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         color: #8a919f;
         font-size: 13px;
         line-height: 2.7;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
       }
       .action_list {
         display: flex;
         padding: 0;
         font-size: 13px;
-        a{
+        a {
           padding-right: 20px;
-          &:hover{
-            color:#1e80ff;
+          &:hover {
+            color: #1e80ff;
           }
         }
-        
       }
+    }
+    .cover {
+      flex-shrink: 0;
+      width: 100px;
     }
   }
 }
