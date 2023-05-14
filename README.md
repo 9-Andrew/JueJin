@@ -12,7 +12,7 @@
   cd server
   npm i
   npm start
-4.启动前杜建
+4.启动前端
   cd ../app
   npm i
   npm run dev

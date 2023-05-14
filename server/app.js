@@ -8,6 +8,7 @@ let { expressjwt: jwt } = require('express-jwt')
 const config = require('./config')
 
 const app = express()
+app.disable('etag');
 app.use((req, res, next) => {
   /**
    *

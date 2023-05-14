@@ -83,7 +83,9 @@ a {
     border-bottom: 1px solid rgba(228, 230, 235, 0.5);
     padding-bottom: 10px;
     .content_main {
-      width: 100%;
+      display: flex;
+      flex-flow: column;
+      justify-content: space-around;
       .title {
         font-weight: bolder;
         font-size: 17px;
@@ -113,7 +115,11 @@ a {
     }
     .cover {
       flex-shrink: 0;
-      width: 100px;
+      width:120px;
+      margin-left: 60px;
+      .el-image {
+        border-radius: 3px;
+      }
     }
   }
 }

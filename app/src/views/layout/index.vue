@@ -87,10 +87,9 @@
 
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, onBeforeUnmount, reactive, getCurrentInstance } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import LoginDialog from '@/views/layout/LoginDialog.vue'
-import _ from 'lodash'
 import { useUserInfo } from '@/stores/index.js'
 import { getUserInfo } from '@/api/userinfo.js'
 import { getArticleType } from '@/api/article.js'
@@ -100,31 +99,31 @@ const input1 = ref('')
 const loginDialogVisible = ref(false)
 const isHideHeader = ref(false)
 const articleType = reactive([])
-let store = useUserInfo()
+const store = useUserInfo()
+const { proxy } = getCurrentInstance()
 
 // 获取滚动条高度
 function getScrollTop() {
   return document.documentElement.scrollTop || window.pageYOffset
 }
-function initScroll() {
-  let initScrollTop = getScrollTop()
-  window.addEventListener(
-    'scroll',
-    _.debounce(() => {
-      let currentScrollTop = getScrollTop()
-      if (currentScrollTop > initScrollTop && currentScrollTop > 300) {
-        isHideHeader.value = true
-      } else {
-        isHideHeader.value = false
-      }
-      initScrollTop = currentScrollTop
-    }, 50)
-  )
-}
+let initScrollTop = getScrollTop()
+let initScroll = proxy.$debounce(() => {
+  let currentScrollTop = getScrollTop()
+  if (currentScrollTop > initScrollTop && currentScrollTop > 300) {
+    isHideHeader.value = true
+  } else {
+    isHideHeader.value = false
+  }
+  initScrollTop = currentScrollTop
+}, 50)
+
 onMounted(() => {
   initArticleType()
   initUserInfo()
-  initScroll()
+  window.addEventListener('scroll', initScroll)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', initScroll)
 })
 
 async function initUserInfo() {
@@ -141,7 +140,7 @@ function logout() {
 
 async function initArticleType() {
   const result = await getArticleType()
-  articleType.splice(0, ...result.data)
+  articleType.splice(0, 0, ...result.data)
 }
 </script>
 
@@ -150,7 +149,7 @@ async function initArticleType() {
   background: #fff;
   position: fixed;
   top: 0;
-  left:0;
+  left: 0;
   transition: top;
   width: 100%;
   z-index: 999;
@@ -198,7 +197,7 @@ async function initArticleType() {
   }
 }
 .el-main {
-  margin-top: 60px;
+  margin: 60px auto 12px;
   padding: 0;
 }
 .el-row {

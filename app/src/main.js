@@ -9,9 +9,12 @@ import '@/assets/main.css'
 import 'element-plus/theme-chalk/el-loading.css'
 import 'element-plus/theme-chalk/el-message.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import  '@/assets/icon/iconfont.js';
+import '@/assets/icon/iconfont.js'
+
+import _ from 'lodash'
 
 const app = createApp(App)
+app.config.globalProperties.$debounce = _.debounce
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }

@@ -13,9 +13,11 @@ exports.getArticleType = (req, res) => {
 }
 
 exports.getArticle = (req, res) => {
+  let { page, limit } = req.query
   const sql = `select article.id,user.nickname,user.username,title,content,cover,name as 'article_type',view_num,like_num,like_num,article.create_time from article
   inner join article_type on article.type_id=article_type.id
-  inner join user on article.user_id=user.id`
+  inner join user on article.user_id=user.id
+  limit ${(page-1)*limit},${limit};`
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('获取文章失败！')
