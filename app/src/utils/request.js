@@ -16,21 +16,26 @@ service.interceptors.request.use((config) => {
 })
 service.interceptors.response.use(
   (response) => {
-    if (response.data.status) {
-      if (response.data.status === 401) {
+    let { status, message, token } = response.data
+    // 状态码为失败
+    if (status) {
+      if (status === 401) {
         if (localStorage.getItem('Token')) {
-          ElMessage.error(response.data.message)
+          ElMessage.error(message)
           let store = useUserInfo()
           store.$reset()
           localStorage.clear()
         }
       } else {
-        ElMessage.error(response.data.message)
+        ElMessage({
+          type: status == '2' ? 'info' : 'error',
+          message
+        })
       }
       return Promise.reject(response.data)
     } else {
-      if (response.data.token) {
-        localStorage.setItem('Token', response.data.token)
+      if (token) {
+        localStorage.setItem('Token', token)
       }
       return Promise.resolve(response.data)
     }

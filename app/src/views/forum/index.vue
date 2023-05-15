@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance } from 'vue'
+import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import ArticleList from './ArticleList.vue'
 import { getArticle } from '@/api/article.js'
@@ -27,12 +27,12 @@ const activeName = ref('recommend')
 const loading = ref(true)
 const { proxy } = getCurrentInstance()
 let articleList = reactive([])
+let route = useRoute()
 
 const initList = async () => {
-  let route = useRoute()
-  let result = await getArticle(page, limit)
-    articleList.push(...result.data)
-  console.log(result.data)
+  let result = await getArticle(page, limit, route.params.type)
+  articleList.push(...result.data)
+  console.log(result)
 }
 let loadingMore = proxy.$debounce(() => {
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
@@ -43,10 +43,22 @@ let loadingMore = proxy.$debounce(() => {
     initList()
   }
 })
+watch(
+  () => route.params,
+  async () => {
+    if (route.params.type != 'follow') {
+      loading.value = true
+      articleList.length = 0
+      page=1
+      await initList()
+      loading.value = false
+    }
+  }
+)
 
-onMounted(() => {
+onMounted(async () => {
   loading.value = true
-  initList()
+  await initList()
   loading.value = false
   window.addEventListener('scroll', loadingMore)
 })

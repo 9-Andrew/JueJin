@@ -13,7 +13,7 @@ app.use((req, res, next) => {
   /**
    *
    * @param {*} err 响应数据，也可能是一个错误对象
-   * @param {*} status 默认值为 1，表示失败
+   * @param {*} status 默认值为 1，表示失败。0:成功，2:提示,401:jwt失效，
    */
   res.cc = function (err, status = 1) {
     res.send({
