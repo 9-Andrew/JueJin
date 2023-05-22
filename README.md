@@ -7,6 +7,7 @@
 ```javascript 
 1.克隆项目
   git clone https://github.com/Anjiu1/JueJin.git
+  cd JueJin
 2.创建数据库
   mysql -u用户名 -p密码 <.\server\juejin.sql
 3.启动后端
