@@ -8,6 +8,7 @@
 1.克隆项目
   git clone https://github.com/Anjiu1/JueJin.git
 2.创建数据库
+  mysql -u用户名 -p密码 <.\server\juejin.sql
 3.启动后端
   cd server
   npm i
@@ -25,6 +26,7 @@
 ├─server
 |   ├─app.js
 |   ├─config.js
+|   ├─juejin.sql
 |   ├─package-lock.json
 |   ├─package.json
 |   ├─routes_handler
