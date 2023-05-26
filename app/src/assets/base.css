@@ -34,6 +34,8 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+
+  --theme-color:#1e80ff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -55,7 +57,6 @@
 *::after {
   box-sizing: border-box;
   margin: 0;
-  position: relative;
   font-weight: normal;
 }
 
@@ -87,7 +88,7 @@ ul {
 }
 a {
   text-decoration: none;
-  color: #1e80ff;
+  color: var(--theme-color);
 }
 .bx {
   width: 1440px;

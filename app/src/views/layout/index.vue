@@ -175,6 +175,7 @@ async function initArticleType() {
     line-height: 60px;
     li {
       flex: auto;
+      position: relative;
       a {
         color: #000;
         display: block;
@@ -217,8 +218,8 @@ async function initArticleType() {
 //显示时按钮样式
 .el-button--primary {
   //需要更改的按钮类型 type='primary'
-  background: #1e80ff !important;
-  border-color: #1e80ff !important;
+  background: var(--theme-color) !important;
+  border-color: var(--theme-color) !important;
   width: 130px;
 }
 //移入时按钮样式 type='primary'

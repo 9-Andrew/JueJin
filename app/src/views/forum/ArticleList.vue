@@ -55,7 +55,7 @@ defineProps(['article', 'moment'])
 a {
   color: #8a919f;
   &:hover {
-    color: #1e80ff;
+    color: var(--theme-color);
   }
 }
 .item {
@@ -71,7 +71,7 @@ a {
     .user_message {
       color: #515767;
       &:hover {
-        color: #1e80ff;
+        color: var(--theme-color);
       }
     }
     .date {
@@ -108,7 +108,7 @@ a {
         a {
           padding-right: 20px;
           &:hover {
-            color: #1e80ff;
+            color: var(--theme-color);
           }
         }
       }

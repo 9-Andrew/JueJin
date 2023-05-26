@@ -110,8 +110,8 @@ function reset() {
 }
 .el-button--primary {
   //需要更改的按钮类型 type='primary'
-  background: #1e80ff !important;
-  border-color: #1e80ff !important;
+  background: var(--theme-color) !important;
+  border-color: var(--theme-color) !important;
   width: 100%;
 }
 //移入时按钮样式 type='primary'
