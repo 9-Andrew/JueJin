@@ -1,16 +1,18 @@
 <template>
   <div class="container">
-    <el-tabs v-model="activeName" class="demo-tabs">
-      <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
-      <el-tab-pane label="最新" name="news"></el-tab-pane>
-      <el-skeleton :rows="5" :loading="loading" animated />
+    <div class="content">
+      <el-tabs v-model="activeName" class="demo-tabs" v-if="route.params.type != 'follow'">
+        <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
+        <el-tab-pane label="最新" name="news"></el-tab-pane>
+      </el-tabs>
+      <el-skeleton :rows="5" :loading="loading" animated style="background-color: #fff" />
       <ArticleList
         v-for="al in articleList"
         :key="al.id"
         :article="al"
         :moment="moment"
       ></ArticleList>
-    </el-tabs>
+    </div>
     <div class="sidebar">
       <a class="tbaru" href="javascript:void();">我的广告位，便宜又大碗</a>
       <a class="tbaru" href="javascript:void();">我的广告位，便宜又大碗</a>
@@ -66,8 +68,10 @@ const initList = async (isPush) => {
     route.params.type,
     activeName.value === 'recommend' ? 0 : 1
   )
-  loading.value = false
-  articleList.push(...result.data)
+  setTimeout(() => {
+    loading.value = false
+    articleList.push(...result.data)
+  }, 400)
 }
 let loadingMore = proxy.$debounce(() => {
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
@@ -103,22 +107,28 @@ onBeforeUnmount(() => {
   display: flex;
   margin: 0 auto;
   justify-content: space-around;
-  .demo-tabs {
+  .content {
     width: 1000px;
-    background: #fff;
-    margin-top: 15px;
-    border-radius: 6px;
-    .el-tabs__nav-wrap {
-      padding: 6px 19px 0;
-      .el-tabs__nav > .el-tabs__item {
-        font-size: 16px;
-        padding: 0 20px;
-        &.is-active {
-          color: var(--theme-color) !important;
+    .demo-tabs {
+      width: 100%;
+      background: #fff;
+      margin-top: 15px;
+      border-radius: 6px;
+      .el-tabs__header {
+        margin: 0;
+        .el-tabs__nav-wrap {
+          padding: 6px 19px 0;
+          .el-tabs__nav > .el-tabs__item {
+            font-size: 16px;
+            padding: 0 20px;
+            &.is-active {
+              color: var(--theme-color) !important;
+            }
+          }
+          .el-tabs__active-bar {
+            background: var(--theme-color);
+          }
         }
-      }
-      .el-tabs__active-bar {
-        background: var(--theme-color);
       }
     }
   }
@@ -164,5 +174,8 @@ onBeforeUnmount(() => {
       }
     }
   }
+}
+.el-skeleton{
+  padding-top: 14px;
 }
 </style>

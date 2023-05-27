@@ -22,11 +22,8 @@
           ><el-input v-model="input1" class="search" placeholder="搜索" :suffix-icon="Search" />
         </el-col>
         <el-col :span="4" class="flexContainer" :offset="2">
-          <el-button type="primary">写文章</el-button>
-          <el-button
-            v-if="!store.userInfo.username"
-            type="default"
-            @click="loginDialogVisible = true"
+          <el-button type="primary" @click="writeArticle">写文章</el-button>
+          <el-button v-if="!username" type="default" @click="loginDialogVisible = true"
             >登录 | 注册</el-button
           >
 
@@ -48,7 +45,7 @@
               </template>
             </el-dropdown>
             <el-dropdown trigger="click" size="large">
-              <el-avatar :size="36"> {{ store.userInfo.username }}</el-avatar>
+              <el-avatar :size="36"> {{ username }}</el-avatar>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item>我的主页</el-dropdown-item>
@@ -86,8 +83,8 @@
 </template>
 
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import { ref, onMounted, onBeforeUnmount, reactive, getCurrentInstance } from 'vue'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { ref, onMounted, onBeforeUnmount, reactive, getCurrentInstance, computed } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import LoginDialog from '@/views/layout/LoginDialog.vue'
 import { useUserInfo } from '@/stores/index.js'
@@ -101,6 +98,8 @@ const isHideHeader = ref(false)
 const articleType = reactive([])
 const store = useUserInfo()
 const { proxy } = getCurrentInstance()
+let username = computed(() => store.userInfo.username)
+let router=useRouter()
 
 // 获取滚动条高度
 function getScrollTop() {
@@ -141,6 +140,14 @@ function logout() {
 async function initArticleType() {
   const result = await getArticleType()
   articleType.splice(0, 0, ...result.data)
+}
+
+function writeArticle() {
+  if (!username.value) {
+    loginDialogVisible.value=true
+  }else{
+    router.push('/write')
+  }
 }
 </script>
 

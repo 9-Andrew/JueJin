@@ -1,13 +1,13 @@
 <template>
-  <div class="item">
+  <div class="item" @click="router.push(`/article_detail/${article.id}`)">
     <div class="meta_container">
-      <router-link class="user_message" to="">{{
+      <a @click.stop="router.push(`/user/${article.user_id}`)">{{
         article.nickname || article.username
-      }}</router-link>
+      }}</a>
       <el-divider direction="vertical"></el-divider>
       <div class="date">{{ moment(article.create_time).fromNow() }}</div>
       <el-divider direction="vertical"></el-divider>
-      <router-link class="tag" to="">{{ article.article_type }}</router-link>
+      <a @click.stop="router.push(`/forum/${article.path}`)">{{ article.article_type }}</a>
     </div>
     <div class="content_container">
       <div class="content_main">
@@ -15,27 +15,27 @@
         <div class="article_content">{{ article.content }}</div>
         <ul class="action_list">
           <li>
-            <router-link to="">
+            <a @click.stop="">
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-yanjing"></use>
               </svg>
-              {{ article.view_num }}</router-link
+              {{ article.view_num }}</a
             >
           </li>
           <li>
-            <router-link to="">
+            <a @click.stop="">
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-dianzan"></use>
               </svg>
-              {{ article.like_num }}</router-link
+              {{ article.like_num }}</a
             >
           </li>
           <li>
-            <router-link to="">
+            <a @click.stop="">
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-pinglun"></use>
               </svg>
-              123</router-link
+              123</a
             >
           </li>
         </ul>
@@ -49,6 +49,8 @@
 
 <script setup>
 defineProps(['article', 'moment'])
+import { useRouter } from 'vue-router'
+let router = useRouter()
 </script>
 
 <style lang="less" scoped>
@@ -60,6 +62,8 @@ a {
 }
 .item {
   padding: 12px 40px 0;
+  cursor: pointer;
+  background-color: #fff;
 
   &:hover {
     background: #fafafa;
@@ -115,7 +119,7 @@ a {
     }
     .cover {
       flex-shrink: 0;
-      width:120px;
+      width: 120px;
       margin-left: 60px;
       .el-image {
         border-radius: 3px;

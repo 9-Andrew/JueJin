@@ -21,7 +21,7 @@ exports.getArticle = (req, res) => {
    */
   let { page, limit, type, recommendType } = req.query
 
-  let sql = `select article.id,user.nickname,user.username,title,content,cover,name as 'article_type',view_num,like_num,article.create_time from article
+  let sql = `select article.id,user.nickname,user.username,title,content,cover,name AS 'article_type',view_num,like_num,article.create_time,path,user.id AS user_id from article
   inner join article_type on article.type_id=article_type.id
   inner join user on article.user_id=user.id\n`
 
