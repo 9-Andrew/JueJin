@@ -13,17 +13,30 @@ exports.getArticleType = (req, res) => {
 }
 
 exports.getArticle = (req, res) => {
-  let { page, limit, type } = req.query
+  /**
+   * page
+   * limit
+   * type
+   * recommendType 0表示推荐，1表示最新
+   */
+  let { page, limit, type, recommendType } = req.query
 
-  let sql = `select article.id,user.nickname,user.username,title,content,cover,name as 'article_type',view_num,like_num,like_num,article.create_time from article
+  let sql = `select article.id,user.nickname,user.username,title,content,cover,name as 'article_type',view_num,like_num,article.create_time from article
   inner join article_type on article.type_id=article_type.id
-  inner join user on article.user_id=user.id `
-  type && (sql += `where path='${type}' `)
-  sql += `limit ${(page - 1) * limit},${limit};`
+  inner join user on article.user_id=user.id\n`
+
+  type && (sql += `where path='${type}'\n`)
+
+  sql +=
+    recommendType == 0
+      ? 'ORDER BY view_num DESC,like_num DESC'
+      : 'ORDER BY article.create_time DESC'
+
+  sql += `\nlimit ${(page - 1) * limit},${limit};`
 
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
-    if (results.length === 0) return res.cc('没有更多了！',2)
+    if (results.length === 0) return res.cc('没有更多了！', 2)
     res.send({
       status: 0,
       message: '获取文章成功！',

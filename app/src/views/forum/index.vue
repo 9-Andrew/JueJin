@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="initList">
+    <el-tabs v-model="activeName" class="demo-tabs">
       <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
       <el-tab-pane label="最新" name="news"></el-tab-pane>
       <el-skeleton :rows="5" :loading="loading" animated />
@@ -58,10 +58,16 @@ let articleList = reactive([])
 let route = useRoute()
 let showPop = ref(false)
 
-const initList = async () => {
-  let result = await getArticle(page, limit, route.params.type)
+const initList = async (isPush) => {
+  isPush || ((loading.value = true) && (articleList.length = 0))
+  let result = await getArticle(
+    page,
+    limit,
+    route.params.type,
+    activeName.value === 'recommend' ? 0 : 1
+  )
+  loading.value = false
   articleList.push(...result.data)
-  console.log(result)
 }
 let loadingMore = proxy.$debounce(() => {
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
@@ -69,28 +75,22 @@ let loadingMore = proxy.$debounce(() => {
   let scrollHeight = document.documentElement.scrollHeight
   if (scrollTop + clientHeight >= scrollHeight) {
     page++
-    initList()
+    initList(true)
   }
   showPop.value = scrollTop >= 400
 })
-watch(
-  () => route.params,
-  async () => {
-    if (route.params.type != 'follow') {
-      loading.value = true
-      articleList.length = 0
-      page = 1
-      await initList()
-      loading.value = false
-    }
+watch([() => route.params, activeName], async () => {
+  if (route.params.type != 'follow') {
+    page = 1
+    await initList()
+  } else {
+    articleList.length = 0
   }
-)
+})
 
 onMounted(async () => {
-  loading.value = true
-  await initList()
-  loading.value = false
   window.addEventListener('scroll', loadingMore)
+  await initList()
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', loadingMore)
@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
     margin-top: 15px;
     border-radius: 6px;
     .el-tabs__nav-wrap {
-      padding: 12px 19px 0;
+      padding: 6px 19px 0;
       .el-tabs__nav > .el-tabs__item {
         font-size: 16px;
         padding: 0 20px;

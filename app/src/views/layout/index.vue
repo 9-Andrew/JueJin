@@ -109,7 +109,7 @@ function getScrollTop() {
 let initScrollTop = getScrollTop()
 let initScroll = proxy.$debounce(() => {
   let currentScrollTop = getScrollTop()
-  if (currentScrollTop > initScrollTop && currentScrollTop > 300) {
+  if (currentScrollTop > initScrollTop && currentScrollTop > 1000) {
     isHideHeader.value = true
   } else {
     isHideHeader.value = false

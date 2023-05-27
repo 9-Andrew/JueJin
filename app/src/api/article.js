@@ -5,8 +5,8 @@ export const getArticleType = () =>
     url: 'article/type'
   })
 
-export const getArticle = (page,limit,type) =>
+export const getArticle = (page,limit,type,recommendType) =>
   request({
     url: 'article/recommend',
-    params:{page,limit,type}
+    params:{page,limit,type,recommendType}
   })
