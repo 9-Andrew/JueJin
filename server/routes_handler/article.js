@@ -21,7 +21,7 @@ exports.getArticle = (req, res) => {
    */
   let { page, limit, type, recommendType } = req.query
 
-  let sql = `select article.id,user.nickname,user.username,title,content,cover,name AS 'article_type',view_num,like_num,article.create_time,path,user.id AS user_id from article
+  let sql = `select article.id,user.nickname,user.username,title,content,cover,name AS 'article_type',view_num,like_num,article.create_time,user.id AS user_id from article
   inner join article_type on article.type_id=article_type.id
   inner join user on article.user_id=user.id\n`
 
@@ -40,6 +40,23 @@ exports.getArticle = (req, res) => {
     res.send({
       status: 0,
       message: '获取文章成功！',
+      data: results
+    })
+  })
+}
+
+exports.getArticleTags = (req, res) => {
+  let { id } = req.query
+
+  let sql = `SELECT tag_id,tag_name FROM article_tag_merge
+      INNER JOIN tag ON article_tag_merge.tag_id = tag.id 
+      WHERE article_id = '${id}'`
+
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    res.send({
+      status: 0,
+      message: '获取文章标签成功！',
       data: results
     })
   })

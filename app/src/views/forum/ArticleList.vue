@@ -6,8 +6,14 @@
       }}</a>
       <el-divider direction="vertical"></el-divider>
       <div class="date">{{ moment(article.create_time).fromNow() }}</div>
-      <el-divider direction="vertical"></el-divider>
-      <a @click.stop="router.push(`/forum/${article.path}`)">{{ article.article_type }}</a>
+      <el-divider direction="vertical" v-show="tags.length > 0"></el-divider>
+      <a
+        v-for="t in tags"
+        :key="t.tag_id"
+        @click.stop="router.push(`/tag/${t.tag_id}`)"
+        class="tag"
+        >{{ t.tag_name }}</a
+      >
     </div>
     <div class="content_container">
       <div class="content_main">
@@ -48,9 +54,18 @@
 </template>
 
 <script setup>
-defineProps(['article', 'moment'])
+import { onMounted, reactive } from 'vue'
+import { getArticleTags } from '@/api/article.js'
 import { useRouter } from 'vue-router'
+
+let props = defineProps(['article', 'moment'])
 let router = useRouter()
+let tags = reactive([])
+
+onMounted(async () => {
+  const result = await getArticleTags(props.article.id)
+  tags.push(...result.data)
+})
 </script>
 
 <style lang="less" scoped>
@@ -71,6 +86,7 @@ a {
   .meta_container {
     display: flex;
     align-items: center;
+    font-size: 14px;
 
     .user_message {
       color: #515767;
@@ -80,6 +96,22 @@ a {
     }
     .date {
       color: #8a919f;
+    }
+    .tag {
+      padding: 0 6px;
+      position: relative;
+      &:not(:last-of-type)::after {
+        position: absolute;
+        right: -1px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: block;
+        content: ' ';
+        width: 2px;
+        height: 2px;
+        border-radius: 50%;
+        background: #8a919f;
+      }
     }
   }
   .content_container {
@@ -92,7 +124,7 @@ a {
       justify-content: space-around;
       .title {
         font-weight: bolder;
-        font-size: 17px;
+        font-size: 16px;
         padding: 5px 0;
       }
       .article_content {

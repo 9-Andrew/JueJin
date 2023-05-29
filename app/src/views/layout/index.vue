@@ -76,7 +76,7 @@
       </el-row>
     </el-header>
 
-    <el-main class="bx">
+    <el-main class="bx main">
       <RouterView />
     </el-main>
   </el-container>
@@ -262,5 +262,8 @@ function writeArticle() {
 }
 .HideHeader {
   top: -60px;
+}
+.main{
+  padding-top: 15px;
 }
 </style>

@@ -35,7 +35,8 @@
 
   --section-gap: 160px;
 
-  --theme-color:#1e80ff;
+  --theme-color: #1e80ff;
+  --box-radius: 4px;
 }
 
 @media (prefers-color-scheme: dark) {

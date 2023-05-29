@@ -101,7 +101,7 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .container {
   width: 1300px;
   display: flex;
@@ -109,11 +109,10 @@ onBeforeUnmount(() => {
   justify-content: space-around;
   .content {
     width: 1000px;
-    .demo-tabs {
+    /deep/.demo-tabs {
       width: 100%;
       background: #fff;
-      margin-top: 15px;
-      border-radius: 6px;
+      border-radius: var(--box-radius);
       .el-tabs__header {
         margin: 0;
         .el-tabs__nav-wrap {
@@ -133,7 +132,6 @@ onBeforeUnmount(() => {
     }
   }
   .sidebar {
-    margin-top: 15px;
     width: 250px;
     a.tbaru {
       margin-bottom: 18px;
@@ -175,7 +173,7 @@ onBeforeUnmount(() => {
     }
   }
 }
-.el-skeleton{
+.el-skeleton {
   padding-top: 14px;
 }
 </style>

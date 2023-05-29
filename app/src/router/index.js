@@ -16,6 +16,10 @@ const router = createRouter({
         {
           path: 'forum/:type',
           component: () => import('@/views/forum/index.vue')
+        },
+        {
+          path: 'article_detail/:id',
+          component: () => import('@/views/articleDetail/index.vue')
         }
       ]
     },
