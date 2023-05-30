@@ -102,3 +102,30 @@ a {
   fill: currentColor;
   overflow: hidden;
 }
+
+/* 显示时按钮样式 */
+.el-button--primary {
+  /* 需要更改的按钮类型 type='primary' */
+  background: var(--theme-color) !important;
+  border-color: var(--theme-color) !important;
+}
+/* 移入时按钮样式 type='primary' */
+.el-button--primary:hover {
+  background: #0e5bc0 !important;
+  border-color: #0e5bc0 !important;
+  color: #fff !important;
+  opacity: 0.8;
+}
+.el-button--default {
+  /* 需要更改的按钮类型 type='default' */
+  background: #f4f9ff !important;
+  border-color: #1d7efc !important;
+  color: #007fff !important;
+}
+/* 移入时按钮样式type='default' */
+.el-button--default:hover {
+  background: #fff !important;
+  border-color: #45a3fc !important;
+  color: #3599f5 !important;
+  opacity: 0.8;
+}

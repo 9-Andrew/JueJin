@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
   justify-content: space-around;
   .content {
     width: 1000px;
-    /deep/.demo-tabs {
+    :deep(.demo-tabs) {
       width: 100%;
       background: #fff;
       border-radius: var(--box-radius);
