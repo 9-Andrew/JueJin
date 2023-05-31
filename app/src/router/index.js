@@ -11,7 +11,8 @@ const router = createRouter({
         {
           path: '',
           alias: '/forum',
-          component: () => import('@/views/forum/index.vue')
+          component: () => import('@/views/forum/index.vue'),
+          meta: { hiddenGoTop: true }
         },
         {
           path: 'forum/:type',
@@ -19,7 +20,7 @@ const router = createRouter({
         },
         {
           path: 'article_detail/:id',
-          component: () => import('@/views/articleDetail/index.vue')
+          component: () => import('@/views/articleDetail/index.vue'),
         }
       ]
     },

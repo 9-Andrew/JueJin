@@ -73,7 +73,7 @@ const initList = async (isPush) => {
     articleList.push(...result.data)
   }, 400)
 }
-let loadingMore = proxy.$debounce(() => {
+let loadingMore = proxy.$throttle(() => {
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
   let clientHeight = document.documentElement.clientHeight
   let scrollHeight = document.documentElement.scrollHeight

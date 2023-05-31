@@ -80,10 +80,15 @@
       <RouterView />
     </el-main>
   </el-container>
+  <div id="go_top" v-if="!route.meta.hiddenGoTop && isShowGoTop" @click="goTop">
+    <svg class="icon" aria-hidden="true">
+      <use xlink:href="#icon-back-top1_fill"></use>
+    </svg>
+  </div>
 </template>
 
 <script setup>
-import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router'
 import { ref, onMounted, onBeforeUnmount, reactive, getCurrentInstance, computed } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import LoginDialog from '@/views/layout/LoginDialog.vue'
@@ -99,7 +104,9 @@ const articleType = reactive([])
 const store = useUserInfo()
 const { proxy } = getCurrentInstance()
 let username = computed(() => store.userInfo.username)
-let router=useRouter()
+let router = useRouter()
+let route = useRoute()
+let isShowGoTop = ref(false)
 
 // 获取滚动条高度
 function getScrollTop() {
@@ -113,6 +120,7 @@ let initScroll = proxy.$debounce(() => {
   } else {
     isHideHeader.value = false
   }
+  isShowGoTop.value = currentScrollTop > 1200
   initScrollTop = currentScrollTop
 }, 50)
 
@@ -144,10 +152,14 @@ async function initArticleType() {
 
 function writeArticle() {
   if (!username.value) {
-    loginDialogVisible.value=true
-  }else{
+    loginDialogVisible.value = true
+  } else {
     router.push('/write')
   }
+}
+
+function goTop() {
+  scrollTo(0, 0)
 }
 </script>
 
@@ -222,7 +234,7 @@ function writeArticle() {
   border-radius: 4px;
   min-height: 60px;
 }
-.el-button--primary{
+.el-button--primary {
   width: 130px;
 }
 .userInfo {
@@ -239,7 +251,24 @@ function writeArticle() {
 .HideHeader {
   top: -60px;
 }
-.main{
+.main {
   padding-top: 15px;
+}
+#go_top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50% 50%;
+  box-shadow: 0 2px 8px rgba(50, 50, 50, 0.04);
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  .icon {
+    fill: #8a919f;
+  }
 }
 </style>
