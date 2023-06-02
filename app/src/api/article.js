@@ -16,3 +16,9 @@ export const getArticleTags = (id) =>
     url: 'article/tags',
     params: { id }
   })
+
+  export const getArticleDetail = (id) =>
+  request({
+    url: 'article/article_detail',
+    params: { id }
+  })

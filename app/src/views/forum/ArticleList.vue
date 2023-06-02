@@ -5,7 +5,7 @@
         article.nickname || article.username
       }}</a>
       <el-divider direction="vertical"></el-divider>
-      <div class="date">{{ moment(article.create_time).fromNow() }}</div>
+      <div class="date">{{ proxy.$moment(article.create_time).fromNow() }}</div>
       <el-divider direction="vertical" v-show="tags.length > 0"></el-divider>
       <a
         v-for="t in tags"
@@ -41,7 +41,7 @@
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-pinglun"></use>
               </svg>
-              123</a
+              0</a
             >
           </li>
         </ul>
@@ -54,17 +54,18 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, getCurrentInstance } from 'vue'
 import { getArticleTags } from '@/api/article.js'
 import { useRouter } from 'vue-router'
 
-let props = defineProps(['article', 'moment'])
+const { proxy } = getCurrentInstance()
+let props = defineProps(['article'])
 let router = useRouter()
 let tags = reactive([])
 
 onMounted(async () => {
   const result = await getArticleTags(props.article.id)
-  tags.push(...result.data)
+  result.data && tags.push(...result.data)
 })
 </script>
 

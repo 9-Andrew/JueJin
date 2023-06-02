@@ -12,10 +12,14 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import '@/assets/icon/iconfont.js'
 
 import _ from 'lodash'
+import moment from 'moment'
+import 'moment/dist/locale/zh-cn'
+moment.locale('zh-cn')
 
 const app = createApp(App)
 app.config.globalProperties.$debounce = _.debounce
 app.config.globalProperties.$throttle = _.throttle
+app.config.globalProperties.$moment = moment
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }

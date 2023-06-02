@@ -10,7 +10,6 @@
         v-for="al in articleList"
         :key="al.id"
         :article="al"
-        :moment="moment"
       ></ArticleList>
     </div>
     <div class="sidebar">
@@ -47,9 +46,6 @@ import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch } 
 import { useRoute } from 'vue-router'
 import ArticleList from './ArticleList.vue'
 import { getArticle } from '@/api/article.js'
-import moment from 'moment'
-import 'moment/dist/locale/zh-cn'
-moment.locale('zh-cn')
 
 let page = 1
 let limit = 10

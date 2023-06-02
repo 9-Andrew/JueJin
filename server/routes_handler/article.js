@@ -12,7 +12,7 @@ exports.getArticleType = (req, res) => {
   })
 }
 
-exports.getArticle = (req, res) => {
+exports.getArticleList = (req, res) => {
   /**
    * page
    * limit
@@ -33,7 +33,7 @@ exports.getArticle = (req, res) => {
       : 'ORDER BY article.create_time DESC'
 
   sql += `\nlimit ${(page - 1) * limit},${limit};`
-
+  console.log(sql)
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('没有更多了！', 2)
@@ -51,13 +51,46 @@ exports.getArticleTags = (req, res) => {
   let sql = `SELECT tag_id,tag_name FROM article_tag_merge
       INNER JOIN tag ON article_tag_merge.tag_id = tag.id 
       WHERE article_id = '${id}'`
-
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
+    if (results.length === 0) return res.cc('文章不存在！', 0)
     res.send({
       status: 0,
       message: '获取文章标签成功！',
       data: results
+    })
+  })
+}
+
+exports.getArticleDetail = (req, res) => {
+  let { id } = req.query
+
+  let sql = `SELECT
+      article.id,
+      user.nickname,
+      user.username,
+      user.avatar,
+      title,
+      content,
+      article_type.name AS article_type,
+      view_num,
+      like_num,
+      article.create_time,
+      user.id AS user_id 
+    FROM
+      article
+      INNER JOIN article_type ON article.type_id = article_type.id
+      INNER JOIN user ON article.user_id = user.id 
+    WHERE
+      article.id=${id}`
+
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    if (results.length === 0) return res.cc('文章不存在！', 0)
+    res.send({
+      status: 0,
+      message: '获取文章详情成功！',
+      data: results[0]
     })
   })
 }
