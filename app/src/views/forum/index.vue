@@ -14,28 +14,28 @@
       ></ArticleList>
     </div>
     <div class="sidebar">
-      <a class="tbaru" href="javascript:void();">我的广告位，便宜又大碗</a>
-      <a class="tbaru" href="javascript:void();">我的广告位，便宜又大碗</a>
+      <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
+      <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
       <div class="copyright">
         <ul>
-          <li><a href="javascript:void();">用户协议</a></li>
-          <li><a href="javascript:void();">营业执照</a></li>
-          <li><a href="javascript:void();">隐私政策</a></li>
-          <li><a href="javascript:void();">关于我们</a></li>
+          <li><a href="javascript:void(0)">用户协议</a></li>
+          <li><a href="javascript:void(0)">营业执照</a></li>
+          <li><a href="javascript:void(0)">隐私政策</a></li>
+          <li><a href="javascript:void(0)">关于我们</a></li>
         </ul>
         <ul>
-          <li><a href="javascript:void();">站点地图</a></li>
-          <li><a href="javascript:void();">使用指南</a></li>
-          <li><a href="javascript:void();">友情链接</a></li>
-          <li><a href="javascript:void();">关于文章</a></li>
+          <li><a href="javascript:void(0)">站点地图</a></li>
+          <li><a href="javascript:void(0)">使用指南</a></li>
+          <li><a href="javascript:void(0)">友情链接</a></li>
+          <li><a href="javascript:void(0)">关于文章</a></li>
         </ul>
         <ul>
-          <li><a href="javascript:void();">京ICP备xxx号</a></li>
-          <li><a href="javascript:void();">&copy;2023 觉金</a></li>
+          <li><a href="javascript:void(0)">京ICP备xxx号</a></li>
+          <li><a href="javascript:void(0)">&copy;2023 觉金</a></li>
         </ul>
         <div class="pop" v-if="showPop">
-          <a class="tbaru" href="javascript:void();">我的广告位，便宜又大碗</a>
-          <a class="tbaru" href="javascript:void();">我的广告位，便宜又大碗</a>
+          <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
+          <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
         </div>
       </div>
     </div>
