@@ -5,12 +5,13 @@
         <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
         <el-tab-pane label="最新" name="news"></el-tab-pane>
       </el-tabs>
-      <el-skeleton :rows="5" :loading="loading" animated style="background-color: #fff" />
-      <ArticleList
-        v-for="al in articleList"
-        :key="al.id"
-        :article="al"
-      ></ArticleList>
+      <el-skeleton
+        :rows="5"
+        :loading="loading"
+        animated
+        style="background-color: #fff; padding: 20px 40px"
+      />
+      <ArticleList v-for="al in articleList" :key="al.id" :article="al"></ArticleList>
     </div>
     <div class="sidebar">
       <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
@@ -79,14 +80,15 @@ let loadingMore = proxy.$throttle(() => {
   }
   showPop.value = scrollTop >= 400
 })
-watch([() => route.params, activeName], async () => {
+let reload = async () => {
   if (route.params.type != 'follow') {
     page = 1
     await initList()
   } else {
     articleList.length = 0
   }
-})
+}
+watch([() => route.params, activeName], reload)
 
 onMounted(async () => {
   window.addEventListener('scroll', loadingMore)

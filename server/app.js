@@ -8,7 +8,7 @@ let { expressjwt: jwt } = require('express-jwt')
 const config = require('./config')
 
 const app = express()
-app.disable('etag');
+app.disable('etag')
 app.use((req, res, next) => {
   /**
    *
@@ -35,22 +35,23 @@ app.use(
   jwt({
     secret: config.jwtSecretKey,
     algorithms: ['HS256']
-  }).unless({ path: [/^\/api\//,/^\/article\//] })
+  }).unless({ path: [/^\/api\//, /^\/article\//] })
 )
 
 let userRouter = require('./routes/user')
 app.use('/api', userRouter)
 let userinfoRouter = require('./routes/userinfo')
 app.use('/my', userinfoRouter)
-let articleRouter=require('./routes/article.js')
-app.use('/article',articleRouter)
+let articleRouter = require('./routes/article.js')
+app.use('/article', articleRouter)
 
 // error handler
 app.use((err, req, res, next) => {
   // 身份认证失败后的错误
-  if (err.name === 'UnauthorizedError') return res.cc('登录超时，请重新登录！',401)
+  if (err.name === 'UnauthorizedError')
+    return res.cc('登录超时，请重新登录！', 401)
   // 未知的错误
-  if(err) res.cc(err)
+  if (err) res.cc(err)
 })
 
 module.exports = app

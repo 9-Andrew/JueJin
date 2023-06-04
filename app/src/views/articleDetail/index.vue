@@ -14,7 +14,12 @@
           </div>
         </div>
         <div class="article_body">
-          {{ articleInfo.content }}
+          <MdPreview
+            :editorId="id"
+            :modelValue="articleInfo.content"
+            :showCodeRowNumber="true"
+            @onGetCatalog="onGetCatalog"
+          />
         </div>
         <div class="article_end">
           <span class="tag_title">分类:</span>
@@ -44,13 +49,14 @@
           <el-button type="default">私信</el-button>
         </div>
       </div>
-      <div class="article_catalog" :class="{ fixed: isFixed }" ref="catalog">
-        <div class="catalog_title">目录</div>
+      <div v-if="isShowCatalog" class="article_catalog" :class="{ fixed: isFixed }" ref="catalog">
+        <div class="title_box"><div class="catalog_title">目录</div></div>
+        <MdCatalog :editorId="id" :scrollElement="scrollElement" />
       </div>
     </div>
   </div>
   <div class="article_suspend_panel">
-    <el-badge v-show="!isImmerse" type="info" :value="articleInfo.like_num">
+    <el-badge v-show="!isImmerse" type="info" :value="articleInfo.like_num" :max="99999">
       <div class="circle">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-dianzan1"></use>
@@ -93,6 +99,12 @@
 import { ref, reactive, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
 import { getArticleDetail, getArticleTags } from '@/api/article.js'
+import { MdPreview, MdCatalog } from 'md-editor-v3'
+// preview.css相比style.css少了编辑器那部分样式
+import 'md-editor-v3/lib/preview.css'
+const id = 'preview-only'
+const scrollElement = document.documentElement
+
 // TODO 点赞功能
 let articleInfo = reactive({})
 let tags = reactive([])
@@ -100,10 +112,14 @@ const route = useRoute()
 const isFixed = ref(false)
 const { proxy } = getCurrentInstance()
 const isImmerse = ref(false)
+const isShowCatalog = ref(false)
 let handleScroll = proxy.$throttle(() => {
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop
   isFixed.value = scrollTop > 130
 })
+function onGetCatalog(list) {
+  isShowCatalog.value = list.length > 0
+}
 
 onMounted(async () => {
   let result = await getArticleDetail(route.params.id)
@@ -206,10 +222,35 @@ onBeforeUnmount(() => {
     .article_catalog {
       border-radius: var(--box-radius);
       background-color: #fff;
-      padding: 0 20px;
-      .catalog_title {
-        padding: 16px 0;
-        border-bottom: 1px solid #e4e6eb;
+      .title_box {
+        padding: 0 20px;
+        .catalog_title {
+          padding: 16px 0px;
+          border-bottom: 1px solid #e4e6eb;
+        }
+      }
+      .md-editor-catalog {
+        padding: 12px;
+        margin-right: 5px;
+        overflow: auto;
+        max-height: 600px;
+        &::-webkit-scrollbar {
+          width: 6px; /* 滚动条宽度 */
+        }
+
+        &::-webkit-scrollbar-track {
+          background-color: #fff; /* 滚动条背景颜色 */
+          border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: #e4e6eb; /* 滚动条滑块颜色 */
+          border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+          background-color: #e4e6eb; /* 滚动条滑块悬停时颜色 */
+        }
       }
     }
     .fixed {

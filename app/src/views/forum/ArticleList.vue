@@ -1,4 +1,4 @@
-<template>
+z<template>
   <div class="item" @click="router.push(`/article_detail/${article.id}`)">
     <div class="meta_container">
       <a @click.stop="router.push(`/user/${article.user_id}`)">{{

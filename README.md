@@ -5,7 +5,7 @@
 ## 预览
 
 ## 技术栈
-* 前端：Vue3 + vite + vue-router + pinia + Element-Plus
+* 前端：Vue3 + vite + vue-router + pinia + Element-Plus + md-editor-v3
 * 后端：Node + express + mysql
 
 ## 快速开始
@@ -30,9 +30,8 @@
 - [X] 文章列表渲染
 - [X] 文章详情
 - [ ] 评论功能
-- [ ] 支持 markdown
+- [X] 支持 markdown
 - [ ] 文章的发表
-- [ ] 富文本框编辑
 - [ ] 个人中心
 - [ ] 头像上传
 
