@@ -19,14 +19,23 @@ const router = createRouter({
           component: () => import('@/views/forum/index.vue')
         },
         {
-          path: 'article_detail/:id',
-          component: () => import('@/views/articleDetail/index.vue'),
+          path: 'detail/:id',
+          component: () => import('@/views/detail/index.vue')
+        },
+        {
+          path: 'tag/:id',
+          component: () => import('@/views/TagArticle/index.vue')
+        },
+        {
+          path: 'user/:id',
+          component: () => import('@/views/user/index.vue')
         }
       ]
     },
+    { path: '/editor', component: () => import('@/views/editor/index.vue') },
     {
       path: '/404',
-      component: () => import('@/views/404.vue')
+      component: () => import('@/views/404/index.vue')
     },
     {
       path: '/:catchAll(.*)',

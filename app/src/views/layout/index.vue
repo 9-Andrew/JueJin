@@ -18,15 +18,12 @@
             </li>
           </ul>
         </el-col>
-        <el-col :span="6" class="flexContainer"
-          ><el-input v-model="input1" class="search" placeholder="搜索" :suffix-icon="Search" />
+        <el-col :span="6" class="flexContainer"><el-input v-model="input1" class="search" placeholder="搜索"
+            :suffix-icon="Search" />
         </el-col>
         <el-col :span="4" class="flexContainer" :offset="2">
-          <el-button type="primary" @click="writeArticle">写文章</el-button>
-          <el-button v-if="!username" type="default" @click="loginDialogVisible = true"
-            >登录 | 注册</el-button
-          >
-
+          <el-button type="primary" @click="writeArticle" :disabled="!username" >写文章</el-button>
+          <el-button v-if="!username" type="default" @click="loginDialogVisible = true">登录 | 注册</el-button>
           <div v-else class="userInfo">
             <el-dropdown>
               <el-badge :value="2" class="item">
@@ -50,28 +47,17 @@
                 <el-dropdown-menu>
                   <el-dropdown-item>我的主页</el-dropdown-item>
                   <el-dropdown-item>
-                    <el-popconfirm
-                      width="220"
-                      confirm-button-text="确认"
-                      cancel-button-text="取消"
-                      :icon="InfoFilled"
-                      icon-color="#626AEF"
-                      title="确定登出吗？"
-                      @confirm="logout"
-                    >
+                    <el-popconfirm width="220" confirm-button-text="确认" cancel-button-text="取消" :icon="InfoFilled"
+                      icon-color="#626AEF" title="确定登出吗？" @confirm="logout">
                       <template #reference>退出登录</template>
-                    </el-popconfirm></el-dropdown-item
-                  >
+                    </el-popconfirm></el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
           </div>
-          <teleport to="body"
-            ><LoginDialog
-              v-model:loginDialogVisible="loginDialogVisible"
-              @initUserInfo="initUserInfo"
-            ></LoginDialog
-          ></teleport>
+          <teleport to="body">
+            <LoginDialog v-model:loginDialogVisible="loginDialogVisible" @initUserInfo="initUserInfo"></LoginDialog>
+          </teleport>
         </el-col>
       </el-row>
     </el-header>
@@ -81,9 +67,7 @@
     </el-main>
   </el-container>
   <div id="go_top" v-if="!route.meta.hiddenGoTop && isShowGoTop" @click="goTop">
-    <svg class="icon" aria-hidden="true">
-      <use xlink:href="#icon-back-top1_fill"></use>
-    </svg>
+    <SvgIcon name="back-top1_fill"></SvgIcon>
   </div>
 </template>
 
@@ -91,8 +75,8 @@
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router'
 import { ref, onMounted, onBeforeUnmount, reactive, getCurrentInstance, computed } from 'vue'
 import { Search } from '@element-plus/icons-vue'
-import LoginDialog from '@/views/layout/LoginDialog.vue'
-import { useUserInfo } from '@/stores/index.js'
+import LoginDialog from '@/views/layout/LoginDialog/index.vue'
+import { useUserInfo } from '@/store/user'
 import { getUserInfo } from '@/api/userinfo.js'
 import { getArticleType } from '@/api/article.js'
 import { InfoFilled } from '@element-plus/icons-vue'
@@ -173,13 +157,16 @@ function goTop() {
   transition: top;
   width: 100%;
   z-index: 999;
+
   .navbar {
     margin: 0 auto;
   }
+
   .flexContainer {
     display: flex;
     align-items: center;
     justify-content: space-around;
+
     .logo {
       background: url('@/assets/logo.png') no-repeat;
       background-size: contain;
@@ -187,19 +174,23 @@ function goTop() {
       width: 100%;
     }
   }
+
   .nav {
     display: flex;
     padding: 0 200px 0 40px;
     text-align: center;
     height: 100%;
     line-height: 60px;
+
     li {
       flex: auto;
       position: relative;
+
       a {
         color: #000;
         display: block;
       }
+
       &:hover {
         &::after {
           content: '';
@@ -213,20 +204,25 @@ function goTop() {
       }
     }
   }
+
   .search {
     margin: auto;
   }
 }
+
 .el-main {
   margin: 60px auto 12px;
   padding: 0;
 }
+
 .el-row {
   height: 100%;
 }
+
 .el-row:last-child {
   margin-bottom: 0;
 }
+
 .el-col {
   border-radius: 4px;
 }
@@ -235,26 +231,33 @@ function goTop() {
   border-radius: 4px;
   min-height: 60px;
 }
+
 .el-button--primary {
   width: 130px;
 }
+
 .userInfo {
   display: flex;
   align-items: center;
+
   .el-dropdown {
     margin: 0 18px;
+
     .el-badge,
     .el-avatar {
       cursor: pointer;
     }
   }
 }
+
 .HideHeader {
   top: -60px;
 }
+
 .main {
   padding-top: 15px;
 }
+
 #go_top {
   position: fixed;
   right: 24px;
@@ -268,8 +271,8 @@ function goTop() {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+
   .icon {
     fill: #8a919f;
   }
-}
-</style>
+}</style>

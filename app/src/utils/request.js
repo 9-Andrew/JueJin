@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import { useUserInfo } from '@/stores/index'
+import { useUserInfo } from '@/store/user'
 
 let service = axios.create({
   baseURL: 'http://localhost:3000',

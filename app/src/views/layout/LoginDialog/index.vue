@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog v-model="loginDialogVisible" title="登录掘金畅享更多权益" width="24%" center>
+    <el-dialog v-model="loginDialogVisible" title="登录觉金畅享更多权益" width="24%" center>
       <el-form>
         <el-form-item>
           <el-input v-model="username" placeholder="用户名" clearable></el-input>
@@ -19,26 +19,17 @@
             <ul v-show="isLogin">
               <li>其他登录：</li>
               <li>
-                <svg class="icon" aria-hidden="true">
-                  <use xlink:href="#icon-github"></use>
-                </svg>
+                <SvgIcon name="github"></SvgIcon>
               </li>
               <li>
-                <svg class="icon" aria-hidden="true">
-                  <use xlink:href="#icon-weixin"></use>
-                </svg>
+                <SvgIcon name="weixin"></SvgIcon>
               </li>
               <li>
-                <svg class="icon" aria-hidden="true">
-                  <use xlink:href="#icon-weibo"></use>
-                </svg>
+                <SvgIcon name="weibo"></SvgIcon>
               </li>
             </ul>
           </span>
-          <span @click="isLogin = !isLogin" style="cursor: pointer"
-            >立即{{ linkTitle }}</span
-          ></el-form-item
-        >
+          <span @click="isLogin = !isLogin" style="cursor: pointer">立即{{ linkTitle }}</span></el-form-item>
       </el-form>
       <div class="policy">
         注册登录即表示同意 <a href="javascript:void(0)">用户协议</a> 和
@@ -108,12 +99,14 @@ function reset() {
   border-bottom: 1px solid #f1f2f5;
   margin: 0;
 }
+
 .el-button--primary {
   //需要更改的按钮类型 type='primary'
   background: var(--theme-color) !important;
   border-color: var(--theme-color) !important;
   width: 100%;
 }
+
 //移入时按钮样式 type='primary'
 .el-button--primary:hover {
   background: #0e5bc0 !important;
@@ -121,18 +114,23 @@ function reset() {
   color: #fff !important;
   opacity: 0.8;
 }
+
 :deep(.el-dialog__body) {
   padding: 25px calc(var(--el-dialog-padding-primary) + 70px) 30px !important;
 }
+
 .loginMethod {
   :deep(.el-form-item__content) {
     justify-content: space-between;
+
     ul {
       display: flex;
       padding: 0;
+
       li {
         display: flex;
         align-items: center;
+
         svg {
           cursor: pointer;
           margin: 0 3px;
@@ -141,8 +139,8 @@ function reset() {
     }
   }
 }
+
 .policy {
   text-align: center;
   color: #8a919f;
-}
-</style>
+}</style>

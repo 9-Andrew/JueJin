@@ -5,13 +5,8 @@
         <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
         <el-tab-pane label="最新" name="news"></el-tab-pane>
       </el-tabs>
-      <el-skeleton
-        :rows="5"
-        :loading="loading"
-        animated
-        style="background-color: #fff; padding: 20px 40px"
-      />
-      <ArticleList v-for="al in articleList" :key="al.id" :article="al"></ArticleList>
+      <el-skeleton :rows="5" :loading="loading" animated style="background-color: #fff; padding: 20px 40px" />
+      <ArticleItem v-for="al in articleList" :key="al.id" :article="al"></ArticleItem>
     </div>
     <div class="sidebar">
       <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
@@ -45,7 +40,7 @@
 <script setup>
 import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import ArticleList from './ArticleList.vue'
+import ArticleItem from './ArticleItem/index.vue'
 import { getArticle } from '@/api/article.js'
 
 let page = 1
@@ -91,7 +86,7 @@ let reload = async () => {
 watch([() => route.params, activeName], reload)
 
 onMounted(async () => {
-  window.addEventListener('scroll', loadingMore)
+  window.addEventListener('scroll', loadingMore, { passive: true })
   await initList()
 })
 onBeforeUnmount(() => {
@@ -105,23 +100,30 @@ onBeforeUnmount(() => {
   display: flex;
   margin: 0 auto;
   justify-content: space-around;
+
   .content {
     width: 1000px;
+
     :deep(.demo-tabs) {
       width: 100%;
       background: #fff;
       border-radius: var(--box-radius);
+
       .el-tabs__header {
         margin: 0;
+
         .el-tabs__nav-wrap {
           padding: 6px 19px 0;
-          .el-tabs__nav > .el-tabs__item {
+
+          .el-tabs__nav>.el-tabs__item {
             font-size: 16px;
             padding: 0 20px;
+
             &.is-active {
               color: var(--theme-color) !important;
             }
           }
+
           .el-tabs__active-bar {
             background: var(--theme-color);
           }
@@ -129,8 +131,10 @@ onBeforeUnmount(() => {
       }
     }
   }
+
   .sidebar {
     width: 250px;
+
     a.tbaru {
       margin-bottom: 18px;
       width: 250px;
@@ -144,26 +148,31 @@ onBeforeUnmount(() => {
       font-weight: bold;
       text-align: center;
     }
+
     a.tbaru:hover {
       border-color: #666;
       color: #444;
     }
+
     @media (max-width: 640px) {
       a.tbaru {
         font-size: 12px;
         padding: 25px 15px;
       }
     }
+
     .copyright {
       ul {
         display: flex;
         justify-content: space-around;
         padding: 0;
+
         a {
           font-size: 12px;
           color: #8a919f;
         }
       }
+
       .pop {
         position: fixed;
         top: 70px;
@@ -171,7 +180,7 @@ onBeforeUnmount(() => {
     }
   }
 }
+
 .el-skeleton {
   padding-top: 14px;
-}
-</style>
+}</style>

@@ -8,7 +8,5 @@ const config = reactive({
 </script>
 
 <template>
-  <el-config-provider :locale="locale" :message="config"
-    ><router-view></router-view
-  ></el-config-provider>
+  <el-config-provider :locale="locale" :message="config"><router-view></router-view></el-config-provider>
 </template>

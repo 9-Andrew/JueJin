@@ -58,38 +58,28 @@
   <div class="article_suspend_panel">
     <el-badge v-show="!isImmerse" type="info" :value="articleInfo.like_num" :max="99999">
       <div class="circle">
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-dianzan1"></use>
-        </svg>
+        <SvgIcon name="dianzan1"></SvgIcon>
       </div>
     </el-badge>
     <el-badge v-show="!isImmerse" type="info" value="0">
       <div class="circle">
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-pinglun1"></use>
-        </svg>
+        <SvgIcon name="pinglun1"></SvgIcon>
       </div>
     </el-badge>
     <el-badge v-show="!isImmerse" type="info" value="0">
       <div class="circle">
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-shoucang"></use>
-        </svg>
+        <SvgIcon name="shoucang"></SvgIcon>
       </div>
     </el-badge>
     <el-badge v-show="!isImmerse" type="info">
       <div class="circle">
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-fenxiang"></use>
-        </svg>
+        <SvgIcon name="fenxiang"></SvgIcon>
       </div>
     </el-badge>
     <el-badge v-show="!isImmerse"> <el-divider></el-divider></el-badge>
     <el-badge type="info">
       <div class="circle" @click="isImmerse = !isImmerse">
-        <svg class="icon jujiao" :class="{ focus: isImmerse }" aria-hidden="true">
-          <use xlink:href="#icon-jujiao1"></use>
-        </svg>
+        <SvgIcon name="jujiao1" class="icon jujiao" :class="{ focus: isImmerse }"></SvgIcon>
       </div>
     </el-badge>
   </div>
