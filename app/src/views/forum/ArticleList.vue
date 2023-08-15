@@ -1,4 +1,5 @@
-z<template>
+z
+<template>
   <div class="item" @click="router.push(`/article_detail/${article.id}`)">
     <div class="meta_container">
       <a @click.stop="router.push(`/user/${article.user_id}`)">{{
@@ -18,7 +19,7 @@ z<template>
     <div class="content_container">
       <div class="content_main">
         <div class="title">{{ article.title }}</div>
-        <div class="article_content">{{ article.content }}</div>
+        <div class="article_content">{{ md.render(article.content).replace(/<[^>]+>/g, '') }}</div>
         <ul class="action_list">
           <li>
             <a @click.stop="">
@@ -57,11 +58,13 @@ z<template>
 import { onMounted, reactive, getCurrentInstance } from 'vue'
 import { getArticleTags } from '@/api/article.js'
 import { useRouter } from 'vue-router'
+import MarkdownIt from 'markdown-it'
 
 const { proxy } = getCurrentInstance()
 let props = defineProps(['article'])
 let router = useRouter()
 let tags = reactive([])
+const md = new MarkdownIt()
 
 onMounted(async () => {
   const result = await getArticleTags(props.article.id)
