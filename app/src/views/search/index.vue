@@ -20,15 +20,15 @@
       <el-empty v-if="store.resultList.length == 0" description="暂无内容"></el-empty>
       <div v-else>
         <div class="article-container" v-if="store.categoryParams != 2">
-          <ArticleItem v-for="rl in store.resultList" :key="rl.id" :article="rl"></ArticleItem>
+          <ArticleItem v-for="rl in store.resultList" :key="rl.id" :article="rl" :keyWords="store.keyWords"></ArticleItem>
         </div>
         <div class="user-container" v-else>
           //TODO 用户列表
           {{ store.resultList }}
         </div>
-        <el-pagination v-model:current-page="pageNo" v-model:page-size="limit" background :page-sizes="[10, 20, 30]"
-          layout=" prev, pager, next, jumper,->,sizes,total" :total="store.total" @current-change="getData(pageNo, limit)"
-          @size-change="getData(pageNo, limit)" />
+        <el-pagination v-model:current-page="store.pageNo" v-model:page-size="limit" background :page-sizes="[10, 20, 30]"
+          layout=" prev, pager, next, jumper,->,sizes,total" :total="store.total"
+          @current-change="store.getData(store.pageNo, limit)" @size-change="store.getData(store.pageNo, limit)" />
       </div>
     </div>
   </div>
@@ -41,7 +41,6 @@ import ArticleItem from '@/views/forum/ArticleItem/index.vue';
 
 const category = ['综合', '文章', '用户']
 const sort = ['综合排序', '最新优先', '最热优先']
-const pageNo = ref(1)
 const limit = ref(20)
 const isTeleportReady = ref(false)
 const store = useSearchStore()

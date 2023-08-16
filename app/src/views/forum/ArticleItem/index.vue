@@ -11,8 +11,9 @@
     </div>
     <div class="content_container">
       <div class="content_main">
-        <div class="title">{{ article.title }}</div>
-        <div class="article_content">{{ md.render(article.content).replace(/<[^>]+>/g, '') }}</div>
+        <div class="title" v-html="keyWords ? highLight(article.title) : parseText(article.title)"></div>
+        <div class="article_content" v-html="keyWords ? highLight(article.content) : parseText(article.content)">
+        </div>
         <ul class="action_list">
           <li>
             <a @click.stop="">
@@ -48,11 +49,18 @@ import { useRouter } from 'vue-router'
 import MarkdownIt from 'markdown-it'
 
 const { proxy } = getCurrentInstance()
-let props = defineProps(['article'])
+let props = defineProps(['article', 'keyWords'])
 let router = useRouter()
 let tags = reactive([])
-const md = new MarkdownIt()
 
+const parseText = (original) => {
+  // 将 Markdown 文本转换为纯文本内容，去除其中的所有 HTML 标签，只保留纯文本部分
+  return new MarkdownIt().render(original).replace(/<[^>]+>/g, '')
+}
+const highLight = (text) => {
+  let reg = new RegExp(props.keyWords, "gi")
+  return parseText(text).replace(reg, `<span style='color:red;font-weight:bolder;'>${props.keyWords}</span>`)
+}
 onMounted(async () => {
   const result = await getArticleTags(props.article.id)
   result.data && tags.push(...result.data)

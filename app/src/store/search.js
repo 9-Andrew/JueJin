@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 const useSearchStore = defineStore('search', {
   state() {
     return {
+      pageNo: 1,
       categoryParams: 0,
       sortParams: 0,
       keyWords: useRoute().query.keyWords,
@@ -30,12 +31,14 @@ const useSearchStore = defineStore('search', {
         this.loading = false
       }, 400)
     },
-    setCategoryParams(value){
-      this.categoryParams=value
+    setCategoryParams(value) {
+      this.categoryParams = value
+      this.pageNo = 1
       this.getData()
     },
-    setSortParams(value){
-      this.sortParams=value
+    setSortParams(value) {
+      this.sortParams = value
+      this.pageNo = 1
       this.getData()
     }
   }

@@ -156,6 +156,7 @@ function goTop() {
 function search() {
   if (searchStore.keyWords) {
     router.push(`/search?keyWords=${searchStore.keyWords}`)
+    searchStore.pageNo = 1
     searchStore.getData()
   }
   searchInput.value.blur()
