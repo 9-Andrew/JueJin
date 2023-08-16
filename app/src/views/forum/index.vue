@@ -5,12 +5,14 @@
         <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
         <el-tab-pane label="最新" name="news"></el-tab-pane>
       </el-tabs>
-      <el-skeleton :rows="5" :loading="loading" animated style="background-color: #fff; padding: 20px 40px" />
+      <el-skeleton :rows="5" :loading="loading" animated />
       <ArticleItem v-for="al in articleList" :key="al.id" :article="al"></ArticleItem>
     </div>
     <div class="sidebar">
-      <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
-      <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
+      <div class="advertise" :class="{ fixed: isFix }">
+        <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
+        <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
+      </div>
       <div class="copyright">
         <ul>
           <li><a href="javascript:void(0)">用户协议</a></li>
@@ -28,10 +30,6 @@
           <li><a href="javascript:void(0)">京ICP备xxx号</a></li>
           <li><a href="javascript:void(0)">&copy;2023 觉金</a></li>
         </ul>
-        <div class="pop" v-if="showPop">
-          <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
-          <a class="tbaru" href="javascript:void(0)">我的广告位，便宜又大碗</a>
-        </div>
       </div>
     </div>
   </div>
@@ -50,7 +48,7 @@ const loading = ref(true)
 const { proxy } = getCurrentInstance()
 let articleList = reactive([])
 let route = useRoute()
-let showPop = ref(false)
+let isFix = ref(false)
 
 const initList = async (isPush) => {
   isPush || ((loading.value = true) && (articleList.length = 0))
@@ -61,8 +59,8 @@ const initList = async (isPush) => {
     activeName.value === 'recommend' ? 0 : 1
   )
   setTimeout(() => {
-    loading.value = false
     articleList.push(...result.data)
+    loading.value = false
   }, 400)
 }
 let loadingMore = proxy.$throttle(() => {
@@ -73,7 +71,7 @@ let loadingMore = proxy.$throttle(() => {
     page++
     initList(true)
   }
-  showPop.value = scrollTop >= 400
+  isFix.value = scrollTop >= 400
 })
 let reload = async () => {
   if (route.params.type != 'follow') {
@@ -135,29 +133,34 @@ onBeforeUnmount(() => {
   .sidebar {
     width: 250px;
 
-    a.tbaru {
-      margin-bottom: 18px;
-      width: 250px;
-      border: 2px dashed #aaa;
-      padding: 40px 15px;
-      font-size: 14px;
-      background-color: #fff;
-      display: block;
-      text-decoration: none;
-      color: #888;
-      font-weight: bold;
-      text-align: center;
-    }
+    .advertise {
+      transition: top .3s;
+      top: 0;
 
-    a.tbaru:hover {
-      border-color: #666;
-      color: #444;
-    }
-
-    @media (max-width: 640px) {
       a.tbaru {
-        font-size: 12px;
-        padding: 25px 15px;
+        margin-bottom: 18px;
+        width: 250px;
+        border: 2px dashed #aaa;
+        padding: 40px 15px;
+        font-size: 14px;
+        background-color: #fff;
+        display: block;
+        text-decoration: none;
+        color: #888;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      a.tbaru:hover {
+        border-color: #666;
+        color: #444;
+      }
+
+      @media (max-width: 1300px) {
+        a.tbaru {
+          font-size: 12px;
+          padding: 25px 15px;
+        }
       }
     }
 
@@ -172,15 +175,12 @@ onBeforeUnmount(() => {
           color: #8a919f;
         }
       }
+    }
 
-      .pop {
-        position: fixed;
-        top: 70px;
-      }
+    .fixed {
+      position: fixed;
+      top: 70px;
     }
   }
 }
-
-.el-skeleton {
-  padding-top: 14px;
-}</style>
+</style>

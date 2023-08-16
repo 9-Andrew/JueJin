@@ -35,15 +35,17 @@ app.use(
   jwt({
     secret: config.jwtSecretKey,
     algorithms: ['HS256']
-  }).unless({ path: [/^\/api\//, /^\/article\//] })
+  }).unless({ path: [/^\/api\//, /^\/article\//, /^\/search\//] })
 )
 
 let userRouter = require('./routes/user')
 app.use('/api', userRouter)
 let userinfoRouter = require('./routes/userinfo')
 app.use('/my', userinfoRouter)
-let articleRouter = require('./routes/article.js')
+let articleRouter = require('./routes/article')
 app.use('/article', articleRouter)
+let searchRouter = require('./routes/search')
+app.use('/search', searchRouter)
 
 // error handler
 app.use((err, req, res, next) => {

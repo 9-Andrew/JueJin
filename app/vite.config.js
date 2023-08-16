@@ -27,10 +27,6 @@ export default defineConfig({
       less: {
         math: 'always', // 括号内才使用数学计算
         javascriptEnabled: true, // 如果需要在 LESS 中使用 JavaScript 特性，设置为 true
-        globalVars: {
-          // 全局变量
-          mainColor: '#1e80ff'
-        }
       }
     }
   }

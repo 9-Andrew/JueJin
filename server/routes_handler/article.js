@@ -20,7 +20,7 @@ exports.getArticleList = (req, res) => {
    * recommendType 0表示推荐，1表示最新
    */
   let { page, limit, type, recommendType } = req.query
-
+  
   let sql = `select article.id,user.nickname,user.username,title,content,cover,name AS 'article_type',view_num,like_num,article.create_time,user.id AS user_id from article
   inner join article_type on article.type_id=article_type.id
   inner join user on article.user_id=user.id\n`
@@ -33,7 +33,6 @@ exports.getArticleList = (req, res) => {
       : 'ORDER BY article.create_time DESC'
 
   sql += `\nlimit ${(page - 1) * limit},${limit};`
-  console.log(sql)
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('没有更多了！', 2)

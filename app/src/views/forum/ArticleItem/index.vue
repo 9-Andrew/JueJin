@@ -1,4 +1,3 @@
-z
 <template>
   <div class="item" @click="router.push(`/detail/${article.id}`)">
     <div class="meta_container">
@@ -36,7 +35,7 @@ z
         </ul>
       </div>
       <div class="cover">
-        <el-image src="http://localhost:3000/images/default.png"></el-image>
+        <el-image src="http://localhost:3000/images/default.png" fit="contain" :lazy="true"></el-image>
       </div>
     </div>
   </div>
@@ -118,6 +117,7 @@ a {
     display: flex;
     border-bottom: 1px solid rgba(228, 230, 235, 0.5);
     padding-bottom: 10px;
+    max-height: 100px;
 
     .content_main {
       display: flex;
@@ -127,7 +127,7 @@ a {
       .title {
         font-weight: bolder;
         font-size: 16px;
-        padding: 5px 0;
+        padding-top: 5px;
       }
 
       .article_content {
@@ -158,11 +158,12 @@ a {
 
     .cover {
       flex-shrink: 0;
-      width: 120px;
+      width: 140px;
       margin-left: 60px;
 
       .el-image {
         border-radius: 3px;
+        height: 100%;
       }
     }
   }

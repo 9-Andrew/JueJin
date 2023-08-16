@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-export const useUserInfo = defineStore('user', {
+
+const useUserInfoStore = defineStore('user', {
   state() {
     return {
       userInfo: {}
@@ -16,3 +17,4 @@ export const useUserInfo = defineStore('user', {
     }
   }
 })
+export default useUserInfoStore

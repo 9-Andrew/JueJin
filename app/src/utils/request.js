@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import { useUserInfo } from '@/store/user'
+import useUserInfoStore from '@/store/user'
 
 let service = axios.create({
   baseURL: 'http://localhost:3000',
@@ -22,7 +22,7 @@ service.interceptors.response.use(
       if (status === 401) {
         if (localStorage.getItem('Token')) {
           ElMessage.error(message)
-          let store = useUserInfo()
+          let store = useUserInfoStore()
           store.$reset()
           localStorage.clear()
         }
@@ -41,6 +41,7 @@ service.interceptors.response.use(
     }
   },
   (err) => {
+    ElMessage.error(err)
     return Promise.reject(err)
   }
 )

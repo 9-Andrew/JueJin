@@ -18,11 +18,16 @@
             </li>
           </ul>
         </el-col>
-        <el-col :span="6" class="flexContainer"><el-input v-model="input1" class="search" placeholder="搜索"
-            :suffix-icon="Search" />
+        <el-col :span="6" class="flexContainer">
+          <el-input v-model="searchStore.keyWords" ref="searchInput" placeholder="搜索" clearable @focus="isFocus = true"
+            @blur="isFocus = false" @keyup.enter="search">
+            <template #append>
+              <el-button :type="isFocus ? 'default' : ''" icon="Search" @click="search" />
+            </template>
+          </el-input>
         </el-col>
         <el-col :span="4" class="flexContainer" :offset="2">
-          <el-button type="primary" @click="writeArticle" :disabled="!username" >写文章</el-button>
+          <el-button type="primary" @click="writeArticle" :disabled="!username">写文章</el-button>
           <el-button v-if="!username" type="default" @click="loginDialogVisible = true">登录 | 注册</el-button>
           <div v-else class="userInfo">
             <el-dropdown>
@@ -47,7 +52,7 @@
                 <el-dropdown-menu>
                   <el-dropdown-item>我的主页</el-dropdown-item>
                   <el-dropdown-item>
-                    <el-popconfirm width="220" confirm-button-text="确认" cancel-button-text="取消" :icon="InfoFilled"
+                    <el-popconfirm width="220" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
                       icon-color="#626AEF" title="确定登出吗？" @confirm="logout">
                       <template #reference>退出登录</template>
                     </el-popconfirm></el-dropdown-item>
@@ -74,24 +79,26 @@
 <script setup>
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router'
 import { ref, onMounted, onBeforeUnmount, reactive, getCurrentInstance, computed } from 'vue'
-import { Search } from '@element-plus/icons-vue'
 import LoginDialog from '@/views/layout/LoginDialog/index.vue'
-import { useUserInfo } from '@/store/user'
+import useUserInfoStore from '@/store/user'
+import useSearchStore from '@/store/search';
 import { getUserInfo } from '@/api/userinfo.js'
 import { getArticleType } from '@/api/article.js'
-import { InfoFilled } from '@element-plus/icons-vue'
 
 // TODO 首页刷新
-const input1 = ref('')
 const loginDialogVisible = ref(false)
 const isHideHeader = ref(false)
 const articleType = reactive([])
-const store = useUserInfo()
+const userInfostore = useUserInfoStore()
+const searchStore = useSearchStore()
 const { proxy } = getCurrentInstance()
-let username = computed(() => store.userInfo.username)
+const searchInput = ref()
+let username = computed(() => userInfostore.userInfo.username)
 let router = useRouter()
 let route = useRoute()
 let isShowGoTop = ref(false)
+let isFocus = ref(false)
+
 
 // 获取滚动条高度
 function getScrollTop() {
@@ -121,13 +128,13 @@ onBeforeUnmount(() => {
 async function initUserInfo() {
   if (localStorage.getItem('Token')) {
     let { data } = await getUserInfo()
-    store.setUserInfo(data)
+    userInfostore.setUserInfo(data)
   }
 }
 
 function logout() {
   localStorage.clear()
-  store.$reset()
+  userInfostore.$reset()
 }
 
 async function initArticleType() {
@@ -146,6 +153,13 @@ function writeArticle() {
 function goTop() {
   scrollTo(0, 0)
 }
+function search() {
+  if (searchStore.keyWords) {
+    router.push(`/search?keyWords=${searchStore.keyWords}`)
+    searchStore.getData()
+  }
+  searchInput.value.blur()
+}
 </script>
 
 <style lang="less" scoped>
@@ -154,7 +168,7 @@ function goTop() {
   position: fixed;
   top: 0;
   left: 0;
-  transition: top;
+  transition: top .3s;
   width: 100%;
   z-index: 999;
 
@@ -197,7 +211,7 @@ function goTop() {
           display: block;
           width: 100%;
           height: 3px;
-          background-color: @mainColor;
+          background-color: var(--theme-color);
           position: absolute;
           transform: translateY(-100%);
         }
@@ -275,4 +289,5 @@ function goTop() {
   .icon {
     fill: #8a919f;
   }
-}</style>
+}
+</style>
