@@ -71,7 +71,7 @@ let loadingMore = proxy.$throttle(() => {
     page++
     initList(true)
   }
-  isFix.value = scrollTop >= 400
+  isFix.value = scrollTop >= 500
 })
 let reload = async () => {
   if (route.params.type != 'follow') {
@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
     width: 250px;
 
     .advertise {
-      transition: top .3s;
+      transition: top .4s;
       top: 0;
 
       a.tbaru {

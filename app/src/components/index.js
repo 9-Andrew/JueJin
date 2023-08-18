@@ -1,7 +1,8 @@
 import SvgIcon from './SvgIcon/index.vue'
+import CustomedAvatar from './CustomedAvatar/index.vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
-const components = { SvgIcon }
+const components = { SvgIcon, CustomedAvatar }
 
 export default {
   install(app) {

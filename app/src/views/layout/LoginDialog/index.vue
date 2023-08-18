@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-dialog v-model="loginDialogVisible" title="登录觉金畅享更多权益" width="24%" center>
+    <el-dialog v-model="loginDialogVisible" title="登录觉金畅享更多权益" width="24%" center @opened="addEventListener"
+      @closed="removeEventListener">
       <el-form>
         <el-form-item>
           <el-input v-model="username" placeholder="用户名" clearable></el-input>
@@ -46,6 +47,11 @@ import { ElMessage } from 'element-plus'
 // 对话框显式双向绑定
 let props = defineProps(['loginDialogVisible'])
 let emits = defineEmits(['update:loginDialogVisible', 'initUserInfo'])
+const reset = () => {
+  username.value = ''
+  password.value = ''
+  password2.value = ''
+}
 let loginDialogVisible = computed({
   get() {
     return props.loginDialogVisible
@@ -68,7 +74,7 @@ watchEffect(() => {
   reset()
 })
 
-let loginOrRegister = async () => {
+const loginOrRegister = async () => {
   let result
   if (isLogin.value) {
     result = await login({
@@ -87,10 +93,16 @@ let loginOrRegister = async () => {
   ElMessage.success(result.message)
 }
 
-function reset() {
-  username.value = ''
-  password.value = ''
-  password2.value = ''
+const enterHandler = (event) => {
+  if (event.key == 'Enter') {
+    loginOrRegister()
+  }
+}
+const addEventListener = () => {
+  window.addEventListener('keyup', enterHandler)
+}
+const removeEventListener = () => {
+  window.removeEventListener('keyup', enterHandler)
 }
 </script>
 
@@ -143,4 +155,5 @@ function reset() {
 .policy {
   text-align: center;
   color: #8a919f;
-}</style>
+}
+</style>

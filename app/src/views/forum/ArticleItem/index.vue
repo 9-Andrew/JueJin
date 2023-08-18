@@ -36,7 +36,7 @@
         </ul>
       </div>
       <div class="cover">
-        <el-image src="http://localhost:3000/images/default.png" fit="contain" :lazy="true"></el-image>
+        <el-image src="http://localhost:3000/public/images/default.png" fit="contain" :lazy="true"></el-image>
       </div>
     </div>
   </div>

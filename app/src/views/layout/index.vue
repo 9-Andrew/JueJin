@@ -27,8 +27,8 @@
           </el-input>
         </el-col>
         <el-col :span="4" class="flexContainer" :offset="2">
-          <el-button type="primary" @click="writeArticle" :disabled="!username">写文章</el-button>
-          <el-button v-if="!username" type="default" @click="loginDialogVisible = true">登录 | 注册</el-button>
+          <el-button type="primary" @click="writeArticle">写文章</el-button>
+          <el-button v-if="!isLogin" type="default" @click="loginDialogVisible = true">登录 | 注册</el-button>
           <div v-else class="userInfo">
             <el-dropdown>
               <el-badge :value="2" class="item">
@@ -47,10 +47,10 @@
               </template>
             </el-dropdown>
             <el-dropdown trigger="click" size="large">
-              <el-avatar :size="36"> {{ username }}</el-avatar>
+              <CustomedAvatar :userInfo="userInfoStore.userInfo"></CustomedAvatar>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>我的主页</el-dropdown-item>
+                  <el-dropdown-item @click="router.push(`/user/${userInfoStore.userInfo.id}`)">我的主页</el-dropdown-item>
                   <el-dropdown-item>
                     <el-popconfirm width="220" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
                       icon-color="#626AEF" title="确定登出吗？" @confirm="logout">
@@ -89,11 +89,11 @@ import { getArticleType } from '@/api/article.js'
 const loginDialogVisible = ref(false)
 const isHideHeader = ref(false)
 const articleType = reactive([])
-const userInfostore = useUserInfoStore()
+const userInfoStore = useUserInfoStore()
 const searchStore = useSearchStore()
 const { proxy } = getCurrentInstance()
 const searchInput = ref()
-let username = computed(() => userInfostore.userInfo.username)
+let isLogin = computed(() => userInfoStore.userInfo.id)
 let router = useRouter()
 let route = useRoute()
 let isShowGoTop = ref(false)
@@ -128,13 +128,13 @@ onBeforeUnmount(() => {
 async function initUserInfo() {
   if (localStorage.getItem('Token')) {
     let { data } = await getUserInfo()
-    userInfostore.setUserInfo(data)
+    userInfoStore.setUserInfo(data)
   }
 }
 
 function logout() {
   localStorage.clear()
-  userInfostore.$reset()
+  userInfoStore.$reset()
 }
 
 async function initArticleType() {
@@ -143,10 +143,10 @@ async function initArticleType() {
 }
 
 function writeArticle() {
-  if (!username.value) {
+  if (!isLogin.value) {
     loginDialogVisible.value = true
   } else {
-    router.push('/write')
+    router.push('/editor')
   }
 }
 
@@ -258,8 +258,7 @@ function search() {
   .el-dropdown {
     margin: 0 18px;
 
-    .el-badge,
-    .el-avatar {
+    .el-badge {
       cursor: pointer;
     }
   }

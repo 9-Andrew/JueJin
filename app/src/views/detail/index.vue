@@ -4,35 +4,25 @@
       <div class="content">
         <h1 class="article_title">{{ articleInfo.title }}</h1>
         <div class="author_info_wrapper">
-          <el-avatar size="default" shape="circle">{{ articleInfo.username }}</el-avatar>
+          <CustomedAvatar :userInfo="articleInfo"></CustomedAvatar>
           <div class="author_info">
-            <div class="author_name">{{ articleInfo.username }}</div>
+            <div class="author_name">{{ articleInfo.nickname || articleInfo.username }}</div>
             <div class="meta_info">
-              {{ proxy.$moment(articleInfo.create_time).format('YYYY年MM月DD日  HH:mm')
+              {{ proxy.$moment(articleInfo.create_time).format('YYYY年MM月DD日 HH:mm')
               }}<span>·</span>阅读 {{ articleInfo.view_num }}
             </div>
           </div>
         </div>
         <div class="article_body">
-          <MdPreview
-            :editorId="id"
-            :modelValue="articleInfo.content"
-            :showCodeRowNumber="true"
-            @onGetCatalog="onGetCatalog"
-          />
+          <MdPreview :editorId="id" :modelValue="articleInfo.content" :showCodeRowNumber="true"
+            @onGetCatalog="onGetCatalog" />
         </div>
         <div class="article_end">
           <span class="tag_title">分类:</span>
           <el-tag type="info" size="large" effect="light"> {{ articleInfo.article_type }} </el-tag>
           <span class="separate"></span>
           <span class="tag_title">标签:</span>
-          <el-tag
-            v-for="t in tags"
-            :key="t.tag_id"
-            size="large"
-            effect="light"
-            class="el-tag--default"
-            >{{ t.tag_name }}
+          <el-tag v-for="t in tags" :key="t.tag_id" size="large" effect="light" class="el-tag--default">{{ t.tag_name }}
           </el-tag>
         </div>
       </div>
@@ -41,8 +31,8 @@
     <div class="sidebar">
       <div v-show="!isImmerse" class="author_info">
         <div class="author_info_wrapper">
-          <el-avatar size="default" shape="circle">{{ articleInfo.username }}</el-avatar>
-          <div class="author_name">{{ articleInfo.username }}</div>
+          <CustomedAvatar :userInfo="articleInfo"></CustomedAvatar>
+          <div class="author_name">{{ articleInfo.nickname || articleInfo.username }}</div>
         </div>
         <div class="operate_btn">
           <el-button type="primary">关注</el-button>
@@ -50,7 +40,9 @@
         </div>
       </div>
       <div v-if="isShowCatalog" class="article_catalog" :class="{ fixed: isFixed }" ref="catalog">
-        <div class="title_box"><div class="catalog_title">目录</div></div>
+        <div class="title_box">
+          <div class="catalog_title">目录</div>
+        </div>
         <MdCatalog :editorId="id" :scrollElement="scrollElement" />
       </div>
     </div>
@@ -129,56 +121,71 @@ onBeforeUnmount(() => {
   margin: auto;
   display: flex;
   justify-content: space-around;
+
   .main {
     width: 1000px;
+
     .content {
       padding: 32px;
       background-color: #fff;
       border-radius: var(--box-radius);
+
       .article_title {
         font-weight: 700;
         margin-top: 0;
       }
+
       .author_info_wrapper {
         display: flex;
         align-items: center;
         margin-bottom: 20px;
+
         .author_info {
           margin-left: 12px;
+
           .meta_info {
             font-size: 14px;
             color: #8a919f;
+
             span {
               padding: 10px;
             }
           }
         }
       }
+
       .article_body {
         font: 16px 'Segoe UI', Roboto, Ubun;
         color: #252933;
         line-height: 28px;
       }
+
       .article_end {
         padding-top: 30px;
+
         .tag_title {
           margin-right: 8px;
         }
+
         .el-tag {
           margin-left: 8px;
         }
+
         .separate {
           width: 32px;
           display: inline-block;
         }
+
         .el-tag--info {
           color: #515767;
         }
+
         .el-tag--default {
           color: var(--theme-color);
         }
       }
     }
+
     .comment {
       margin-top: 20px;
       padding: 32px;
@@ -186,63 +193,79 @@ onBeforeUnmount(() => {
       border-radius: var(--box-radius);
     }
   }
+
   .sidebar {
     width: 250px;
+
     .author_info {
       margin-bottom: 20px;
       background-color: #fff;
       border-radius: var(--box-radius);
       padding: 20px;
+
       .author_info_wrapper {
         display: flex;
         align-items: center;
         margin-bottom: 17px;
+
         .author_name {
           margin-left: 12px;
         }
       }
+
       .operate_btn {
         display: flex;
         justify-content: space-between;
+
         .el-button {
           flex-grow: 1;
         }
       }
     }
+
     .article_catalog {
       border-radius: var(--box-radius);
       background-color: #fff;
+
       .title_box {
         padding: 0 20px;
+
         .catalog_title {
           padding: 16px 0px;
           border-bottom: 1px solid #e4e6eb;
         }
       }
+
       .md-editor-catalog {
         padding: 12px;
         margin-right: 5px;
         overflow: auto;
         max-height: 600px;
+
         &::-webkit-scrollbar {
-          width: 6px; /* 滚动条宽度 */
+          width: 6px;
+          /* 滚动条宽度 */
         }
 
         &::-webkit-scrollbar-track {
-          background-color: #fff; /* 滚动条背景颜色 */
+          background-color: #fff;
+          /* 滚动条背景颜色 */
           border-radius: 10px;
         }
 
         &::-webkit-scrollbar-thumb {
-          background-color: #e4e6eb; /* 滚动条滑块颜色 */
+          background-color: #e4e6eb;
+          /* 滚动条滑块颜色 */
           border-radius: 10px;
         }
 
         &::-webkit-scrollbar-thumb:hover {
-          background-color: #e4e6eb; /* 滚动条滑块悬停时颜色 */
+          background-color: #e4e6eb;
+          /* 滚动条滑块悬停时颜色 */
         }
       }
     }
+
     .fixed {
       position: fixed;
       top: 75px;
@@ -250,23 +273,28 @@ onBeforeUnmount(() => {
     }
   }
 }
+
 .article_suspend_panel {
   position: fixed;
   top: 150px;
   display: flex;
   flex-direction: column;
+
   .el-badge {
     cursor: pointer;
     width: 100%;
     margin-bottom: 20px;
+
     &:hover .circle {
       .icon {
         fill: #515767;
       }
+
       .jujiao {
         stroke: #515767;
       }
     }
+
     .circle {
       width: 48px;
       height: 48px;
@@ -277,28 +305,32 @@ onBeforeUnmount(() => {
       justify-content: center;
       align-items: center;
       transform: translate(14%, -14%);
+
       .icon {
         width: 20px;
         height: 20px;
         fill: #8a919f;
       }
+
       .jujiao {
         stroke: #8a919f;
         stroke-width: 70px;
       }
+
       .focus {
         fill: var(--theme-color) !important;
         stroke: var(--theme-color) !important;
       }
     }
+
     :deep(.el-badge__content--info) {
       background-color: #c2c8d1;
     }
+
     .el-divider {
       transform: translate(14%, -14%);
       margin: 0;
       margin-bottom: 8px;
     }
   }
-}
-</style>
+}</style>

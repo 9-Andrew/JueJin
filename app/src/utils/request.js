@@ -3,7 +3,7 @@ import { ElMessage } from 'element-plus'
 import useUserInfoStore from '@/store/user'
 
 let service = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_APP_BASEURL,
   timeout: 3000
 })
 
