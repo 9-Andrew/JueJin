@@ -36,7 +36,11 @@ const router = createRouter({
         }
       ]
     },
-    { path: '/editor', component: () => import('@/views/editor/index.vue') },
+    {
+      path: '/editor',
+      component: () => import('@/views/editor/index.vue'),
+      meta: { title: '写文章' }
+    },
     {
       path: '/404',
       component: () => import('@/views/404/index.vue')
@@ -46,6 +50,16 @@ const router = createRouter({
       redirect: '/404'
     }
   ]
+})
+
+router.afterEach((to) => {
+  setTimeout(() => {
+    if (to.meta.title) {
+      document.title = to.meta.title + ' - ' + import.meta.env.VITE_APP_TITLE
+    } else {
+      document.title = import.meta.env.VITE_APP_TITLE
+    }
+  }, 100)
 })
 
 export default router

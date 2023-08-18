@@ -28,7 +28,7 @@
         </ul>
         <ul>
           <li><a href="javascript:void(0)">京ICP备xxx号</a></li>
-          <li><a href="javascript:void(0)">&copy;2023 觉金</a></li>
+          <li><a href="javascript:void(0)">&copy;2023 {{ TITLE }}</a></li>
         </ul>
       </div>
     </div>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch } from 'vue'
+import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import ArticleItem from './ArticleItem/index.vue'
 import { getArticle } from '@/api/article.js'
@@ -49,6 +49,9 @@ const { proxy } = getCurrentInstance()
 let articleList = reactive([])
 let route = useRoute()
 let isFix = ref(false)
+let TITLE = computed(() => {
+  return import.meta.env.VITE_APP_TITLE
+})
 
 const initList = async (isPush) => {
   isPush || ((loading.value = true) && (articleList.length = 0))

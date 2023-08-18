@@ -16,6 +16,7 @@ import moment from 'moment'
 import 'moment/dist/locale/zh-cn'
 moment.locale('zh-cn')
 
+document.title = import.meta.env.VITE_APP_TITLE
 const app = createApp(App)
 app.config.globalProperties.$debounce = _.debounce
 app.config.globalProperties.$throttle = _.throttle

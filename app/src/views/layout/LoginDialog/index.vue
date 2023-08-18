@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog v-model="loginDialogVisible" title="登录觉金畅享更多权益" width="24%" center @opened="addEventListener"
+    <el-dialog v-model="loginDialogVisible" :title="`登录${TITLE}畅享更多权益`" width="24%" center @opened="addEventListener"
       @closed="removeEventListener">
       <el-form>
         <el-form-item>
@@ -72,6 +72,9 @@ watchEffect(() => {
   buttonTitle.value = isLogin.value ? '登录' : '注册'
   linkTitle.value = isLogin.value ? '注册' : '登录'
   reset()
+})
+let TITLE = computed(() => {
+  return import.meta.env.VITE_APP_TITLE
 })
 
 const loginOrRegister = async () => {

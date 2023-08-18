@@ -158,6 +158,9 @@ function search() {
     router.push(`/search?keyWords=${searchStore.keyWords}`)
     searchStore.pageNo = 1
     searchStore.getData()
+    setTimeout(() => {
+      document.title = route.query.keyWords + ' - 搜索 - ' + import.meta.env.VITE_APP_TITLE
+    }, 200)
   }
   searchInput.value.blur()
 }

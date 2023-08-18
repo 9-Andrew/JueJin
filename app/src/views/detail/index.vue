@@ -109,6 +109,7 @@ onMounted(async () => {
   let tagResult = await getArticleTags(route.params.id)
   tagResult.data && tags.push(...tagResult.data)
   window.addEventListener('scroll', handleScroll)
+  route.meta.title=articleInfo.title
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)
