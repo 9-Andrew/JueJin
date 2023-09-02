@@ -11,6 +11,18 @@ exports.getArticleType = (req, res) => {
     })
   })
 }
+exports.getTag = (req, res) => {
+  const sql = `select * from tag`
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    if (results.length === 0) return res.cc('获取标签失败！')
+    res.send({
+      status: 0,
+      message: '获取标签成功！',
+      data: results
+    })
+  })
+}
 
 exports.getArticleList = (req, res) => {
   /**
@@ -20,12 +32,13 @@ exports.getArticleList = (req, res) => {
    * recommendType 0表示推荐，1表示最新
    */
   let { page, limit, type, recommendType } = req.query
-  
+
   let sql = `select article.id,user.nickname,user.username,title,content,cover,name AS 'article_type',view_num,like_num,article.create_time,user.id AS user_id from article
   inner join article_type on article.type_id=article_type.id
-  inner join user on article.user_id=user.id\n`
+  inner join user on article.user_id=user.id\n
+  where status=1 `
 
-  type && (sql += `where path='${type}'\n`)
+  type && (sql += `and path='${type}'\n`)
 
   sql +=
     recommendType == 0
@@ -66,23 +79,26 @@ exports.getArticleDetail = (req, res) => {
 
   let sql = `SELECT
       article.id,
+      article.user_id,
       user.nickname,
       user.username,
       user.avatar,
       title,
       content,
+      cover,
+      type_id,
       article_type.name AS article_type,
       view_num,
       like_num,
       article.create_time,
-      user.id AS user_id 
+      status
     FROM
       article
       INNER JOIN article_type ON article.type_id = article_type.id
       INNER JOIN user ON article.user_id = user.id 
     WHERE
       article.id=${id}`
-
+  console.log(sql)
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('文章不存在！', 0)

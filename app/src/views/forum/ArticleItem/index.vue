@@ -1,5 +1,5 @@
 <template>
-  <div class="item" @click="router.push(`/detail/${article.id}`)">
+  <div class="item" @click="openArticleDetail">
     <div class="meta_container">
       <a @click.stop="router.push(`/user/${article.user_id}`)">{{
         article.nickname || article.username
@@ -35,15 +35,15 @@
           </li>
         </ul>
       </div>
-      <div class="cover">
-        <el-image src="http://localhost:3000/public/images/default.png" fit="contain" :lazy="true"></el-image>
+      <div v-if="article.cover" class="cover">
+        <el-image :src="`${BASEURL}/${article.cover}`" fit="contain" :lazy="true"></el-image>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, getCurrentInstance } from 'vue'
+import { onMounted, reactive, getCurrentInstance, computed } from 'vue'
 import { getArticleTags } from '@/api/article.js'
 import { useRouter } from 'vue-router'
 import MarkdownIt from 'markdown-it'
@@ -61,6 +61,12 @@ const highLight = (text) => {
   let reg = new RegExp(props.keyWords, "gi")
   return parseText(text).replace(reg, `<span style='color:red;font-weight:bolder;'>${props.keyWords}</span>`)
 }
+const openArticleDetail = () => {
+  const url = router.resolve(`/detail/${props.article.id}`).href
+  window.open(url, '_blank')
+}
+const BASEURL = computed(() => import.meta.env.VITE_APP_BASEURL)
+
 onMounted(async () => {
   const result = await getArticleTags(props.article.id)
   result.data && tags.push(...result.data)
@@ -131,6 +137,7 @@ a {
       display: flex;
       flex-flow: column;
       justify-content: space-around;
+      flex-grow: 1;
 
       .title {
         font-weight: bolder;

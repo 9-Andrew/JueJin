@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { reqComprehensive, reqArticleList, reqUserList } from '@/api/search.js'
 import { useRoute } from 'vue-router'
+import { nextTick } from 'vue'
 
 const useSearchStore = defineStore('search', {
   state() {
@@ -16,6 +17,9 @@ const useSearchStore = defineStore('search', {
   },
   actions: {
     async getData(pageNo = 1, limit = 20) {
+      nextTick(() => {
+        document.title = this.keyWords + ' - 搜索 - ' + import.meta.env.VITE_APP_TITLE
+      })
       let result
       this.loading = true
       if (this.categoryParams == 0) {

@@ -2,7 +2,7 @@ let express = require('express')
 let path = require('path')
 let logger = require('morgan')
 let cors = require('cors')
-let bodyParser = require('body-parser') // 解析 pos 请求体
+let bodyParser = require('body-parser') // 解析 post 请求体
 let { expressjwt: jwt } = require('express-jwt')
 const config = require('./config')
 const upload = require('./uploadConfig')
@@ -27,7 +27,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use('/public',express.static(path.join(__dirname, 'public/')))
+app.use('/public', express.static(path.join(__dirname, 'public/')))
 app.use(
   jwt({
     secret: config.jwtSecretKey,
@@ -43,6 +43,8 @@ let articleRoute = require('./routes/article')
 app.use('/article', articleRoute)
 let searchRoute = require('./routes/search')
 app.use('/search', searchRoute)
+let editorRoute = require('./routes/editor')
+app.use('/editor', editorRoute)
 // 处理图片上传请求
 app.post('/api/upload', upload.single('image'), (req, res) => {
   if (!req.file) {

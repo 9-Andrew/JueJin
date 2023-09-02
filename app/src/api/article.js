@@ -4,6 +4,10 @@ export const getArticleType = () =>
   request({
     url: 'article/type'
   })
+export const getTag = () =>
+  request({
+    url: 'article/tag'
+  })
 
 export const getArticle = (page, limit, type, recommendType) =>
   request({
@@ -17,8 +21,16 @@ export const getArticleTags = (id) =>
     params: { id }
   })
 
-  export const getArticleDetail = (id) =>
+export const getArticleDetail = (id) =>
   request({
     url: 'article/article_detail',
     params: { id }
+  })
+
+export const reqCreateArticle = (userId) => request({ url: 'editor/create', params: { userId } })
+export const reqUpdateArticle = (articleParams) =>
+  request({
+    url: 'editor/update', 
+    method:'post',
+    data: articleParams
   })

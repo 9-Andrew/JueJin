@@ -75,7 +75,7 @@ let loadingMore = proxy.$throttle(() => {
     initList(true)
   }
   isFix.value = scrollTop >= 500
-})
+},1000)
 let reload = async () => {
   if (route.params.type != 'follow') {
     page = 1

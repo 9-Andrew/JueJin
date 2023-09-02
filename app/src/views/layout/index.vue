@@ -61,7 +61,7 @@
             </el-dropdown>
           </div>
           <teleport to="body">
-            <LoginDialog v-model:loginDialogVisible="loginDialogVisible" @initUserInfo="initUserInfo"></LoginDialog>
+            <LoginDialog v-model:loginDialogVisible="loginDialogVisible"></LoginDialog>
           </teleport>
         </el-col>
       </el-row>
@@ -82,7 +82,6 @@ import { ref, onMounted, onBeforeUnmount, reactive, getCurrentInstance, computed
 import LoginDialog from '@/views/layout/LoginDialog/index.vue'
 import useUserInfoStore from '@/store/user'
 import useSearchStore from '@/store/search';
-import { getUserInfo } from '@/api/userinfo.js'
 import { getArticleType } from '@/api/article.js'
 
 // TODO 首页刷新
@@ -118,19 +117,12 @@ let initScroll = proxy.$debounce(() => {
 
 onMounted(() => {
   initArticleType()
-  initUserInfo()
   window.addEventListener('scroll', initScroll)
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', initScroll)
 })
 
-async function initUserInfo() {
-  if (localStorage.getItem('Token')) {
-    let { data } = await getUserInfo()
-    userInfoStore.setUserInfo(data)
-  }
-}
 
 function logout() {
   localStorage.clear()
@@ -158,9 +150,6 @@ function search() {
     router.push(`/search?keyWords=${searchStore.keyWords}`)
     searchStore.pageNo = 1
     searchStore.getData()
-    setTimeout(() => {
-      document.title = route.query.keyWords + ' - 搜索 - ' + import.meta.env.VITE_APP_TITLE
-    }, 200)
   }
   searchInput.value.blur()
 }

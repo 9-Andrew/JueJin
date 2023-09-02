@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import useUserStore from '@/store/user'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,7 +38,7 @@ const router = createRouter({
       ]
     },
     {
-      path: '/editor',
+      path: '/editor/:id?',
       component: () => import('@/views/editor/index.vue'),
       meta: { title: '写文章' }
     },
@@ -52,14 +53,30 @@ const router = createRouter({
   ]
 })
 
-router.afterEach((to) => {
-  setTimeout(() => {
-    if (to.meta.title) {
-      document.title = to.meta.title + ' - ' + import.meta.env.VITE_APP_TITLE
+router.beforeEach((to, _from, next) => {
+  let store = useUserStore()
+  if (localStorage.getItem('Token')) {
+    if (store.userInfo.id) {
+      next()
     } else {
-      document.title = import.meta.env.VITE_APP_TITLE
+      store.initUserInfo()
+      next()
     }
-  }, 100)
+  } else {
+    if (to.path.indexOf('/editor') != -1) {
+      next({ path: '/' })
+    } else {
+      next()
+    }
+  }
+})
+
+router.afterEach((to) => {
+  if (to.meta.title) {
+    document.title = to.meta.title + ' - ' + import.meta.env.VITE_APP_TITLE
+  } else {
+    document.title = import.meta.env.VITE_APP_TITLE
+  }
 })
 
 export default router

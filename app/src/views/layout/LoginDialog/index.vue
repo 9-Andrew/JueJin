@@ -44,9 +44,11 @@
 import { ref, computed, watchEffect } from 'vue'
 import { login, register } from '@/api/user.js'
 import { ElMessage } from 'element-plus'
+import useUserstore from '@/store/user.js';
+
 // 对话框显式双向绑定
 let props = defineProps(['loginDialogVisible'])
-let emits = defineEmits(['update:loginDialogVisible', 'initUserInfo'])
+let emits = defineEmits(['update:loginDialogVisible'])
 const reset = () => {
   username.value = ''
   password.value = ''
@@ -68,6 +70,7 @@ const password2 = ref('')
 const isLogin = ref(true)
 let buttonTitle = ref(),
   linkTitle = ref()
+const store=useUserstore()
 watchEffect(() => {
   buttonTitle.value = isLogin.value ? '登录' : '注册'
   linkTitle.value = isLogin.value ? '注册' : '登录'
@@ -85,7 +88,7 @@ const loginOrRegister = async () => {
       password: password.value
     })
     emits('update:loginDialogVisible', false)
-    emits('initUserInfo')
+    store.initUserInfo()
   } else {
     result = await register({
       username: username.value,

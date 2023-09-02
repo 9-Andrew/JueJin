@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { getUserInfo } from '@/api/userinfo.js'
 
 const useUserInfoStore = defineStore('user', {
   state() {
@@ -9,10 +10,14 @@ const useUserInfoStore = defineStore('user', {
   actions: {
     setUserInfo(user) {
       this.userInfo = user
+    },
+    async initUserInfo() {
+      let { data } = await getUserInfo()
+      this.setUserInfo(data)
     }
   },
   getters: {
-    getUserInfo(){
+    getUserInfo() {
       return this.userInfo
     }
   }

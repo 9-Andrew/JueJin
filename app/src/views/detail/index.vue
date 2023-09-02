@@ -12,6 +12,8 @@
               }}<span>·</span>阅读 {{ articleInfo.view_num }}
             </div>
           </div>
+          <div class="edit"><router-link v-if="store.userInfo.id && articleInfo.user_id == store.userInfo.id"
+              :to="`/editor/${route.params.id}`">编辑</router-link></div>
         </div>
         <div class="article_body">
           <MdPreview :editorId="id" :modelValue="articleInfo.content" :showCodeRowNumber="true"
@@ -34,7 +36,7 @@
           <CustomedAvatar :userInfo="articleInfo"></CustomedAvatar>
           <div class="author_name">{{ articleInfo.nickname || articleInfo.username }}</div>
         </div>
-        <div class="operate_btn">
+        <div class="operate_btn" v-if="!(store.userInfo.id && articleInfo.user_id == store.userInfo.id)">
           <el-button type="primary">关注</el-button>
           <el-button type="default">私信</el-button>
         </div>
@@ -78,9 +80,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, reactive, onMounted, onBeforeUnmount, getCurrentInstance, nextTick } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { getArticleDetail, getArticleTags } from '@/api/article.js'
+import useUserStore from '@/store/user.js';
+import { ElMessage } from 'element-plus';
 import { MdPreview, MdCatalog } from 'md-editor-v3'
 // preview.css相比style.css少了编辑器那部分样式
 import 'md-editor-v3/lib/preview.css'
@@ -91,10 +95,13 @@ const scrollElement = document.documentElement
 let articleInfo = reactive({})
 let tags = reactive([])
 const route = useRoute()
+const router = useRouter()
 const isFixed = ref(false)
 const { proxy } = getCurrentInstance()
 const isImmerse = ref(false)
 const isShowCatalog = ref(false)
+const store = useUserStore()
+
 let handleScroll = proxy.$throttle(() => {
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop
   isFixed.value = scrollTop > 130
@@ -105,11 +112,15 @@ function onGetCatalog(list) {
 
 onMounted(async () => {
   let result = await getArticleDetail(route.params.id)
+  if (!result.data) {
+    ElMessage.info(result.message)
+    router.push('/')
+  }
   Object.assign(articleInfo, result.data)
   let tagResult = await getArticleTags(route.params.id)
   tagResult.data && tags.push(...tagResult.data)
   window.addEventListener('scroll', handleScroll)
-  route.meta.title=articleInfo.title
+  nextTick(() => { document.title = articleInfo.title + ' - ' + import.meta.env.VITE_APP_TITLE })
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)
@@ -153,6 +164,20 @@ onBeforeUnmount(() => {
             }
           }
         }
+
+        .edit {
+          flex-grow: 1;
+          height: 46px;
+          line-height: 46px;
+
+          a {
+            float: right;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
       }
 
       .article_body {
@@ -166,10 +191,6 @@ onBeforeUnmount(() => {
 
         .tag_title {
           margin-right: 8px;
-        }
-
-        .el-tag {
-          margin-left: 8px;
         }
 
         .separate {
@@ -334,4 +355,5 @@ onBeforeUnmount(() => {
       margin-bottom: 8px;
     }
   }
-}</style>
+}
+</style>
