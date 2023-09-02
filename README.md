@@ -27,17 +27,19 @@
 
 ## 目标功能
 - [X] 注册、登录(JWT)
-- [X] 文章列表渲染
+- [X] 文章列表展示
 - [X] 文章详情
-- [ ] 评论功能
-- [X] 支持 markdown
-- [ ] 文章的发表
+- [X] 搜索模块
+- [X] 文章的发表和更新
+- [ ] 评论模块
+- [ ] 文章标签模块
 - [ ] 个人中心
-- [ ] 头像上传
+- [X] 支持 markdown
+- [ ] 第三方登录授权
+
 
 ## 项目目录
 ```
-├─LICENSE
 ├─README.md
 ├─server
 |   ├─app.js
@@ -45,21 +47,23 @@
 |   ├─juejin.sql
 |   ├─package-lock.json
 |   ├─package.json
+|   ├─uploadConfig.js
 |   ├─routes_handler
 |   |       ├─article.js
+|   |       ├─editor.js
+|   |       ├─search.js
 |   |       ├─user.js
 |   |       └userinfo.js
 |   ├─routes
 |   |   ├─article.js
+|   |   ├─editor.js
+|   |   ├─search.js
 |   |   ├─user.js
 |   |   └userinfo.js
-|   ├─public
-|   |   ├─images
 |   ├─db
 |   | └index.js
-|   ├─bin
-|   |  └www
 ├─app
+|  ├─.env
 |  ├─.eslintrc.cjs
 |  ├─.prettierrc.json
 |  ├─index.html
@@ -70,25 +74,33 @@
 |  |  ├─App.vue
 |  |  ├─main.js
 |  |  ├─views
-|  |  |   ├─404.vue
+|  |  |   ├─user
+|  |  |   ├─TagArticle
+|  |  |   ├─search
 |  |  |   ├─layout
-|  |  |   |   ├─index.vue
-|  |  |   |   └LoginDialog.vue
+|  |  |   |   ├─LoginDialog
 |  |  |   ├─forum
-|  |  |   |  ├─ArticleList.vue
-|  |  |   |  └index.vue
+|  |  |   |   ├─ArticleItem
+|  |  |   ├─editor
+|  |  |   ├─detail
+|  |  |   ├─404
 |  |  ├─utils
 |  |  |   └request.js
-|  |  ├─stores
-|  |  |   └index.js
+|  |  ├─store
+|  |  |   ├─search.js
+|  |  |   └user.js
 |  |  ├─router
 |  |  |   └index.js
+|  |  ├─components
+|  |  |     ├─index.js
+|  |  |     ├─SvgIcon
+|  |  |     ├─CustomedAvatar
 |  |  ├─api
 |  |  |  ├─article.js
+|  |  |  ├─editor.js
+|  |  |  ├─search.js
 |  |  |  ├─user.js
 |  |  |  └userinfo.js
-|  ├─public
-|  |   └favicon.ico
 ```
 
 ## 最后
