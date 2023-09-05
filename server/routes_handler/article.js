@@ -1,6 +1,6 @@
 const db = require('../db')
 exports.getArticleType = (req, res) => {
-  const sql = `select * from article_type`
+  const sql = `select * from article_type WHERE path is NOT NULL`
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('获取文章分类失败！')
@@ -98,7 +98,7 @@ exports.getArticleDetail = (req, res) => {
       INNER JOIN user ON article.user_id = user.id 
     WHERE
       article.id=${id}`
-  console.log(sql)
+
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('文章不存在！', 0)

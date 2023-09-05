@@ -3,12 +3,13 @@
     <div class="editor-header">
       <div class="left-box">
         <div class="input" ref="refInput" :contenteditable="true" @input="inputHandler">{{ articleParams.title }}</div>
-        <div class="placeholder" v-if="!articleParams.title.length" @click="placeholderHandler">输入文章标题……</div>
+        <div class="placeholder" v-if="!articleParams.title?.length" @click="placeholderHandler">
+          输入文章标题……</div>
       </div>
       <div class="right-box">
         <div class="text-tip">{{ tip }}</div>
         <el-button type="default">草稿箱</el-button>
-        <el-button type="primary" :disabled="articleParams.title.length == 0 || articleParams.content.length == 0"
+        <el-button type="primary" :disabled="articleParams.title?.length == 0 || articleParams.content?.length == 0"
           @click="drawerVisible = true">{{ isPublish ? '发布' : '更新' }}</el-button>
         <CustomedAvatar class="avatar" :userInfo="userStore.userInfo"></CustomedAvatar>
       </div>
@@ -19,7 +20,7 @@
       :destroy-on-close="true" :show-close="false" :wrapperClosable="true">
       <el-form :model="articleParams" ref="form" :rules="rules" label-width="100px" label-suffix="：">
         <el-form-item label="分类" prop="type">
-          <el-tag :type="articleParams.typeId == tl.id ? 'primary' : 'info'" v-for=" tl  in  typeList " :key="tl.id"
+          <el-tag :type="articleParams.typeId == tl.id ? '' : 'info'" v-for=" tl  in  typeList " :key="tl.id"
             @click="articleParams.typeId = tl.id">{{ tl.name }}</el-tag>
         </el-form-item>
         <el-form-item label="添加标签" prop="tag">
@@ -162,7 +163,6 @@ const autoSave = proxy.$debounce(async () => {
   if (articleParams.value.typeId && form.value) {
     form.value.clearValidate('type')
   }
-  if (articleParams.value.tagList && articleParams.value.tagList.length == 0) return
   await reqUpdateArticle({ ...articleParams.value, userId: userStore.userInfo.id })
   tip.value = '保存中…'
   setTimeout(() => {
@@ -176,7 +176,9 @@ onMounted(async () => {
     let result = await getArticleDetail(route.params.id)
     let result2 = await getArticleTags(route.params.id)
     let { id, title, content, cover, type_id: typeId } = result.data
-    let tagList = result2.data.map(item => item.tag_id)
+    let tagList = []
+    result2.data && (tagList = result2.data.map(item => item.tag_id))
+    content == null && (content = '')
     Object.assign(articleParams.value, { id, title, content, cover, typeId, tagList })
     isPublish.value = result.data.status != 1
   } else {

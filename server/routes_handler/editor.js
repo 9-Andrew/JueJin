@@ -23,25 +23,27 @@ exports.getUpdateArticle = (req, res) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('没有权限修改该文章！')
 
-    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${typeId}'
+    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${typeId||1}'
     ${cover ? `,cover='${cover}'` : ''} WHERE id='${id}'`
     db.query(sql1, (err, results) => {
       if (err) return res.cc(err)
       if (results.affectedRows !== 1) return res.cc('文章更新失败！', 0)
     })
 
-    let sql2 = `DELETE FROM article_tag_merge WHERE article_id=${id}`
-    let sql3 = `INSERT INTO article_tag_merge VALUES`
-    tagList.forEach((item, index, arr) => {
-      sql3 += `(${id},${item})`
-      index == arr.length - 1 || (sql3 += ',')
-    })
-    db.query(sql2, (err) => {
-      if (err) return res.cc(err)
-      db.query(sql3, (err) => {
-        if (err) return res.cc(err)
+    if (tagList.length > 0) {
+      let sql2 = `DELETE FROM article_tag_merge WHERE article_id=${id}`
+      let sql3 = `INSERT INTO article_tag_merge VALUES`
+      tagList.forEach((item, index, arr) => {
+        sql3 += `(${id},${item})`
+        index == arr.length - 1 || (sql3 += ',')
       })
-    })
+      db.query(sql2, (err) => {
+        if (err) return res.cc(err)
+        db.query(sql3, (err) => {
+          if (err) return res.cc(err)
+        })
+      })
+    }
 
     res.send({
       status: 0,
@@ -58,7 +60,7 @@ exports.getPublishArticle = (req, res) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('没有权限修改该文章！')
 
-    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${typeId}',status='1'
+    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${typeId||1}',status='1'
     ${cover ? `,cover='${cover}'` : ''} WHERE id='${id}'`
     db.query(sql1, (err, results) => {
       if (err) return res.cc(err)
