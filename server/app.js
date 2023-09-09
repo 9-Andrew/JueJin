@@ -32,7 +32,7 @@ app.use(
   jwt({
     secret: config.jwtSecretKey,
     algorithms: ['HS256']
-  }).unless({ path: [/^\/api\//, /^\/article\//, /^\/search\//] })
+  }).unless({ path: [/^\/api\//, /^\/article\//, /^\/search\//,/^\/interaction\//] })
 )
 
 let userRoute = require('./routes/user')
@@ -45,6 +45,8 @@ let searchRoute = require('./routes/search')
 app.use('/search', searchRoute)
 let editorRoute = require('./routes/editor')
 app.use('/editor', editorRoute)
+let interactionRoute = require('./routes/interaction')
+app.use('/interaction', interactionRoute)
 // 处理图片上传请求
 app.post('/api/upload', upload.single('image'), (req, res) => {
   if (!req.file) {

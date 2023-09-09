@@ -28,7 +28,7 @@
           </el-tag>
         </div>
       </div>
-      <div v-show="!isImmerse" class="comment">评论</div>
+      <div v-show="!isImmerse" id="comment" class="comment">评论</div>
     </div>
     <div class="sidebar">
       <div v-show="!isImmerse" class="author_info">
@@ -50,13 +50,13 @@
     </div>
   </div>
   <div class="article_suspend_panel">
-    <el-badge v-show="!isImmerse" type="info" :value="articleInfo.like_num" :max="99999">
-      <div class="circle">
-        <SvgIcon name="dianzan1"></SvgIcon>
+    <el-badge v-show="!isImmerse" :type="isLike ? 'primary' : 'info'" :value="articleInfo.like_num" :max="99999">
+      <div class="circle" @click="likeHandler">
+        <SvgIcon name="dianzan1" class="icon" :class="{ focus: isLike }"></SvgIcon>
       </div>
     </el-badge>
     <el-badge v-show="!isImmerse" type="info" value="0">
-      <div class="circle">
+      <div class="circle" @click="toHash">
         <SvgIcon name="pinglun1"></SvgIcon>
       </div>
     </el-badge>
@@ -66,9 +66,11 @@
       </div>
     </el-badge>
     <el-badge v-show="!isImmerse" type="info">
-      <div class="circle">
-        <SvgIcon name="fenxiang"></SvgIcon>
-      </div>
+      <el-tooltip content="已成功复制链接到剪切板" placement="left" effect="dark" :visible="tooltopVisible">
+        <div class="circle" @click="copyLink">
+          <SvgIcon name="fenxiang"></SvgIcon>
+        </div>
+      </el-tooltip>
     </el-badge>
     <el-badge v-show="!isImmerse"> <el-divider></el-divider></el-badge>
     <el-badge type="info">
@@ -80,9 +82,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount, getCurrentInstance, nextTick } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount, getCurrentInstance, nextTick, inject, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getArticleDetail, getArticleTags } from '@/api/article.js'
+import { reqAddView, reqIsLike, reqAddLike, reqDeleteLike } from '@/api/interaction.js';
 import useUserStore from '@/store/user.js';
 import { ElMessage } from 'element-plus';
 import { MdPreview, MdCatalog } from 'md-editor-v3'
@@ -91,7 +94,6 @@ import 'md-editor-v3/lib/preview.css'
 const id = 'preview-only'
 const scrollElement = document.documentElement
 
-// TODO 点赞功能
 let articleInfo = reactive({})
 let tags = reactive([])
 const route = useRoute()
@@ -101,26 +103,73 @@ const { proxy } = getCurrentInstance()
 const isImmerse = ref(false)
 const isShowCatalog = ref(false)
 const store = useUserStore()
+const isLike = ref(false)
+const loginDialogVisible = inject('loginDialogVisible')
+const tooltopVisible = ref(false)
 
 let handleScroll = proxy.$throttle(() => {
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop
   isFixed.value = scrollTop > 130
 })
+let likeHandler = async () => {
+  if (store.userInfo.id) {
+    if (isLike.value) {
+      await reqDeleteLike(route.params.id, store.userInfo.id)
+      articleInfo.like_num--
+    } else {
+      await reqAddLike(route.params.id, store.userInfo.id)
+      articleInfo.like_num++
+    }
+    isLike.value = !isLike.value
+  } else {
+    loginDialogVisible.value = true
+  }
+}
+let isLikeAndStarHandler = async () => {
+  if (store.userInfo.id) {
+    let likeResult = await reqIsLike(route.params.id, store.userInfo.id)
+    isLike.value = likeResult.data
+  } else {
+    isLike.value = false
+  }
+}
 function onGetCatalog(list) {
   isShowCatalog.value = list.length > 0
 }
+let toHash = () => {
+  const commentElement = document.getElementById('comment')
+  if (commentElement) {
+    commentElement.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+let copyLink = () => {
+  navigator.clipboard.writeText(location.href).then(() => {
+    tooltopVisible.value = true
+    setTimeout(() => {
+      tooltopVisible.value = false
+    }, 800);
+  })
+}
 
+watch(() => store.userInfo.id, isLikeAndStarHandler)
 onMounted(async () => {
-  let result = await getArticleDetail(route.params.id)
+  let result = await getArticleDetail(parseInt(route.params.id))
   if (!result.data) {
     ElMessage.info(result.message)
-    router.push('/')
+    router.push('/404')
+    return
   }
   Object.assign(articleInfo, result.data)
-  let tagResult = await getArticleTags(route.params.id)
+  let tagResult = await getArticleTags(parseInt(route.params.id))
   tagResult.data && tags.push(...tagResult.data)
-  window.addEventListener('scroll', handleScroll)
+
+  await reqAddView(route.params.id)
+  isLikeAndStarHandler()
   nextTick(() => { document.title = articleInfo.title + ' - ' + import.meta.env.VITE_APP_TITLE })
+  window.addEventListener('scroll', handleScroll)
+  if (window.location.hash === '#comment') {
+    toHash()
+  }
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)

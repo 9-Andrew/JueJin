@@ -48,7 +48,7 @@ exports.getArticleList = (req, res) => {
   sql += `\nlimit ${(page - 1) * limit},${limit};`
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
-    if (results.length === 0) return res.cc('没有更多了！', 2)
+    if (results.length === 0) return res.cc('没有更多了！',0)
     res.send({
       status: 0,
       message: '获取文章成功！',

@@ -78,7 +78,7 @@
 
 <script setup>
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router'
-import { ref, onMounted, onBeforeUnmount, reactive, getCurrentInstance, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, reactive, getCurrentInstance, computed, provide } from 'vue'
 import LoginDialog from '@/views/layout/LoginDialog/index.vue'
 import useUserInfoStore from '@/store/user'
 import useSearchStore from '@/store/search';
@@ -86,6 +86,7 @@ import { getArticleType } from '@/api/article.js'
 
 // TODO 首页刷新
 const loginDialogVisible = ref(false)
+provide('loginDialogVisible', loginDialogVisible)
 const isHideHeader = ref(false)
 const articleType = reactive([])
 const userInfoStore = useUserInfoStore()

@@ -23,8 +23,18 @@ exports.getUpdateArticle = (req, res) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('没有权限修改该文章！')
 
-    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${typeId||1}'
-    ${cover ? `,cover='${cover}'` : ''} WHERE id='${id}'`
+    const currentTime = new Date()
+    const formattedTime = currentTime
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ')
+    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${
+      typeId || 1
+    }'
+    ${
+      cover ? `,cover='${cover}'` : ''
+    },create_time='${formattedTime}' WHERE id='${id}'`
+    console.log(sql1)
     db.query(sql1, (err, results) => {
       if (err) return res.cc(err)
       if (results.affectedRows !== 1) return res.cc('文章更新失败！', 0)
@@ -60,8 +70,15 @@ exports.getPublishArticle = (req, res) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('没有权限修改该文章！')
 
-    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${typeId||1}',status='1'
-    ${cover ? `,cover='${cover}'` : ''} WHERE id='${id}'`
+    const currentTime = new Date()
+    const formattedTime = currentTime
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ')
+    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${
+      typeId || 1
+    }',status='1'
+    ${cover ? `,cover='${cover}'` : ''},create_time='${formattedTime}' WHERE id='${id}'`
     db.query(sql1, (err, results) => {
       if (err) return res.cc(err)
       if (results.affectedRows !== 1) return res.cc('文章发布失败！', 0)

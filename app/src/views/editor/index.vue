@@ -2,9 +2,7 @@
   <div class="editor-container">
     <div class="editor-header">
       <div class="left-box">
-        <div class="input" ref="refInput" :contenteditable="true" @input="inputHandler">{{ articleParams.title }}</div>
-        <div class="placeholder" v-if="!articleParams.title?.length" @click="placeholderHandler">
-          输入文章标题……</div>
+        <input v-model="articleParams.title" type="text" class="custom-input" placeholder="输入文章标题……" maxlength="80"/>
       </div>
       <div class="right-box">
         <div class="text-tip">{{ tip }}</div>
@@ -82,7 +80,6 @@ const toolbarsExclude = [
   'github'
 ]
 const userStore = useUserStore()
-const refInput = ref()
 const drawerVisible = ref(false)
 const BASEURL = computed(() => import.meta.env.VITE_APP_BASEURL)
 const route = useRoute()
@@ -127,12 +124,6 @@ const onUploadImg = async (files, callback) => {
 
   callback(res.map((item) => BASEURL.value + '/' + item.data.filePath));
 }
-const inputHandler = (event) => {
-  articleParams.value.title = event.target.textContent
-}
-const placeholderHandler = () => {
-  refInput.value.focus()
-}
 const initData = async () => {
   let result = await getArticleType()
   typeList.value = result.data
@@ -174,6 +165,11 @@ onMounted(async () => {
   initData()
   if (route.params.id) {
     let result = await getArticleDetail(route.params.id)
+    if (!result.data) {
+      ElMessage.info(result.message)
+      router.push('/404')
+      return
+    }
     let result2 = await getArticleTags(route.params.id)
     let { id, title, content, cover, type_id: typeId } = result.data
     let tagList = []
@@ -192,6 +188,13 @@ onMounted(async () => {
 </script>
 
 <style lang="less" scoped>
+.custom-input {
+  border: none; /* 去掉输入框的边框 */
+  background-color: transparent; /* 设置输入框的背景为透明 */
+  outline: none; /* 去掉输入框的默认轮廓样式 */
+  width: 100%;
+  font-size: 24px;
+}
 .editor-container {
   display: flex;
   flex-direction: column;
@@ -205,16 +208,6 @@ onMounted(async () => {
       flex-grow: 1;
       font-size: 24px;
       padding: 14px 20px;
-
-      .input {
-        outline: none;
-        height: 100%;
-      }
-
-      .placeholder {
-        height: 100%;
-        transform: translateY(-100%);
-      }
     }
 
     .right-box {

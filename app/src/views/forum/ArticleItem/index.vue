@@ -16,19 +16,19 @@
         </div>
         <ul class="action_list">
           <li>
-            <a @click.stop="">
+            <a>
               <SvgIcon name="yanjing"></SvgIcon>
               {{ article.view_num }}
             </a>
           </li>
           <li>
-            <a @click.stop="">
-              <SvgIcon name="dianzan"></SvgIcon>
-              {{ article.like_num }}
+            <a @click.stop="likeHandler" :class="{ focus: isLike }">
+              <SvgIcon :name="isLike?'dianzan1':'dianzan'"></SvgIcon>
+              {{ like_num }}
             </a>
           </li>
           <li>
-            <a @click.stop="">
+            <a @click.stop="openArticleDetail(false)">
               <SvgIcon name="pinglun"></SvgIcon>
               0
             </a>
@@ -43,15 +43,22 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, getCurrentInstance, computed } from 'vue'
+import { onMounted, reactive, getCurrentInstance, computed, ref, watch, inject } from 'vue'
 import { getArticleTags } from '@/api/article.js'
 import { useRouter } from 'vue-router'
 import MarkdownIt from 'markdown-it'
+import { reqIsLike, reqAddLike, reqDeleteLike } from '@/api/interaction.js';
+import useUserStore from '@/store/user.js';
 
 const { proxy } = getCurrentInstance()
 let props = defineProps(['article', 'keyWords'])
+const like_num=ref(props.article.like_num)
 let router = useRouter()
 let tags = reactive([])
+const store = useUserStore()
+const isLike = ref(false)
+const loginDialogVisible = inject('loginDialogVisible')
+const BASEURL = computed(() => import.meta.env.VITE_APP_BASEURL)
 
 const parseText = (original) => {
   // 将 Markdown 文本转换为纯文本内容，去除其中的所有 HTML 标签，只保留纯文本部分
@@ -61,16 +68,40 @@ const highLight = (text) => {
   let reg = new RegExp(props.keyWords, "gi")
   return parseText(text).replace(reg, `<span style='color:red;font-weight:bolder;'>${props.keyWords}</span>`)
 }
-const openArticleDetail = () => {
-  const url = router.resolve(`/detail/${props.article.id}`).href
+const openArticleDetail = (hash) => {
+  let url = router.resolve(`/detail/${props.article.id}`).href
+  hash || (url += '#comment')
   window.open(url, '_blank')
 }
-const BASEURL = computed(() => import.meta.env.VITE_APP_BASEURL)
+const isLikeHandler = async () => {
+  if (store.userInfo.id) {
+    let likeResult = await reqIsLike(props.article.id, store.userInfo.id)
+    isLike.value = likeResult.data
+  } else {
+    isLike.value = false
+  }
+}
+let likeHandler = async () => {
+  if (store.userInfo.id) {
+    if (isLike.value) {
+      await reqDeleteLike(props.article.id, store.userInfo.id)
+      like_num.value-=1
+    } else {
+      await reqAddLike(props.article.id, store.userInfo.id)
+      like_num.value+=1
+    }
+    isLike.value = !isLike.value
+  } else {
+    loginDialogVisible.value = true
+  }
+}
 
 onMounted(async () => {
   const result = await getArticleTags(props.article.id)
   result.data && tags.push(...result.data)
+  isLikeHandler()
 })
+watch(() => store.userInfo.id, isLikeHandler)
 </script>
 
 <style lang="less" scoped>
@@ -165,6 +196,10 @@ a {
           padding-right: 20px;
 
           &:hover {
+            color: var(--theme-color);
+          }
+
+          &.focus {
             color: var(--theme-color);
           }
         }

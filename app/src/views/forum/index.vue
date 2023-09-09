@@ -37,7 +37,7 @@
 
 <script setup>
 import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
 import ArticleItem from './ArticleItem/index.vue'
 import { getArticle } from '@/api/article.js'
 
@@ -48,6 +48,7 @@ const loading = ref(true)
 const { proxy } = getCurrentInstance()
 let articleList = reactive([])
 let route = useRoute()
+let router = useRouter()
 let isFix = ref(false)
 let TITLE = computed(() => {
   return import.meta.env.VITE_APP_TITLE
@@ -61,6 +62,10 @@ const initList = async (isPush) => {
     route.params.type,
     activeName.value === 'recommend' ? 0 : 1
   )
+  if (!isPush && !result.data) {
+    router.push('/404')
+    return
+  }
   setTimeout(() => {
     articleList.push(...result.data)
     loading.value = false
@@ -75,7 +80,7 @@ let loadingMore = proxy.$throttle(() => {
     initList(true)
   }
   isFix.value = scrollTop >= 500
-},1000)
+}, 1000)
 let reload = async () => {
   if (route.params.type != 'follow') {
     page = 1

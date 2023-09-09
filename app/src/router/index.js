@@ -34,6 +34,10 @@ const router = createRouter({
         {
           path: 'user/:id',
           component: () => import('@/views/user/index.vue')
+        },
+        {
+          path: '404',
+          component: () => import('@/views/404/index.vue'),
         }
       ]
     },
@@ -41,10 +45,6 @@ const router = createRouter({
       path: '/editor/:id?',
       component: () => import('@/views/editor/index.vue'),
       meta: { title: '写文章' }
-    },
-    {
-      path: '/404',
-      component: () => import('@/views/404/index.vue')
     },
     {
       path: '/:catchAll(.*)',
