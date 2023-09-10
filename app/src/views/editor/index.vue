@@ -134,8 +134,9 @@ const handleAvatarSuccess = (response) => {
   articleParams.value.cover = response.filePath
 }
 const beforeAvatarUpload = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png') {
-    ElMessage.error('封面图片格式只能为png或jpg!')
+  const allowedFormats = ['image/jpeg', 'image/png', 'image/gif' ,'image/webp'];
+  if (rawFile.type.includes(allowedFormats)) {
+    ElMessage.error('封面图片格式只能为png、jpg、gif或webp!!')
     return false
   } else if (rawFile.size / 1024 / 1024 > 4) {
     ElMessage.error('封面图片不能超过4MB!')

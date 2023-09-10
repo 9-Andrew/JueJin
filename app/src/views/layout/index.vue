@@ -8,13 +8,14 @@
         <el-col :span="10">
           <ul class="nav">
             <li>
-              <router-link to="/">首页</router-link>
+              <router-link to="/" :class="{ highLight: route.path == '/' }">首页</router-link>
             </li>
             <li>
-              <router-link to="/forum/follow">关注</router-link>
+              <router-link to="/forum/follow" :class="{ highLight: route.path == '/forum/follow' }">关注</router-link>
             </li>
             <li v-for="at in articleType" :key="at.id">
-              <router-link :to="`/forum/${at.path}`">{{ at.name }}</router-link>
+              <router-link :to="`/forum/${at.path}`" :class="{ highLight: route.path == `/forum/${at.path}` }">{{ at.name
+              }}</router-link>
             </li>
           </ul>
         </el-col>
@@ -84,7 +85,6 @@ import useUserInfoStore from '@/store/user'
 import useSearchStore from '@/store/search';
 import { getArticleType } from '@/api/article.js'
 
-// TODO 首页刷新
 const loginDialogVisible = ref(false)
 provide('loginDialogVisible', loginDialogVisible)
 const isHideHeader = ref(false)
@@ -197,6 +197,10 @@ function search() {
       a {
         color: #000;
         display: block;
+      }
+
+      .highLight {
+        color: var(--theme-color)
       }
 
       &:hover {

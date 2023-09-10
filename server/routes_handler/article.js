@@ -32,6 +32,7 @@ exports.getArticleList = (req, res) => {
    * recommendType 0表示推荐，1表示最新
    */
   let { page, limit, type, recommendType } = req.query
+  type && (type = type.replace(/'/g, ''))
 
   let sql = `select article.id,user.nickname,user.username,title,content,cover,name AS 'article_type',view_num,like_num,article.create_time,user.id AS user_id from article
   inner join article_type on article.type_id=article_type.id
@@ -45,8 +46,9 @@ exports.getArticleList = (req, res) => {
       ? 'ORDER BY view_num DESC,like_num DESC'
       : 'ORDER BY article.create_time DESC'
 
-  sql += `\nlimit ${(page - 1) * limit},${limit};`
-  db.query(sql, (err, results) => {
+  sql += `\nlimit ${(page - 1) * limit},${limit}`
+  let randomSortSql = `SELECT * FROM (${sql}) AS sorted_data ORDER BY RAND();`
+  db.query(randomSortSql, (err, results) => {
     if (err) return res.cc(err)
     if (results.length === 0) return res.cc('没有更多了！',0)
     res.send({

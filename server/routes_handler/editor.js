@@ -28,17 +28,17 @@ exports.getUpdateArticle = (req, res) => {
       .toISOString()
       .slice(0, 19)
       .replace('T', ' ')
-    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${
-      typeId || 1
-    }'
-    ${
-      cover ? `,cover='${cover}'` : ''
-    },create_time='${formattedTime}' WHERE id='${id}'`
+    let sql1 = `UPDATE article SET title=?,content=?,type_id=?
+    ${cover ? `,cover='${cover}'` : ''},create_time=? WHERE id=?`
     console.log(sql1)
-    db.query(sql1, (err, results) => {
-      if (err) return res.cc(err)
-      if (results.affectedRows !== 1) return res.cc('文章更新失败！', 0)
-    })
+    db.query(
+      sql1,
+      [title, content, typeId || 1, formattedTime, id],
+      (err, results) => {
+        if (err) return res.cc(err)
+        if (results.affectedRows !== 1) return res.cc('文章更新失败！', 0)
+      }
+    )
 
     if (tagList.length > 0) {
       let sql2 = `DELETE FROM article_tag_merge WHERE article_id=${id}`
@@ -75,14 +75,17 @@ exports.getPublishArticle = (req, res) => {
       .toISOString()
       .slice(0, 19)
       .replace('T', ' ')
-    let sql1 = `UPDATE article SET title='${title}',content='${content}',type_id='${
-      typeId || 1
-    }',status='1'
-    ${cover ? `,cover='${cover}'` : ''},create_time='${formattedTime}' WHERE id='${id}'`
-    db.query(sql1, (err, results) => {
-      if (err) return res.cc(err)
-      if (results.affectedRows !== 1) return res.cc('文章发布失败！', 0)
-    })
+    let sql1 = `UPDATE article SET title=?,content=?,type_id=?
+      ${cover ? `,cover='${cover}'` : ''},create_time=?,status='1' WHERE id=?`
+    console.log(sql1)
+    db.query(
+      sql1,
+      [title, content, typeId || 1, formattedTime, id],
+      (err, results) => {
+        if (err) return res.cc(err)
+        if (results.affectedRows !== 1) return res.cc('文章发布失败！', 0)
+      }
+    )
 
     let sql2 = `DELETE FROM article_tag_merge WHERE article_id=${id}`
     let sql3 = `INSERT INTO article_tag_merge VALUES`

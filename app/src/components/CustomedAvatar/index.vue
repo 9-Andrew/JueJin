@@ -1,5 +1,5 @@
 <template>
-  <el-avatar :src="userInfo.avatar && `${BASEURL}/${userInfo.avatar}`" :size="36"> {{ userInfo.nickname ||
+  <el-avatar :src="userInfo.avatar && `${BASEURL}/${userInfo.avatar}`" :size="36" fit="fill"> {{ userInfo.nickname ||
     userInfo.username
   }}</el-avatar>
 </template>

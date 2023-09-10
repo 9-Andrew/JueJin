@@ -168,7 +168,7 @@ a {
       display: flex;
       flex-flow: column;
       justify-content: space-around;
-      flex-grow: 1;
+      flex: auto;
 
       .title {
         font-weight: bolder;
@@ -185,6 +185,7 @@ a {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
+        max-width:920px;
       }
 
       .action_list {
@@ -207,7 +208,7 @@ a {
     }
 
     .cover {
-      flex-shrink: 0;
+      flex: auto;
       width: 140px;
       margin-left: 60px;
 

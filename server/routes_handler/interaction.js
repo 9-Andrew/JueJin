@@ -52,7 +52,7 @@ exports.getDeleteLike = (req, res) => {
     userId +
     ' and content_id=' +
     articleId
-  console.log(sql)
+
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
     if (results.affectedRows !== 1) return res.cc('取消点赞失败！', 0)
