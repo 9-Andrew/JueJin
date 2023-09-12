@@ -36,7 +36,7 @@
         </ul>
       </div>
       <div v-if="article.cover" class="cover">
-        <el-image :src="`${BASEURL}/${article.cover}`" fit="contain" :lazy="true"></el-image>
+        <el-image :src="`${BASEURL}/${article.cover}`" fit="cover" :lazy="true"></el-image>
       </div>
     </div>
   </div>
