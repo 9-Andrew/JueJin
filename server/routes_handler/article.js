@@ -92,6 +92,7 @@ exports.getArticleDetail = (req, res) => {
       article_type.name AS article_type,
       view_num,
       like_num,
+      star_num,
       article.create_time,
       status
     FROM

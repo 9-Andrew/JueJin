@@ -37,8 +37,13 @@
           <div class="author_name">{{ articleInfo.nickname || articleInfo.username }}</div>
         </div>
         <div class="operate_btn" v-if="!(store.userInfo.id && articleInfo.user_id == store.userInfo.id)">
-          <el-button type="primary">关注</el-button>
-          <el-button type="default">私信</el-button>
+          <el-button type="primary" :class="{ followed: isFollow, 'only_icon': isFollowDone }" @click="followHandler">
+            <SvgIcon v-if="isFollowDone" name="guanzhuchenggong"></SvgIcon>
+            <template v-else>
+              <SvgIcon v-if="isFollow" name="duigou"></SvgIcon>{{ isFollow ? '已关注' : '关注' }}
+            </template>
+          </el-button>
+          <el-button type="default" @click="ElMessage.info('功能正在开发中……')">私信</el-button>
         </div>
       </div>
       <div v-if="isShowCatalog" class="article_catalog" :class="{ fixed: isFixed }" ref="catalog">
@@ -60,9 +65,9 @@
         <SvgIcon name="pinglun1"></SvgIcon>
       </div>
     </el-badge>
-    <el-badge v-show="!isImmerse" type="info" value="0">
-      <div class="circle">
-        <SvgIcon name="shoucang"></SvgIcon>
+    <el-badge v-show="!isImmerse" :type="isStar ? 'primary' : 'info'" :value="articleInfo.star_num" :max="99999">
+      <div class="circle" @click="starHandler">
+        <SvgIcon name="shoucang" class="icon" :class="{ star: isStar }"></SvgIcon>
       </div>
     </el-badge>
     <el-badge v-show="!isImmerse" type="info">
@@ -85,7 +90,7 @@
 import { ref, reactive, onMounted, onBeforeUnmount, getCurrentInstance, nextTick, inject, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getArticleDetail, getArticleTags } from '@/api/article.js'
-import { reqAddView, reqIsLike, reqAddLike, reqDeleteLike } from '@/api/interaction.js';
+import { reqAddView, reqIsLike, reqAddLike, reqDeleteLike, reqIsStar, reqAddStar, reqDeleteStar, reqIsFollow, reqAddFollow, reqDeleteFollow } from '@/api/interaction.js';
 import useUserStore from '@/store/user.js';
 import { ElMessage } from 'element-plus';
 import { MdPreview, MdCatalog } from 'md-editor-v3'
@@ -106,6 +111,9 @@ const store = useUserStore()
 const isLike = ref(false)
 const loginDialogVisible = inject('loginDialogVisible')
 const tooltopVisible = ref(false)
+const isStar = ref(false)
+const isFollow = ref(false)
+const isFollowDone = ref(false)
 
 let handleScroll = proxy.$throttle(() => {
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop
@@ -125,12 +133,22 @@ let likeHandler = async () => {
     loginDialogVisible.value = true
   }
 }
-let isLikeAndStarHandler = async () => {
+let isLikeAndStarAndFollowHandler = async () => {
   if (store.userInfo.id) {
     let likeResult = await reqIsLike(route.params.id, store.userInfo.id)
     isLike.value = likeResult.data
+    let starResult = await reqIsStar(route.params.id, store.userInfo.id)
+    isStar.value = starResult.data
+    let followResult = await reqIsFollow(store.userInfo.id, articleInfo.user_id)
+    isFollow.value = followResult.data
+    setTimeout(() => {
+      isFollowDone.value = followResult.data
+    }, 500);
   } else {
     isLike.value = false
+    isStar.value = false
+    isFollow.value = false
+    isFollowDone.value = false
   }
 }
 function onGetCatalog(list) {
@@ -150,8 +168,44 @@ let copyLink = () => {
     }, 800);
   })
 }
+let starHandler = async () => {
+  if (store.userInfo.id) {
+    if (isStar.value) {
+      await reqDeleteStar(route.params.id, store.userInfo.id)
+      articleInfo.star_num--
+      ElMessage.success('取消收藏')
+    } else {
+      await reqAddStar(route.params.id, store.userInfo.id)
+      articleInfo.star_num++
+      ElMessage.success('收藏成功！记得常常温习哦~')
+    }
+    isStar.value = !isStar.value
+  } else {
+    loginDialogVisible.value = true
+  }
+}
+let followHandler = async () => {
+  if (store.userInfo.id) {
+    if (isFollow.value) {
+      await reqDeleteFollow(store.userInfo.id, articleInfo.user_id)
+    } else {
+      await reqAddFollow(store.userInfo.id, articleInfo.user_id)
+    }
+    if (isFollow.value) {
+      isFollow.value = false
+      isFollowDone.value = false
+    } else {
+      isFollow.value = true
+      setTimeout(() => {
+        isFollowDone.value = true
+      }, 800);
+    }
+  } else {
+    loginDialogVisible.value = true
+  }
+}
 
-watch(() => store.userInfo.id, isLikeAndStarHandler)
+watch(() => store.userInfo.id, isLikeAndStarAndFollowHandler)
 onMounted(async () => {
   let result = await getArticleDetail(parseInt(route.params.id))
   if (!result.data) {
@@ -164,7 +218,7 @@ onMounted(async () => {
   tagResult.data && tags.push(...tagResult.data)
 
   await reqAddView(route.params.id)
-  isLikeAndStarHandler()
+  isLikeAndStarAndFollowHandler()
   nextTick(() => { document.title = articleInfo.title + ' - ' + import.meta.env.VITE_APP_TITLE })
   window.addEventListener('scroll', handleScroll)
   if (window.location.hash === '#comment') {
@@ -289,8 +343,20 @@ onBeforeUnmount(() => {
         justify-content: space-between;
 
         .el-button {
-          flex-grow: 1;
+          flex: 1 1 auto;
+          transition: all .9s;
         }
+
+        .followed {
+          background: #fff !important;
+          border-color: #e4e6eb !important;
+          color: #8a919f !important;
+        }
+
+        .only_icon {
+          max-width: 28px;
+        }
+
       }
     }
 
@@ -391,6 +457,11 @@ onBeforeUnmount(() => {
       .focus {
         fill: var(--theme-color) !important;
         stroke: var(--theme-color) !important;
+      }
+
+      .star {
+        fill: #ffb800 !important;
+        stroke: #ffb800 !important;
       }
     }
 

@@ -67,3 +67,109 @@ exports.getDeleteLike = (req, res) => {
     })
   })
 }
+exports.getIsStar = (req, res) => {
+  let { articleId, userId } = req.query
+  const sql =
+    'select * from star WHERE user_id=' +
+    userId +
+    ' and article_id=' +
+    articleId
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    res.send({
+      status: 0,
+      data: results.length > 0
+    })
+  })
+}
+exports.getAddStar = (req, res) => {
+  let { articleId, userId } = req.query
+  const sql =
+    'insert into star (user_id,article_id) value(' +
+    userId +
+    ',' +
+    articleId +
+    ')'
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    if (results.affectedRows !== 1) return res.cc('收藏失败！', 0)
+    const sql2 = 'update article set star_num=star_num+1 WHERE id =' + articleId
+    db.query(sql2, (err, results) => {
+      if (err) return res.cc(err)
+      if (results.affectedRows !== 1) return res.cc('添加点赞失败！', 0)
+    })
+    res.send({
+      status: 0,
+      message: '收藏成功！'
+    })
+  })
+}
+exports.getDeleteStar = (req, res) => {
+  let { articleId, userId } = req.query
+  const sql =
+    'delete from star where user_id=' + userId + ' and article_id=' + articleId
+
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    if (results.affectedRows !== 1) return res.cc('取消收藏失败！', 0)
+    const sql2 = 'update article set star_num=star_num-1 WHERE id =' + articleId
+    db.query(sql2, (err, results) => {
+      if (err) return res.cc(err)
+      if (results.affectedRows !== 1) return res.cc('取消点赞失败！', 0)
+    })
+    res.send({
+      status: 0,
+      message: '取消收藏成功！'
+    })
+  })
+}
+exports.getIsFollow = (req, res) => {
+  let { userId, followedUserId } = req.query
+  const sql =
+    'select * from follow WHERE user_id=' +
+    userId +
+    ' and followed_user_id=' +
+    followedUserId
+
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    res.send({
+      status: 0,
+      data: results.length > 0
+    })
+  })
+}
+exports.getAddFollow = (req, res) => {
+  let { userId, followedUserId } = req.query
+  const sql =
+    'insert into follow (user_id,followed_user_id) value(' +
+    userId +
+    ',' +
+    followedUserId +
+    ')'
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    if (results.affectedRows !== 1) return res.cc('关注失败！', 0)
+    res.send({
+      status: 0,
+      message: '关注成功！'
+    })
+  })
+}
+exports.getDeleteFollow = (req, res) => {
+  let { userId, followedUserId } = req.query
+  const sql =
+    'delete from follow where user_id=' +
+    userId +
+    ' and followed_user_id=' +
+    followedUserId
+
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    if (results.affectedRows !== 1) return res.cc('取消关注失败！', 0)
+    res.send({
+      status: 0,
+      message: '取消关注成功！'
+    })
+  })
+}
