@@ -225,6 +225,9 @@ function search() {
 .el-main {
   margin: 60px auto 12px;
   padding: 0;
+  // 必须设置高度，否则动态加载内容时，进度条显示会导致页面跳动
+  height: 100vh;
+  overflow: visible;
 }
 
 .el-row {

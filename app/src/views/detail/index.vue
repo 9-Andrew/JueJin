@@ -10,7 +10,7 @@
               articleInfo.username }}</div>
             <div class="meta_info">
               {{ proxy.$moment(articleInfo.create_time).format('YYYY年MM月DD日 HH:mm')
-              }}<span>·</span>阅读 {{ articleInfo.view_num }}
+              }}<span>·</span>阅读 {{ articleInfo.view_num+1 }}
             </div>
           </div>
           <div class="edit"><router-link v-if="store.userInfo.id && articleInfo.user_id == store.userInfo.id"
@@ -88,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount, getCurrentInstance, nextTick, inject, watch } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount, getCurrentInstance, nextTick, inject, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getArticleDetail, getArticleTags } from '@/api/article.js'
 import { reqAddView, reqIsLike, reqAddLike, reqDeleteLike, reqIsStar, reqAddStar, reqDeleteStar, reqIsFollow, reqAddFollow, reqDeleteFollow } from '@/api/interaction.js';
@@ -106,7 +106,6 @@ const route = useRoute()
 const router = useRouter()
 const isFixed = ref(false)
 const { proxy } = getCurrentInstance()
-const isImmerse = ref(false)
 const isShowCatalog = ref(false)
 const store = useUserStore()
 const isLike = ref(false)
@@ -115,6 +114,15 @@ const tooltopVisible = ref(false)
 const isStar = ref(false)
 const isFollow = ref(false)
 const isFollowDone = ref(false)
+const immerseValue = ref(localStorage.getItem('isImmerse') == 'true')
+const isImmerse = computed({
+  get() {
+    return immerseValue.value
+  }, set(v) {
+    localStorage.setItem('isImmerse', v)
+    immerseValue.value = v
+  }
+})
 
 let handleScroll = proxy.$throttle(() => {
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop

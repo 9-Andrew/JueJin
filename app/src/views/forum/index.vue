@@ -6,6 +6,8 @@
         <el-tab-pane label="最新" name="news"></el-tab-pane>
       </el-tabs>
       <el-skeleton :rows="5" :loading="loading" animated />
+      <el-empty v-if="route.params.type == 'follow' && articleList.length == 0 && !loading"
+        description="暂无关注人发布的文章"></el-empty>
       <ArticleItem v-for="al in articleList" :key="al.id" :article="al"></ArticleItem>
     </div>
     <div class="sidebar">
@@ -36,10 +38,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch, computed } from 'vue'
-import { useRoute,useRouter } from 'vue-router'
+import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch, computed, inject } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import ArticleItem from './ArticleItem/index.vue'
 import { getArticle } from '@/api/article.js'
+import { reqFollowNum, reqArticleNum } from '@/api/interaction.js';
+import useUserStore from '@/store/user.js';
 
 let page = 1
 let limit = 10
@@ -50,6 +54,8 @@ let articleList = reactive([])
 let route = useRoute()
 let router = useRouter()
 let isFix = ref(false)
+let loginDialogVisible = inject('loginDialogVisible')
+let store = useUserStore()
 let TITLE = computed(() => {
   return import.meta.env.VITE_APP_TITLE
 })
@@ -71,29 +77,47 @@ const initList = async (isPush) => {
     loading.value = false
   }, 400)
 }
+const initCategoryList = async () => {
+  if (!store.userInfo.id) {
+    articleList.length = 0
+    return
+  }
+  let followResult = await reqFollowNum(store.userInfo.id)
+  let articleResult = await reqArticleNum(followResult.data.map(i => i.followed_user_id), page, limit)
+  setTimeout(() => {
+    articleList.push(...articleResult.data)
+    loading.value = false
+  }, 400)
+}
 let loadingMore = proxy.$throttle(() => {
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
   let clientHeight = document.documentElement.clientHeight
   let scrollHeight = document.documentElement.scrollHeight
   if (scrollTop + clientHeight >= scrollHeight) {
     page++
-    initList(true)
+    route.params.type != 'follow' ? initList(true) : initCategoryList()
   }
   isFix.value = scrollTop >= 500
 }, 1000)
-let reload = async () => {
+let reload = () => {
   if (route.params.type != 'follow') {
     page = 1
-    await initList()
+    initList()
   } else {
     articleList.length = 0
+    if (store.userInfo.id) {
+      loading.value = true
+      initCategoryList()
+    } else {
+      loginDialogVisible.value = true
+    }
   }
 }
 watch([() => route.params, activeName], reload)
-
-onMounted(async () => {
+watch(() => store.userInfo.id, initCategoryList)
+onMounted(() => {
   window.addEventListener('scroll', loadingMore, { passive: true })
-  await initList()
+  reload()
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', loadingMore)
@@ -190,5 +214,10 @@ onBeforeUnmount(() => {
       top: 70px;
     }
   }
+}
+
+.el-empty {
+  background-color: #fff;
+  height: 90vh;
 }
 </style>

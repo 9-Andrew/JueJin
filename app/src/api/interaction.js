@@ -50,7 +50,7 @@ export const reqDeleteFollow = (userId, followedUserId) =>
     url: 'interaction/delete_follow',
     params: { userId, followedUserId }
   })
-export const reqArticleNum = (userId) =>
-  request({ url: 'interaction/article_num', params: { userId } })
+export const reqArticleNum = (userIdList,page,limit) =>
+  request({ url: 'interaction/follow_articles', params: { userIdList,page,limit} })
 export const reqFollowNum = (userId) =>
-  request({ url: 'interaction/follow_num', params: { userId } })
+  request({ url: 'interaction/follow_users', params: { userId } })

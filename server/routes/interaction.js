@@ -12,7 +12,7 @@ router.get('/delete_star',interactionHandler.getDeleteStar)
 router.get('/is_follow',interactionHandler.getIsFollow)
 router.get('/add_follow',interactionHandler.getAddFollow)
 router.get('/delete_follow',interactionHandler.getDeleteFollow)
-router.get('/article_num',interactionHandler.getArticleNum)
-router.get('/follow_num',interactionHandler.getFollowNum)
+router.get('/follow_articles',interactionHandler.getArticleByUser)
+router.get('/follow_users',interactionHandler.getFollowedByUser)
 
 module.exports=router

@@ -173,25 +173,33 @@ exports.getDeleteFollow = (req, res) => {
     })
   })
 }
-exports.getArticleNum = (req, res) => {
-  let { userId } = req.query
-  const sql = 'select * from article WHERE user_id=' + userId
+exports.getArticleByUser = (req, res) => {
+  let { page, limit,userIdList } = req.query
+
+  let sql = `select article.id,user.nickname,user.username,title,content,cover,view_num,like_num,article.create_time,user.id AS user_id from article
+  inner join user on article.user_id=user.id
+  where status=1 and user_id in (${userIdList.join()}) ORDER BY article.create_time DESC\n`
+  console.log(userIdList)
+  page&&(sql += `limit ${(page - 1) * limit},${limit}`)
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
+    if (results.length === 0) return res.cc('没有更多了！',0)
     res.send({
       status: 0,
-      data: results.length
+      message: '获取文章成功！',
+      data: results
     })
   })
 }
-exports.getFollowNum = (req, res) => {
+exports.getFollowedByUser = (req, res) => {
   let { userId } = req.query
-  const sql = 'select * from follow WHERE user_id=' + userId
+  const sql = 'select followed_user_id from follow WHERE user_id=' + userId
+
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
     res.send({
       status: 0,
-      data: results.length
+      data: results
     })
   })
 }

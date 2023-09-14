@@ -48,9 +48,10 @@ exports.getArticleList = (req, res) => {
 
   sql += `\nlimit ${(page - 1) * limit},${limit}`
   let randomSortSql = `SELECT * FROM (${sql}) AS sorted_data ORDER BY RAND();`
+
   db.query(randomSortSql, (err, results) => {
     if (err) return res.cc(err)
-    if (results.length === 0) return res.cc('没有更多了！',0)
+    if (results.length === 0) return res.cc('没有更多了！', 0)
     res.send({
       status: 0,
       message: '获取文章成功！',

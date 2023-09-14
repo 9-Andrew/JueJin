@@ -94,11 +94,10 @@ const isFollowHandler = () => {
     } else {
       isFollowList.value.length = 0
     }
-    console.log(item.id)
-    let articleNumResult = await reqArticleNum(item.id)
-    articleNumList.value[index] = articleNumResult.data
+    let articleNumResult = await reqArticleNum([item.id])
+    articleNumList.value[index] = articleNumResult.data.length
     let followNumResult = await reqFollowNum(item.id)
-    followNumList.value[index] = followNumResult.data
+    followNumList.value[index] = followNumResult.data.length
   })
 }
 
