@@ -173,3 +173,25 @@ exports.getDeleteFollow = (req, res) => {
     })
   })
 }
+exports.getArticleNum = (req, res) => {
+  let { userId } = req.query
+  const sql = 'select * from article WHERE user_id=' + userId
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    res.send({
+      status: 0,
+      data: results.length
+    })
+  })
+}
+exports.getFollowNum = (req, res) => {
+  let { userId } = req.query
+  const sql = 'select * from follow WHERE user_id=' + userId
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    res.send({
+      status: 0,
+      data: results.length
+    })
+  })
+}

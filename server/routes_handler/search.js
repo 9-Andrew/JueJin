@@ -77,7 +77,7 @@ exports.getUserList = (req, res) => {
   let { page, limit, keyWords } = req.query
   keyWords && (keyWords = keyWords.replace(/'/g, ''))
 
-  let sql = `SELECT * FROM user WHERE username LIKE '%${keyWords}%' `
+  let sql = `SELECT id,username,nickname,avatar FROM user WHERE(nickname is null and username like '%${keyWords}%')or(nickname LIKE '%${keyWords}%') `
   db.query(sql, (_err, results) => (total = results.length))
 
   sql += `ORDER BY create_time ASC\nlimit ${(page - 1) * limit},${limit};`

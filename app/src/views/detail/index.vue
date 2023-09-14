@@ -4,9 +4,10 @@
       <div class="content">
         <h1 class="article_title">{{ articleInfo.title }}</h1>
         <div class="author_info_wrapper">
-          <CustomedAvatar :userInfo="articleInfo"></CustomedAvatar>
+          <CustomedAvatar :userInfo="articleInfo" @click="router.push(`/user/${articleInfo.user_id}`)"></CustomedAvatar>
           <div class="author_info">
-            <div class="author_name">{{ articleInfo.nickname || articleInfo.username }}</div>
+            <div class="author_name" @click="router.push(`/user/${articleInfo.user_id}`)">{{ articleInfo.nickname ||
+              articleInfo.username }}</div>
             <div class="meta_info">
               {{ proxy.$moment(articleInfo.create_time).format('YYYY年MM月DD日 HH:mm')
               }}<span>·</span>阅读 {{ articleInfo.view_num }}
@@ -32,7 +33,7 @@
     </div>
     <div class="sidebar">
       <div v-show="!isImmerse" class="author_info">
-        <div class="author_info_wrapper">
+        <div class="author_info_wrapper" @click="router.push(`/user/${articleInfo.user_id}`)">
           <CustomedAvatar :userInfo="articleInfo"></CustomedAvatar>
           <div class="author_name">{{ articleInfo.nickname || articleInfo.username }}</div>
         </div>
@@ -258,6 +259,10 @@ onBeforeUnmount(() => {
         .author_info {
           margin-left: 12px;
 
+          .author_name {
+            cursor: pointer;
+          }
+
           .meta_info {
             font-size: 14px;
             color: #8a919f;
@@ -332,6 +337,7 @@ onBeforeUnmount(() => {
         display: flex;
         align-items: center;
         margin-bottom: 17px;
+        cursor: pointer;
 
         .author_name {
           margin-left: 12px;

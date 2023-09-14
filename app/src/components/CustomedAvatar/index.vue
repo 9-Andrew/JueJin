@@ -1,12 +1,12 @@
 <template>
-  <el-avatar :src="userInfo.avatar && `${BASEURL}/${userInfo.avatar}`" :size="36" fit="fill"> {{ userInfo.nickname ||
+  <el-avatar :src="userInfo.avatar && `${BASEURL}/${userInfo.avatar}`" :size="size" fit="fill"> {{ userInfo.nickname ||
     userInfo.username
   }}</el-avatar>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-defineProps(['userInfo'])
+defineProps({ userInfo: {}, size: { type: Number, default: 36 } })
 const BASEURL = computed(() => import.meta.env.VITE_APP_BASEURL)
 </script>
 
