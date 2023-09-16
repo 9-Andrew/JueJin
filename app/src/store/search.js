@@ -12,7 +12,8 @@ const useSearchStore = defineStore('search', {
       keyWords: useRoute().query.keyWords,
       resultList: [],
       total: 0,
-      loading: true
+      loading: true,
+      searchHistory: JSON.parse(localStorage.getItem('searchHistory')) || []
     }
   },
   actions: {
@@ -34,6 +35,10 @@ const useSearchStore = defineStore('search', {
         this.total = result.total
         this.loading = false
       }, 400)
+      if (!this.searchHistory.find((item) => item == this.keyWords)) {
+        this.searchHistory.unshift(this.keyWords)
+        localStorage.setItem('searchHistory', JSON.stringify(this.searchHistory))
+      }
     },
     setCategoryParams(value) {
       this.categoryParams = value

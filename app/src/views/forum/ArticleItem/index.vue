@@ -65,8 +65,8 @@ const parseText = (original) => {
   return new MarkdownIt().render(original).replace(/<[^>]+>/g, '')
 }
 const highLight = (text) => {
-  let reg = new RegExp(props.keyWords, "gi")
-  return parseText(text).replace(reg, `<span style='color:red;font-weight:bolder;'>${props.keyWords}</span>`)
+  let reg = new RegExp(`(${props.keyWords})`, "gi")
+  return parseText(text).replace(reg, `<span style='color:red;font-weight:bolder;'>$1</span>`)
 }
 const openArticleDetail = (hash) => {
   let url = router.resolve(`/detail/${props.article.id}`).href

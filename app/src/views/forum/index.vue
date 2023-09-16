@@ -133,6 +133,7 @@ onBeforeUnmount(() => {
 
   .content {
     width: 1000px;
+    margin-bottom: 15px;
 
     :deep(.demo-tabs) {
       width: 100%;

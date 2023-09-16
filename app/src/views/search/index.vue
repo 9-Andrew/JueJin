@@ -20,7 +20,8 @@
       <el-empty v-if="store.resultList.length == 0" description="暂无内容"></el-empty>
       <div v-else>
         <div class="article-container" v-if="store.categoryParams != 2">
-          <ArticleItem v-for="rl in store.resultList" :key="rl.id" :article="rl" :keyWords="store.keyWords"></ArticleItem>
+          <ArticleItem v-for="rl in store.resultList" :key="rl.id" :article="rl" :keyWords="route.query.keyWords">
+          </ArticleItem>
         </div>
         <div class="user-container" v-else>
           <div v-for="(rl, index) in store.resultList" :key="rl.id" @click="openArticleDetail(rl)" class="user_item">
@@ -36,10 +37,10 @@
               '关注'
             }}</el-button>
           </div>
-          <el-pagination v-model:current-page="store.pageNo" v-model:page-size="limit" background
-            :page-sizes="[10, 20, 30]" layout=" prev, pager, next, jumper,->,sizes,total" :total="store.total"
-            @current-change="store.getData(store.pageNo, limit)" @size-change="store.getData(store.pageNo, limit)" />
         </div>
+        <el-pagination v-model:current-page="store.pageNo" v-model:page-size="limit" background :page-sizes="[10, 20, 30]"
+          layout=" prev, pager, next, jumper,->,sizes,total" :total="store.total"
+          @current-change="store.getData(store.pageNo, limit)" @size-change="store.getData(store.pageNo, limit)" />
       </div>
     </div>
   </div>
@@ -51,7 +52,7 @@ import useSearchStore from '@/store/search.js';
 import useUserStore from '@/store/user.js';
 import ArticleItem from '@/views/forum/ArticleItem/index.vue';
 import { reqIsFollow, reqAddFollow, reqDeleteFollow, reqFollowNum, reqArticleNum } from '@/api/interaction.js';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const category = ['综合', '文章', '用户']
 const sort = ['综合排序', '最新优先', '最热优先']
@@ -60,6 +61,7 @@ const isTeleportReady = ref(false)
 const store = useSearchStore()
 const userStore = useUserStore()
 const router = useRouter()
+const route = useRoute()
 const isFollowList = ref([])
 const articleNumList = ref([])
 const followNumList = ref([])

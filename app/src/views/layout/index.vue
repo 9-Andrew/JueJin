@@ -26,13 +26,22 @@
               <el-button :type="isFocus ? 'default' : ''" icon="Search" @click="search" />
             </template>
           </el-input>
+          <div class="searchHistory" v-show="isFocus && !searchStore.keyWords && searchStore.searchHistory.length > 0"
+            @mousedown.prevent="">
+            <div class="header">
+              <span>搜索历史</span>
+              <a href="" @click.prevent="clearSearchHistory">清空</a>
+            </div>
+            <div class="item" v-for="(sh, index) in searchStore.searchHistory" :key="index"
+              @click="searchStore.keyWords = sh; search()">{{ sh }}</div>
+          </div>
         </el-col>
         <el-col :span="4" class="flexContainer" :offset="2">
           <el-button type="primary" @click="writeArticle">写文章</el-button>
           <el-button v-if="!isLogin" type="default" @click="loginDialogVisible = true">登录 | 注册</el-button>
           <div v-else class="userInfo">
             <el-dropdown>
-              <el-badge :value="2" class="item">
+              <el-badge class="item">
                 <el-icon :size="24">
                   <BellFilled />
                 </el-icon>
@@ -52,6 +61,7 @@
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="router.push(`/user/${userInfoStore.userInfo.id}`)">我的主页</el-dropdown-item>
+                  <el-dropdown-item @click="router.push(`/setting`)">我的设置</el-dropdown-item>
                   <el-dropdown-item>
                     <el-popconfirm width="220" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
                       icon-color="#626AEF" title="确定登出吗？" @confirm="logout">
@@ -149,10 +159,13 @@ function goTop() {
 function search() {
   if (searchStore.keyWords) {
     router.push(`/search?keyWords=${searchStore.keyWords}`)
-    searchStore.pageNo = 1
     searchStore.getData()
   }
   searchInput.value.blur()
+}
+function clearSearchHistory() {
+  searchStore.searchHistory.length = 0
+  localStorage.removeItem('searchHistory')
 }
 </script>
 
@@ -174,12 +187,46 @@ function search() {
     display: flex;
     align-items: center;
     justify-content: space-around;
+    position: relative;
 
     .logo {
       background: url('@/assets/logo.png') no-repeat;
       background-size: contain;
       height: 45px;
       width: 100%;
+    }
+
+    .searchHistory {
+      position: absolute;
+      top: 48px;
+      right: 0;
+      width: 100%;
+      background: #fff;
+      line-height: 24px;
+      font-size: 12px;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+      border: 1px solid #e4e6eb;
+      z-index: 3;
+
+      .header {
+        padding: 6px 12px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #dcdfe6;
+
+        span {
+          color: #8a919f;
+        }
+      }
+
+      .item {
+        cursor: pointer;
+        padding: 6px 12px;
+
+        &:hover {
+          background-color: #f7f8fa;
+        }
+      }
     }
   }
 

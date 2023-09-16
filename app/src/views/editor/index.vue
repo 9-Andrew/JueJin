@@ -9,7 +9,7 @@
         <el-button type="default">草稿箱</el-button>
         <el-button type="primary" :disabled="articleParams.title?.length == 0 || articleParams.content?.length == 0"
           @click="drawerVisible = true">{{ isPublish ? '发布' : '更新' }}</el-button>
-        <CustomedAvatar class="avatar" :userInfo="userStore.userInfo"></CustomedAvatar>
+        <CustomedAvatar class="avatar" :userInfo="userStore.userInfo" @click="router.push('/setting')"></CustomedAvatar>
       </div>
     </div>
     <MdEditor v-model="articleParams.content" :toolbarsExclude="toolbarsExclude" autoFocus @onUploadImg="onUploadImg"
