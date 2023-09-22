@@ -128,6 +128,7 @@ let initScroll = proxy.$debounce(() => {
 
 onMounted(() => {
   initArticleType()
+  userInfoStore.initUserInfo()
   window.addEventListener('scroll', initScroll)
 })
 onBeforeUnmount(() => {

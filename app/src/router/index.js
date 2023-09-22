@@ -41,7 +41,7 @@ const router = createRouter({
         },
         {
           path: '404',
-          component: () => import('@/views/404/index.vue'),
+          component: () => import('@/views/404/index.vue')
         }
       ]
     },
@@ -81,6 +81,7 @@ router.afterEach((to) => {
   } else {
     document.title = import.meta.env.VITE_APP_TITLE
   }
+  to.query.token && localStorage.setItem('Token', to.query.token)
 })
 
 export default router

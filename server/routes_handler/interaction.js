@@ -174,16 +174,17 @@ exports.getDeleteFollow = (req, res) => {
   })
 }
 exports.getArticleByUser = (req, res) => {
-  let { page, limit,userIdList } = req.query
+  let { page, limit, userIdList } = req.query
+  let idList = userIdList ? userIdList.join() : '-1'
 
   let sql = `select article.id,user.nickname,user.username,title,content,cover,view_num,like_num,article.create_time,user.id AS user_id from article
   inner join user on article.user_id=user.id
-  where status=1 and user_id in (${userIdList.join()}) ORDER BY article.create_time DESC\n`
-  console.log(userIdList)
-  page&&(sql += `limit ${(page - 1) * limit},${limit}`)
+  where status=1 and user_id in (${idList}) ORDER BY article.create_time DESC\n`
+
+  page && (sql += `limit ${(page - 1) * limit},${limit}`)
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)
-    if (results.length === 0) return res.cc('没有更多了！',0)
+    if (results.length === 0) return res.cc('没有更多了！', 0)
     res.send({
       status: 0,
       message: '获取文章成功！',

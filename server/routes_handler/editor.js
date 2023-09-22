@@ -30,7 +30,7 @@ exports.getUpdateArticle = (req, res) => {
       .replace('T', ' ')
     let sql1 = `UPDATE article SET title=?,content=?,type_id=?
     ${cover ? `,cover='${cover}'` : ''},create_time=? WHERE id=?`
-    console.log(sql1)
+
     db.query(
       sql1,
       [title, content, typeId || 1, formattedTime, id],
@@ -77,7 +77,7 @@ exports.getPublishArticle = (req, res) => {
       .replace('T', ' ')
     let sql1 = `UPDATE article SET title=?,content=?,type_id=?
       ${cover ? `,cover='${cover}'` : ''},create_time=?,status='1' WHERE id=?`
-    console.log(sql1)
+
     db.query(
       sql1,
       [title, content, typeId || 1, formattedTime, id],

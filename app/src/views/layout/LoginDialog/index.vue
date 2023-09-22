@@ -20,7 +20,7 @@
             <ul v-show="isLogin">
               <li>其他登录：</li>
               <li>
-                <SvgIcon name="github"></SvgIcon>
+                <SvgIcon name="github" @click="githubAuth"></SvgIcon>
               </li>
               <li>
                 <SvgIcon name="weixin"></SvgIcon>
@@ -70,7 +70,7 @@ const password2 = ref('')
 const isLogin = ref(true)
 let buttonTitle = ref(),
   linkTitle = ref()
-const store=useUserstore()
+const store = useUserstore()
 watchEffect(() => {
   buttonTitle.value = isLogin.value ? '登录' : '注册'
   linkTitle.value = isLogin.value ? '注册' : '登录'
@@ -109,6 +109,9 @@ const addEventListener = () => {
 }
 const removeEventListener = () => {
   window.removeEventListener('keyup', enterHandler)
+}
+const githubAuth = async () => {
+  window.location.href = `https://github.com/login/oauth/authorize?client_id=3c8ad4de2df49076331b&scope=user:email`
 }
 </script>
 

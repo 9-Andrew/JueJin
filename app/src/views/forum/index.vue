@@ -83,6 +83,10 @@ const initCategoryList = async () => {
     return
   }
   let followResult = await reqFollowNum(store.userInfo.id)
+  if (followResult.data.length == 0) {
+    loading.value = false
+    return
+  }
   let articleResult = await reqArticleNum(followResult.data.map(i => i.followed_user_id), page, limit)
   setTimeout(() => {
     articleList.push(...articleResult.data)
