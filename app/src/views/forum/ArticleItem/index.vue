@@ -1,13 +1,13 @@
 <template>
   <div class="item" @click="openArticleDetail">
     <div class="meta_container">
-      <a @click.stop="router.push(`/user/${article.user_id}`)">{{
+      <a @click.stop="openUser">{{
         article.nickname || article.username
       }}</a>
       <el-divider direction="vertical"></el-divider>
       <div class="date">{{ proxy.$moment(article.create_time).fromNow() }}</div>
       <el-divider direction="vertical" v-show="tags.length > 0"></el-divider>
-      <a v-for="t in tags" :key="t.tag_id" @click.stop="router.push(`/tag/${t.tag_id}`)" class="tag">{{ t.tag_name }}</a>
+      <a v-for="t in tags" :key="t.tag_id" @click.stop="openTag(t.tag_id)" class="tag">{{ t.tag_name }}</a>
     </div>
     <div class="content_container">
       <div class="content_main">
@@ -23,7 +23,7 @@
           </li>
           <li>
             <a @click.stop="likeHandler" :class="{ focus: isLike }">
-              <SvgIcon :name="isLike?'dianzan1':'dianzan'"></SvgIcon>
+              <SvgIcon :name="isLike ? 'dianzan1' : 'dianzan'"></SvgIcon>
               {{ like_num }}
             </a>
           </li>
@@ -52,7 +52,7 @@ import useUserStore from '@/store/user.js';
 
 const { proxy } = getCurrentInstance()
 let props = defineProps(['article', 'keyWords'])
-const like_num=ref(props.article.like_num)
+const like_num = ref(props.article.like_num)
 let router = useRouter()
 let tags = reactive([])
 const store = useUserStore()
@@ -73,6 +73,14 @@ const openArticleDetail = (hash) => {
   hash || (url += '#comment')
   window.open(url, '_blank')
 }
+const openUser = () => {
+  let url = router.resolve(`/user/${props.article.user_id}`).href
+  window.open(url, '_blank')
+}
+const openTag = (id) => {
+  let url = router.resolve(`/tag/${id}`).href
+  window.open(url, '_blank')
+}
 const isLikeHandler = async () => {
   if (store.userInfo.id) {
     let likeResult = await reqIsLike(props.article.id, store.userInfo.id)
@@ -85,10 +93,10 @@ let likeHandler = async () => {
   if (store.userInfo.id) {
     if (isLike.value) {
       await reqDeleteLike(props.article.id, store.userInfo.id)
-      like_num.value-=1
+      like_num.value -= 1
     } else {
       await reqAddLike(props.article.id, store.userInfo.id)
-      like_num.value+=1
+      like_num.value += 1
     }
     isLike.value = !isLike.value
   } else {
@@ -185,7 +193,7 @@ a {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
-        max-width:920px;
+        max-width: 920px;
       }
 
       .action_list {

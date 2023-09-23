@@ -91,3 +91,54 @@ exports.getUserList = (req, res) => {
     })
   })
 }
+
+exports.getTagArticle = (req, res) => {
+  let { page, limit, sort, tagId } = req.query
+
+  let sql = `SELECT
+    article.id,
+    USER.nickname,
+    USER.username,
+    title,
+    content,
+    cover,
+    NAME AS 'article_type',
+    view_num,
+    like_num,
+    article.create_time,
+    USER.id AS user_id
+  FROM
+    article_tag_merge
+    INNER JOIN article ON article_tag_merge.article_id = article.id 
+    INNER JOIN article_type ON article.type_id = article_type.id
+    INNER JOIN USER ON article.user_id = USER.id 
+  WHERE tag_id = '${tagId}' AND article.status=1 `
+  
+  db.query(sql, (_err, results) => (total = results.length))
+  let tagName = ''
+  let sql2 = `select tag_name from tag where id=${tagId}`
+  db.query(sql2, (_err, results) => (tagName = results[0].tag_name))
+
+  switch (sort) {
+    case '0':
+      sql += 'ORDER BY view_num DESC,like_num DESC'
+      break
+    case '1':
+      sql += 'ORDER BY article.create_time DESC'
+      break
+    case '2':
+      sql += 'ORDER BY like_num DESC,view_num DESC'
+      break
+  }
+  sql += `\nlimit ${(page - 1) * limit},${limit};`
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    res.send({
+      status: 0,
+      message: '获取标签文章成功！',
+      data: results,
+      total,
+      tagName
+    })
+  })
+}

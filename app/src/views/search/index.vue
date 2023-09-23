@@ -24,12 +24,12 @@
           </ArticleItem>
         </div>
         <div class="user-container" v-else>
-          <div v-for="(rl, index) in store.resultList" :key="rl.id" @click="openArticleDetail(rl)" class="user_item">
+          <div v-for="(rl, index) in store.resultList" :key="rl.id" @click="openUser(rl)" class="user_item">
             <CustomedAvatar :userInfo="rl" :size="60"></CustomedAvatar>
             <div class="author_info">
               <div class="author_name" v-html="highLight(rl)"></div>
               <div class="meta_info">
-                {{ articleNumList[index] }} 文章<span>·</span>{{ followNumList[index] }} 个关注者
+                {{ articleNumList[index] || 0 }} 文章<span>·</span>{{ followNumList[index] || 0 }} 个关注者
               </div>
             </div>
             <el-button type="success" :plain="!isFollowList[index]" @click.stop="followHandler(rl.id, index)">{{
@@ -84,7 +84,7 @@ let followHandler = async (userId, index) => {
     loginDialogVisible.value = true
   }
 }
-const openArticleDetail = (rl) => {
+const openUser = (rl) => {
   let url = router.resolve(`/user/${rl.id}`).href
   window.open(url, '_blank')
 }
