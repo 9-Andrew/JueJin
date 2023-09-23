@@ -95,7 +95,8 @@ exports.getArticleDetail = (req, res) => {
       like_num,
       star_num,
       article.create_time,
-      status
+      status,
+      path
     FROM
       article
       INNER JOIN article_type ON article.type_id = article_type.id

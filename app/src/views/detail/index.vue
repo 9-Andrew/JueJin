@@ -22,10 +22,10 @@
         </div>
         <div class="article_end">
           <span class="tag_title">分类:</span>
-          <el-tag type="info" size="large" effect="light"> {{ articleInfo.article_type }} </el-tag>
+          <el-tag type="info" size="large" effect="light" @click="openInBlank('/forum/'+articleInfo.path)"> {{ articleInfo.article_type }} </el-tag>
           <span class="separate"></span>
           <span class="tag_title">标签:</span>
-          <el-tag v-for="t in tags" :key="t.tag_id" size="large" effect="light" class="el-tag--default">{{ t.tag_name }}
+          <el-tag v-for="t in tags" :key="t.tag_id" size="large" effect="light" class="el-tag--default" @click="openInBlank('/tag/'+t.tag_id)">{{ t.tag_name }}
           </el-tag>
         </div>
       </div>
@@ -213,6 +213,10 @@ let followHandler = async () => {
     loginDialogVisible.value = true
   }
 }
+const openInBlank = (path) => {
+  let url = router.resolve(path).href
+  window.open(url, '_blank')
+}
 
 watch(() => store.userInfo.id, isLikeAndStarAndFollowHandler)
 onMounted(async () => {
@@ -320,6 +324,9 @@ onBeforeUnmount(() => {
 
         .el-tag--default {
           color: var(--theme-color);
+        }
+        .el-tag{
+          cursor: pointer;
         }
       }
     }
