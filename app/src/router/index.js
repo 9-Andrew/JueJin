@@ -67,7 +67,8 @@ router.beforeEach((to, _from, next) => {
       next()
     }
   } else {
-    if (to.path.indexOf('/editor') != -1) {
+    let restrictRoutes = ['/editor', '/setting']
+    if (restrictRoutes.some(item => to.path.indexOf(item) == 0)) {
       next({ path: '/' })
     } else {
       next()
