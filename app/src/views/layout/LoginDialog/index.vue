@@ -7,10 +7,10 @@
           <el-input v-model="username" placeholder="用户名" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="password" placeholder="密 码" type="password" clearable></el-input>
+          <el-input v-model="password" placeholder="密 码" type="password" show-password clearable></el-input>
         </el-form-item>
         <el-form-item v-if="!isLogin">
-          <el-input v-model="password2" placeholder="确认密码" type="password" clearable></el-input>
+          <el-input v-model="password2" placeholder="确认密码" type="password" show-password clearable></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="loginOrRegister()">{{ buttonTitle }}</el-button>

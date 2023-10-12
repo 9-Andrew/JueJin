@@ -8,6 +8,7 @@ import '@/assets/base.less'
 //引入Elmessage和Elloading的css样式文件
 import 'element-plus/theme-chalk/el-loading.css'
 import 'element-plus/theme-chalk/el-message.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
 import '@/assets/icon/iconfont.js'
 import globalComponent from '@/components'
 
