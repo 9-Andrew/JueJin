@@ -124,10 +124,10 @@ a {
 .item {
   padding: 12px 40px 0;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--background-color);
 
   &:hover {
-    background: #fafafa;
+    background: var(--article-item-background-color-hover);
   }
 
   .meta_container {

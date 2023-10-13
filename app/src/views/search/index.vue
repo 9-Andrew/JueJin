@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100vw;
   height: 46px;
-  background: linear-gradient(#f2f3f5, #fff 8%);
+  background: linear-gradient(var(--border-color), var(--background-color) 8%);
   line-height: 46px;
 
   .category {
@@ -150,13 +150,13 @@ onBeforeUnmount(() => {
   width: 1000px;
   margin: 0 auto;
   margin-top: 40px;
-  background: #fff;
+  background: var(--background-color);
 
   .sort {
     display: flex;
     height: 54px;
     line-height: 54px;
-    border-bottom: 1px solid #dcdfe6;
+    border-bottom: 1px solid var(--border-color);
 
     li {
       cursor: pointer;
@@ -198,7 +198,7 @@ onBeforeUnmount(() => {
           flex-grow: 1;
 
           .author_name {
-            color: #000;
+            color: var(--font-color);
             font-weight: bolder;
           }
 

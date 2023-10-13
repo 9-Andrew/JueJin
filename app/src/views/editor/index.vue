@@ -12,7 +12,7 @@
         <CustomedAvatar class="avatar" :userInfo="userStore.userInfo" @click="router.push('/setting')"></CustomedAvatar>
       </div>
     </div>
-    <MdEditor v-model="articleParams.content" :toolbarsExclude="toolbarsExclude" autoFocus @onUploadImg="onUploadImg"
+    <MdEditor v-model="articleParams.content" :toolbarsExclude="toolbarsExclude" :theme="settingsStore.isDark==1?'dark':'light'" autoFocus @onUploadImg="onUploadImg"
       class="editor" />
     <el-drawer :title="`${isPublish ? '发布' : '更新'}文章`" v-model="drawerVisible" direction="rtl" size="25%"
       :destroy-on-close="true" :show-close="false" :wrapperClosable="true">
@@ -62,6 +62,7 @@ import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import axios from 'axios';
 import useUserStore from '@/store/user.js';
+import useSettingsStore from '@/store/settings.js';
 import { getArticleType, getTag, getArticleDetail, getArticleTags } from '@/api/article.js';
 import { reqCreateArticle, reqUpdateArticle, reqPublishArticle } from '@/api/editor.js';
 import { ElMessage } from 'element-plus';
@@ -80,6 +81,7 @@ const toolbarsExclude = [
   'github'
 ]
 const userStore = useUserStore()
+const settingsStore = useSettingsStore()
 const drawerVisible = ref(false)
 const BASEURL = computed(() => import.meta.env.VITE_APP_BASEURL)
 const route = useRoute()

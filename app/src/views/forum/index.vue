@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
 
     :deep(.demo-tabs) {
       width: 100%;
-      background: #fff;
+      background: var(--background-color);
       border-radius: var(--box-radius);
 
       .el-tabs__header {
@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
         border: 2px dashed #aaa;
         padding: 40px 15px;
         font-size: 14px;
-        background-color: #fff;
+        background-color: var(--background-color);
         display: block;
         text-decoration: none;
         color: #888;

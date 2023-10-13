@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="nav">
-      <a href.stop="" @click="router.push('/user/' + store.userInfo.id)">
+      <a href.stop="" @click="router.push('/user/' + userInfoStore.userInfo.id)">
         <SvgIcon name="fanhui"></SvgIcon>
         返回个人主页
       </a>
@@ -71,25 +71,25 @@
           <el-divider direction="horizontal"></el-divider>
           <div class="sub-title">页面设置</div>
           <p>该设置仅在当前浏览器生效，目前已支持部分核心页面，更多页面适配持续进行中。</p>
-          <el-radio-group v-model="radioIndex" class="radio-group">
-            <div class="radio-item" @click="radioIndex = 0">
+          <el-radio-group v-model="settingsStore.isDark" class="radio-group">
+            <div class="radio-item" @click="settingsStore.setDark(0)">
               <el-skeleton />
-              <div class="radio-btn" :class="{ active: radioIndex == 0 }"><el-radio :label="0"
+              <div class="radio-btn" :class="{ active: settingsStore.isDark == 0 }"><el-radio :label="0"
                   size="large">浅色模式</el-radio>
               </div>
             </div>
-            <div class="radio-item" @click="changeMode">
+            <div class="radio-item" @click="settingsStore.setDark(1)">
               <el-skeleton dark />
-              <div class="radio-btn" :class="{ active: radioIndex == 1 }"><el-radio :label="1"
+              <div class="radio-btn" :class="{ active: settingsStore.isDark == 1 }"><el-radio :label="1"
                   size="large">深色模式</el-radio>
               </div>
             </div>
-            <div class="radio-item" @click="radioIndex = 2">
+            <div class="radio-item" @click="settingsStore.setDark(2)">
               <div class="thumbnail-wrapper" style="display:flex;">
                 <el-skeleton />
                 <el-skeleton dark />
               </div>
-              <div class="radio-btn" :class="{ active: radioIndex == 2 }"><el-radio :label="2"
+              <div class="radio-btn" :class="{ active: settingsStore.isDark == 2 }"><el-radio :label="2"
                   size="large">跟随系统</el-radio>
               </div>
             </div>
@@ -104,22 +104,19 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useUserInfoStore from '@/store/user.js';
+import useSettingsStore from '@/store/settings.js';
 
 const router = useRouter()
-const store = useUserInfoStore()
+const userInfoStore = useUserInfoStore()
+const settingsStore = useSettingsStore()
 const catalogIndex = ref(0)
 const catalog = [{ text: '个人资料', icon: 'zhanghu' }, { text: '账户设置', icon: 'geren2' }, { text: '通用设置', icon: 'shezhi' }]
-const radioIndex = ref(1)
 
-const changeMode=()=>{
-  radioIndex.value = 1
-  document.documentElement.classList.add('dark')
-}
 onMounted(() => {
-  document.querySelector('.el-main').style.height = "90vh"
+  document.querySelector('.el-main').style.miniHeight = "90vh"
 })
 onBeforeUnmount(() => {
-  document.querySelector('.el-main').style.height = "100vh"
+  document.querySelector('.el-main').style.miniHeight = "100vh"
 })
 </script>
 
@@ -129,7 +126,7 @@ onBeforeUnmount(() => {
   margin: 0 auto;
 
   .nav {
-    background-color: #fff;
+    background-color: var(--background-color);
     padding: 10px 22px;
     margin-bottom: 15px;
 
@@ -143,7 +140,7 @@ onBeforeUnmount(() => {
     display: flex;
 
     .sidebar {
-      background-color: #fff;
+      background-color: var(--background-color);
       width: 230px;
       margin-right: 24px;
       padding: 8px;
@@ -160,7 +157,7 @@ onBeforeUnmount(() => {
           &:hover,
           &.active {
             color: var(--theme-color);
-            background-color: #eaf2ff;
+            background-color: var(--settings-btn-hover);
 
             svg {
               fill: var(--theme-color);
@@ -175,7 +172,7 @@ onBeforeUnmount(() => {
     }
 
     .content {
-      background-color: #fff;
+      background-color: var(--background-color);
       flex-grow: 1;
       padding: 20px;
 
@@ -210,11 +207,13 @@ onBeforeUnmount(() => {
               font-family: inherit;
               /* 使用父元素的字体大小 */
               font-size: inherit;
-              background-color: #f2f3f5;
+              background-color: var(--input-background-color);
               padding: 8px 12px;
+              caret-color: red;
 
               &:focus {
                 outline: 1px solid var(--theme-color);
+                background-color: transparent;
               }
 
               &::placeholder {
@@ -299,19 +298,19 @@ onBeforeUnmount(() => {
           .radio-item {
             width: 240px;
             border-radius: 5px;
-            border: 1px solid #e4e6eb;
+            border: 1px solid var(--border-color);
             overflow: hidden;
             cursor: pointer;
 
             &:hover .radio-btn {
-              background-color: #eaf2ff;
+              background-color: var(--settings-btn-hover);
             }
 
             .radio-btn {
               padding-left: 18px;
 
               &.active {
-                background-color: #eaf2ff;
+                background-color: var(--settings-btn-hover);
               }
             }
           }

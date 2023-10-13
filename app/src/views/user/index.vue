@@ -90,7 +90,7 @@ const followHandler = () => { }
       display: flex;
       align-items: center;
       padding: 30px;
-      background-color: #fff;
+      background-color: var(--background-color);
 
       .avatar {
         margin-right: 30px;
@@ -131,7 +131,7 @@ const followHandler = () => { }
     }
 
     .list_block {
-      background-color: #fff;
+      background-color: var(--background-color);
       margin-top: 12px;
       display: flex;
       overflow: hidden;
@@ -145,7 +145,7 @@ const followHandler = () => { }
           position: relative;
           display: flex;
           align-items: center;
-          border-bottom: 2px solid #f3f3f4;
+          border-bottom: 2px solid var(--border-color);
           height: 48px;
           padding-left: 8px;
 
@@ -255,7 +255,7 @@ const followHandler = () => { }
         padding: 16px 0;
         margin-bottom: 12px;
         width: 250px;
-        background-color: #fff;
+        background-color: var(--background-color);
         display: flex;
         text-align: center;
         color: #31445B;
@@ -264,7 +264,7 @@ const followHandler = () => { }
 
         .follow_num {
           flex-grow: 1;
-          border-right: 1px solid #f3f3f4;
+          border-right: 1px solid var(--border-color);
         }
 
         .followed_num {

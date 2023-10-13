@@ -172,7 +172,7 @@ function clearSearchHistory() {
 
 <style lang="less" scoped>
 .el-header {
-  background: #fff;
+  background: var(--background-color);
   position: fixed;
   top: 0;
   left: 0;
@@ -202,18 +202,19 @@ function clearSearchHistory() {
       top: 48px;
       right: 0;
       width: 100%;
-      background: #fff;
+      background: var(--search-item-background-color);
       line-height: 24px;
       font-size: 12px;
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
-      border: 1px solid #e4e6eb;
+      border: 1px solid var(--border-color);
+      border-radius: var(--box-radius);
       z-index: 3;
 
       .header {
         padding: 6px 12px;
         display: flex;
         justify-content: space-between;
-        border-bottom: 1px solid #dcdfe6;
+        border-bottom: 1px solid var(--border-color);
 
         span {
           color: #8a919f;
@@ -225,7 +226,7 @@ function clearSearchHistory() {
         padding: 6px 12px;
 
         &:hover {
-          background-color: #f7f8fa;
+          background-color: var(--search-item-background-color-hover);
         }
       }
     }
@@ -243,7 +244,7 @@ function clearSearchHistory() {
       position: relative;
 
       a {
-        color: #000;
+        color: var(--font-color);
         display: block;
       }
 
@@ -274,8 +275,7 @@ function clearSearchHistory() {
   margin: 60px auto 12px;
   padding: 0;
   // 必须设置高度，否则动态加载内容时，进度条显示会导致页面跳动
-  height: 100vh;
-  overflow: visible;
+  min-height: 100vh;
 }
 
 .el-row {
@@ -328,7 +328,7 @@ function clearSearchHistory() {
   height: 40px;
   border-radius: 50% 50%;
   box-shadow: 0 2px 8px rgba(50, 50, 50, 0.04);
-  background-color: #fff;
+  background-color: var(--background-color);
   display: flex;
   justify-content: center;
   align-items: center;

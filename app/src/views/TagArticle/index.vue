@@ -91,7 +91,7 @@ onMounted(() => {
   width: 1000px;
   margin: 0 auto;
   margin-top: 121px;
-  background: #fff;
+  background: var(--background-color);
 
   .sort {
     display: flex;

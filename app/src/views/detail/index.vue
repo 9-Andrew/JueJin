@@ -10,7 +10,7 @@
               articleInfo.username }}</div>
             <div class="meta_info">
               {{ proxy.$moment(articleInfo.create_time).format('YYYY年MM月DD日 HH:mm')
-              }}<span>·</span>阅读 {{ articleInfo.view_num+1 }}
+              }}<span>·</span>阅读 {{ articleInfo.view_num + 1 }}
             </div>
           </div>
           <div class="edit"><router-link v-if="store.userInfo.id && articleInfo.user_id == store.userInfo.id"
@@ -18,14 +18,16 @@
         </div>
         <div class="article_body">
           <MdPreview :editorId="id" :modelValue="articleInfo.content" :showCodeRowNumber="true"
-            @onGetCatalog="onGetCatalog" />
+            :theme="settingsStore.isDark == 1 ? 'dark' : 'light'" @onGetCatalog="onGetCatalog" />
         </div>
         <div class="article_end">
           <span class="tag_title">分类:</span>
-          <el-tag type="info" size="large" effect="light" @click="openInBlank('/forum/'+articleInfo.path)"> {{ articleInfo.article_type }} </el-tag>
+          <el-tag type="info" size="large" effect="light" @click="openInBlank('/forum/' + articleInfo.path)"> {{
+            articleInfo.article_type }} </el-tag>
           <span class="separate"></span>
           <span class="tag_title">标签:</span>
-          <el-tag v-for="t in tags" :key="t.tag_id" size="large" effect="light" class="el-tag--default" @click="openInBlank('/tag/'+t.tag_id)">{{ t.tag_name }}
+          <el-tag v-for="t in tags" :key="t.tag_id" size="large" effect="light" class="el-tag--default"
+            @click="openInBlank('/tag/' + t.tag_id)">{{ t.tag_name }}
           </el-tag>
         </div>
       </div>
@@ -93,6 +95,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getArticleDetail, getArticleTags } from '@/api/article.js'
 import { reqAddView, reqIsLike, reqAddLike, reqDeleteLike, reqIsStar, reqAddStar, reqDeleteStar, reqIsFollow, reqAddFollow, reqDeleteFollow } from '@/api/interaction.js';
 import useUserStore from '@/store/user.js';
+import useSettingsStore from '@/store/settings.js';
 import { ElMessage } from 'element-plus';
 import { MdPreview, MdCatalog } from 'md-editor-v3'
 // preview.css相比style.css少了编辑器那部分样式
@@ -115,6 +118,7 @@ const isStar = ref(false)
 const isFollow = ref(false)
 const isFollowDone = ref(false)
 const immerseValue = ref(localStorage.getItem('isImmerse') == 'true')
+const settingsStore = useSettingsStore()
 const isImmerse = computed({
   get() {
     return immerseValue.value
@@ -255,7 +259,7 @@ onBeforeUnmount(() => {
 
     .content {
       padding: 32px;
-      background-color: #fff;
+      background-color: var(--background-color);
       border-radius: var(--box-radius);
 
       .article_title {
@@ -325,7 +329,8 @@ onBeforeUnmount(() => {
         .el-tag--default {
           color: var(--theme-color);
         }
-        .el-tag{
+
+        .el-tag {
           cursor: pointer;
         }
       }
@@ -334,7 +339,7 @@ onBeforeUnmount(() => {
     .comment {
       margin-top: 20px;
       padding: 32px;
-      background-color: #fff;
+      background-color: var(--background-color);
       border-radius: var(--box-radius);
     }
   }
@@ -344,7 +349,7 @@ onBeforeUnmount(() => {
 
     .author_info {
       margin-bottom: 20px;
-      background-color: #fff;
+      background-color: var(--background-color);
       border-radius: var(--box-radius);
       padding: 20px;
 
@@ -383,7 +388,7 @@ onBeforeUnmount(() => {
 
     .article_catalog {
       border-radius: var(--box-radius);
-      background-color: #fff;
+      background-color: var(--background-color);
 
       .title_box {
         padding: 0 20px;
@@ -406,7 +411,7 @@ onBeforeUnmount(() => {
         }
 
         &::-webkit-scrollbar-track {
-          background-color: #fff;
+          background-color: var(--background-color);
           /* 滚动条背景颜色 */
           border-radius: 10px;
         }
@@ -458,7 +463,7 @@ onBeforeUnmount(() => {
       height: 48px;
       border-radius: 50% 50%;
       box-shadow: 0 2px 8px rgba(50, 50, 50, 0.04);
-      background-color: #fff;
+      background-color: var(--background-color);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -496,5 +501,9 @@ onBeforeUnmount(() => {
       margin-bottom: 8px;
     }
   }
+}
+
+.md-editor-previewOnly {
+  background-color: transparent;
 }
 </style>
