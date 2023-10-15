@@ -19,3 +19,5 @@ export const register = ({ username, password }) =>
       password
     }
   })
+
+export const reqUserInfo = (id) => request('/api/user?id=' + id)

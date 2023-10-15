@@ -42,7 +42,8 @@ import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch, c
 import { useRoute, useRouter } from 'vue-router'
 import ArticleItem from './ArticleItem/index.vue'
 import { getArticle } from '@/api/article.js'
-import { reqFollowNum, reqArticleNum } from '@/api/interaction.js';
+import { reqFollowNum } from '@/api/interaction.js';
+import { reqArticleByUserIdList } from '@/api/search.js'
 import useUserStore from '@/store/user.js';
 
 let page = 1
@@ -87,7 +88,7 @@ const initCategoryList = async () => {
     loading.value = false
     return
   }
-  let articleResult = await reqArticleNum(followResult.data.map(i => i.followed_user_id), page, limit)
+  let articleResult = await reqArticleByUserIdList(followResult.data.map(i => i.followed_user_id), page, limit)
   setTimeout(() => {
     articleList.push(...articleResult.data)
     loading.value = false

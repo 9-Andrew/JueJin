@@ -51,7 +51,8 @@ import { ref, onMounted, onBeforeUnmount, nextTick, watch, inject } from 'vue';
 import useSearchStore from '@/store/search.js';
 import useUserStore from '@/store/user.js';
 import ArticleItem from '@/views/forum/ArticleItem/index.vue';
-import { reqIsFollow, reqAddFollow, reqDeleteFollow, reqFollowNum, reqArticleNum } from '@/api/interaction.js';
+import { reqIsFollow, reqAddFollow, reqDeleteFollow, reqFollowNum } from '@/api/interaction.js';
+import { reqArticleByUserIdList } from '@/api/search.js'
 import { useRouter, useRoute } from 'vue-router';
 
 const category = ['综合', '文章', '用户']
@@ -96,7 +97,7 @@ const isFollowHandler = () => {
     } else {
       isFollowList.value.length = 0
     }
-    let articleNumResult = await reqArticleNum([item.id])
+    let articleNumResult = await reqArticleByUserIdList([item.id])
     articleNumList.value[index] = articleNumResult.data.length
     let followNumResult = await reqFollowNum(item.id)
     followNumList.value[index] = followNumResult.data.length

@@ -2,10 +2,10 @@
   <div class="container">
     <div class="main">
       <div class="profile">
-        <CustomedAvatar class="avatar" :userInfo="{ username: '111' }" :size="74"></CustomedAvatar>
-        <div class="username">安玖</div>
+        <CustomedAvatar class="avatar" :userInfo="userInfo" :size="74"></CustomedAvatar>
+        <div class="username">{{ userInfo.nickname || userInfo.username }}</div>
         <div class="btn_container">
-          <el-button v-if="store.userInfo.id && store.userInfo.id == route.params.id" type="default" style="width: 120px;"
+          <el-button v-if="store.userInfo.id && store.userInfo.id == userId" type="default" style="width: 120px;"
             @click="router.push('/setting')">设置</el-button>
           <div class="operate_btn" v-else>
             <el-button type="primary" :class="{ followed: isFollow, 'only_icon': isFollowDone }" @click="followHandler">
@@ -45,14 +45,14 @@
     <div class="sidebar">
       <div class="fixed_container">
         <div class="follow_block">
-          <div class="follow_num">关注了<span>5</span></div>
-          <div class="followed_num">关注者<span>0</span></div>
+          <div class="follow_num">关注了<span>{{ userInfo.followNum }}</span></div>
+          <div class="followed_num">关注者<span>{{ userInfo.followedNum }}</span></div>
         </div>
         <div class="more_item"><span class="title">收藏文章</span>
-          <div class="value">14</div>
+          <div class="value">0</div>
         </div>
         <div class="more_item"><span class="title">加入于</span>
-          <div class="value">2023-04-12</div>
+          <div class="value">{{ proxy.$moment(userInfo.create_time).format('YYYY-MM-DD') }}</div>
         </div>
       </div>
     </div>
@@ -60,9 +60,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter,useRoute } from 'vue-router';
+import { ref, onMounted, getCurrentInstance, computed, inject, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import useUserInfoStore from '@/store/user.js';
+import { reqUserInfo } from '@/api/user';
+import { reqFollowNum, reqFollowedNum, reqDeleteFollow, reqAddFollow, reqIsFollow } from '@/api/interaction';
+import { ElMessage } from 'element-plus';
 
 const router = useRouter()
 const route = useRoute()
@@ -72,8 +75,56 @@ const isFollowDone = ref(false)
 const activeIndex = ref(0)
 const panes = ref(['文章', '草稿', '收藏', '关注', '赞'])
 const isSearch = ref(false)
+const userInfo = ref({
+  followNum: 0,
+  followedNum: 0
+})
+const { proxy } = getCurrentInstance()
+const loginDialogVisible = inject('loginDialogVisible')
+const userId = computed(() => route.params.id)
 
-const followHandler = () => { }
+const followHandler = async () => {
+  if (store.userInfo.id) {
+    if (isFollow.value) {
+      await reqDeleteFollow(store.userInfo.id, userId.value)
+    } else {
+      await reqAddFollow(store.userInfo.id, userId.value)
+    }
+    if (isFollow.value) {
+      isFollow.value = false
+      isFollowDone.value = false
+    } else {
+      isFollow.value = true
+      setTimeout(() => {
+        isFollowDone.value = true
+      }, 600);
+    }
+  } else {
+    loginDialogVisible.value = true
+  }
+}
+let isFollowHandler = async () => {
+  if (store.userInfo.id) {
+    let followResult = await reqIsFollow(store.userInfo.id, userId.value)
+    isFollow.value = followResult.data
+    setTimeout(() => {
+      isFollowDone.value = followResult.data
+    }, 600);
+  } else {
+    isFollow.value = false
+    isFollowDone.value = false
+  }
+}
+watch(() => store.userInfo.id, isFollowHandler)
+onMounted(async () => {
+  const result = await reqUserInfo(userId.value)
+  userInfo.value = result.data
+  const followNumResult = await reqFollowNum(userId.value)
+  const followedNumResult = await reqFollowedNum(userId.value)
+  userInfo.value.followNum = followNumResult.data.length
+  userInfo.value.followedNum = followedNumResult.data.length
+  isFollowHandler()
+})
 </script>
 
 <style lang="less" scoped>
@@ -105,15 +156,19 @@ const followHandler = () => { }
 
       .btn_container {
         align-self: flex-end;
+        width: 210px;
+
+        &>.el-button {
+          float: right;
+        }
 
         .operate_btn {
           display: flex;
           justify-content: space-between;
 
           .el-button {
-            flex: 1 1 auto;
-            transition: all .9s;
-            width: 100px;
+            flex-grow: 1;
+            transition: all .3s ease-out;
           }
 
           .followed {
@@ -123,7 +178,7 @@ const followHandler = () => { }
           }
 
           .only_icon {
-            max-width: 28px;
+            flex-grow: 0;
           }
 
         }

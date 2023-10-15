@@ -107,3 +107,17 @@ exports.githubOAuth = async (req, res) => {
     res.cc('e ' + error)
   }
 }
+
+exports.getUserInfo = (req, res) => {
+  const { id } = req.query
+  const sql = 'select * from user where id=?'
+  db.query(sql, id, (err, results) => {
+    if (err) return res.cc(err)
+    if (results.length === 0) return res.cc('用户不存在！', 0)
+    res.send({
+      status: 0,
+      message: '获取用户信息成功！',
+      data: results[0]
+    })
+  })
+}

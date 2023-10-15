@@ -31,7 +31,7 @@
 import { ref, onMounted } from 'vue';
 import ArticleItem from '@/views/forum/ArticleItem/index.vue';
 import { useRoute } from 'vue-router';
-import { reqTagArticle } from '@/api/search.js';
+import { reqArticleByTagId } from '@/api/search.js';
 
 const sort = ['热门', '最新', '最热']
 const limit = ref(10)
@@ -45,7 +45,7 @@ const loading = ref(true)
 
 const getData = async () => {
   loading.value = true
-  let result = await reqTagArticle(pageNo.value, limit.value, sortParams.value, route.params.id)
+  let result = await reqArticleByTagId(pageNo.value, limit.value, sortParams.value, route.params.id)
   tagName.value = result.tagName
   setTimeout(() => {
     resultList.value = result.data

@@ -83,7 +83,7 @@ const openTag = (id) => {
 }
 const isLikeHandler = async () => {
   if (store.userInfo.id) {
-    let likeResult = await reqIsLike(props.article.id, store.userInfo.id)
+    let likeResult = await reqIsLike(0, store.userInfo.id, props.article.id)
     isLike.value = likeResult.data
   } else {
     isLike.value = false
@@ -92,10 +92,10 @@ const isLikeHandler = async () => {
 let likeHandler = async () => {
   if (store.userInfo.id) {
     if (isLike.value) {
-      await reqDeleteLike(props.article.id, store.userInfo.id)
+      await reqDeleteLike(0, store.userInfo.id, props.article.id)
       like_num.value -= 1
     } else {
-      await reqAddLike(props.article.id, store.userInfo.id)
+      await reqAddLike(0, store.userInfo.id, props.article.id)
       like_num.value += 1
     }
     isLike.value = !isLike.value

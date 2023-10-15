@@ -113,10 +113,10 @@ const catalogIndex = ref(0)
 const catalog = [{ text: '个人资料', icon: 'zhanghu' }, { text: '账户设置', icon: 'geren2' }, { text: '通用设置', icon: 'shezhi' }]
 
 onMounted(() => {
-  document.querySelector('.el-main').style.miniHeight = "90vh"
+  document.querySelector('.el-main').style.minHeight = "80vh"
 })
 onBeforeUnmount(() => {
-  document.querySelector('.el-main').style.miniHeight = "100vh"
+  document.querySelector('.el-main').style.minHeight = "100vh"
 })
 </script>
 

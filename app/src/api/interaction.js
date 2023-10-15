@@ -5,20 +5,20 @@ export const reqAddView = (id) =>
     url: 'interaction/add_view',
     params: { id }
   })
-export const reqIsLike = (articleId, userId) =>
+export const reqIsLike = (typeId, userId, contentId) =>
   request({
     url: 'interaction/is_like',
-    params: { articleId, userId }
+    params: { typeId, userId, contentId }
   })
-export const reqAddLike = (articleId, userId) =>
+export const reqAddLike = (typeId, userId, contentId) =>
   request({
     url: 'interaction/add_like',
-    params: { articleId, userId }
+    params: {typeId, userId, contentId }
   })
-export const reqDeleteLike = (articleId, userId) =>
+export const reqDeleteLike = (typeId, userId, contentId) =>
   request({
     url: 'interaction/delete_like',
-    params: { articleId, userId }
+    params: { typeId, userId, contentId }
   })
 export const reqIsStar = (articleId, userId) =>
   request({
@@ -50,7 +50,8 @@ export const reqDeleteFollow = (userId, followedUserId) =>
     url: 'interaction/delete_follow',
     params: { userId, followedUserId }
   })
-export const reqArticleNum = (userIdList,page,limit) =>
-  request({ url: 'interaction/follow_articles', params: { userIdList,page,limit} })
+
 export const reqFollowNum = (userId) =>
   request({ url: 'interaction/follow_users', params: { userId } })
+  export const reqFollowedNum = (userId) =>
+  request({ url: 'interaction/followed_users', params: { userId } })

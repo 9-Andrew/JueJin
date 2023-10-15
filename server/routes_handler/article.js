@@ -1,5 +1,5 @@
 const db = require('../db')
-exports.getArticleType = (req, res) => {
+exports.getType = (req, res) => {
   const sql = `select * from article_type WHERE path is NOT NULL`
   db.query(sql, (err, results) => {
     if (err) return res.cc(err)

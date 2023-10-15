@@ -12,7 +12,8 @@ router.get('/delete_star',interactionHandler.getDeleteStar)
 router.get('/is_follow',interactionHandler.getIsFollow)
 router.get('/add_follow',interactionHandler.getAddFollow)
 router.get('/delete_follow',interactionHandler.getDeleteFollow)
-router.get('/follow_articles',interactionHandler.getArticleByUser)
-router.get('/follow_users',interactionHandler.getFollowedByUser)
+
+router.get('/follow_users',interactionHandler.getFollowListByUserId)
+router.get('/followed_users',interactionHandler.getFollowedListByUserId)
 
 module.exports=router

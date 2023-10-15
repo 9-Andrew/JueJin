@@ -31,7 +31,9 @@
           </el-tag>
         </div>
       </div>
-      <div v-show="!isImmerse" id="comment" class="comment">评论</div>
+      <div v-show="!isImmerse" id="comment" class="comment">
+        <Comment></Comment>
+      </div>
     </div>
     <div class="sidebar">
       <div v-show="!isImmerse" class="author_info">
@@ -96,6 +98,7 @@ import { getArticleDetail, getArticleTags } from '@/api/article.js'
 import { reqAddView, reqIsLike, reqAddLike, reqDeleteLike, reqIsStar, reqAddStar, reqDeleteStar, reqIsFollow, reqAddFollow, reqDeleteFollow } from '@/api/interaction.js';
 import useUserStore from '@/store/user.js';
 import useSettingsStore from '@/store/settings.js';
+import Comment from '@/views/detail/comment/index.vue';
 import { ElMessage } from 'element-plus';
 import { MdPreview, MdCatalog } from 'md-editor-v3'
 // preview.css相比style.css少了编辑器那部分样式
@@ -135,10 +138,10 @@ let handleScroll = proxy.$throttle(() => {
 let likeHandler = async () => {
   if (store.userInfo.id) {
     if (isLike.value) {
-      await reqDeleteLike(route.params.id, store.userInfo.id)
+      await reqDeleteLike(0, store.userInfo.id, route.params.id)
       articleInfo.like_num--
     } else {
-      await reqAddLike(route.params.id, store.userInfo.id)
+      await reqAddLike(0, store.userInfo.id, route.params.id)
       articleInfo.like_num++
     }
     isLike.value = !isLike.value
@@ -148,7 +151,7 @@ let likeHandler = async () => {
 }
 let isLikeAndStarAndFollowHandler = async () => {
   if (store.userInfo.id) {
-    let likeResult = await reqIsLike(route.params.id, store.userInfo.id)
+    let likeResult = await reqIsLike(0, store.userInfo.id, route.params.id)
     isLike.value = likeResult.data
     let starResult = await reqIsStar(route.params.id, store.userInfo.id)
     isStar.value = starResult.data
@@ -156,7 +159,7 @@ let isLikeAndStarAndFollowHandler = async () => {
     isFollow.value = followResult.data
     setTimeout(() => {
       isFollowDone.value = followResult.data
-    }, 500);
+    }, 600);
   } else {
     isLike.value = false
     isStar.value = false
@@ -178,7 +181,7 @@ let copyLink = () => {
     tooltopVisible.value = true
     setTimeout(() => {
       tooltopVisible.value = false
-    }, 800);
+    }, 600);
   })
 }
 let starHandler = async () => {
@@ -369,8 +372,8 @@ onBeforeUnmount(() => {
         justify-content: space-between;
 
         .el-button {
-          flex: 1 1 auto;
-          transition: all .9s;
+          flex-grow: 1;
+          transition: all .3s ease-out;
         }
 
         .followed {
@@ -380,7 +383,7 @@ onBeforeUnmount(() => {
         }
 
         .only_icon {
-          max-width: 28px;
+          flex-grow: 0;
         }
 
       }
