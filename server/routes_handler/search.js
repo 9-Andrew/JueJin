@@ -74,10 +74,15 @@ exports.getArticleList = (req, res) => {
   })
 }
 exports.getUserList = (req, res) => {
-  let { page, limit, keyWords } = req.query
+  let { page, limit, keyWords, userIdList } = req.query
   keyWords && (keyWords = keyWords.replace(/'/g, ''))
+  let sql = `SELECT id,username,nickname,avatar FROM user WHERE `
+  if (keyWords) {
+    sql += `(nickname is null and username like '%${keyWords}%')or(nickname LIKE '%${keyWords}%')`
+  } else {
+    sql += `id in (${userIdList ? userIdList.join() : '-1'})`
+  }
 
-  let sql = `SELECT id,username,nickname,avatar FROM user WHERE(nickname is null and username like '%${keyWords}%')or(nickname LIKE '%${keyWords}%') `
   db.query(sql, (_err, results) => (total = results.length))
 
   sql += `ORDER BY create_time ASC\nlimit ${(page - 1) * limit},${limit};`
@@ -117,7 +122,7 @@ exports.getArticleByTagId = (req, res) => {
   db.query(sql, (_err, results) => (total = results.length))
   let tagName = ''
   let sql2 = `select tag_name from tag where id=${tagId}`
-  db.query(sql2, (_err, results) => (tagName = results[0].tag_name))
+  db.query(sql2, (_err, results) => (tagName = results.length == 1 ? results[0].tag_name : null))
 
   switch (sort) {
     case '0':
@@ -135,7 +140,7 @@ exports.getArticleByTagId = (req, res) => {
     if (err) return res.cc(err)
     res.send({
       status: 0,
-      message: '获取标签文章成功！',
+      message: total == 0 ? '标签不存在' : '获取标签文章成功！',
       data: results,
       total,
       tagName
@@ -144,11 +149,10 @@ exports.getArticleByTagId = (req, res) => {
 }
 exports.getArticleByUserIdList = (req, res) => {
   let { page, limit, userIdList } = req.query
-  let idList = userIdList ? userIdList.join() : '-1'
 
   let sql = `select article.id,user.nickname,user.username,title,content,cover,view_num,like_num,article.create_time,user.id AS user_id from article
   inner join user on article.user_id=user.id
-  where status=1 and user_id in (${idList}) ORDER BY article.create_time DESC\n`
+  where status=1 and user_id in (${userIdList ? userIdList.join() : '-1'}) ORDER BY article.create_time DESC\n`
 
   page && (sql += `limit ${(page - 1) * limit},${limit}`)
   db.query(sql, (err, results) => {
@@ -196,39 +200,6 @@ exports.getArticleByUserId = (req, res) => {
     })
   })
 }
-exports.getCollectedArticleByUserId = (req, res) => {
-  let { page, limit, userId } = req.query
-
-  let sql = `SELECT
-      article.id,
-      USER.nickname,
-      USER.username,
-      title,
-      content,
-      cover,
-      NAME AS 'article_type',
-      view_num,
-      like_num,
-      article.create_time,
-      USER.id AS user_id 
-    FROM
-      article
-      INNER JOIN article_type ON article.type_id = article_type.id
-      INNER JOIN USER ON article.user_id = USER.id 
-    WHERE
-      STATUS =1 and article.id in(select content_id from \`like\`  WHERE type_id=0 and user_id=${userId}) `
-
-  page && (sql += `limit ${(page - 1) * limit},${limit}`)
-  db.query(sql, (err, results) => {
-    if (err) return res.cc(err)
-    if (results.length === 0) return res.cc('没有更多了！', 0)
-    res.send({
-      status: 0,
-      message: '获取点赞文章成功！',
-      data: results
-    })
-  })
-}
 exports.getStarredArticleByUserId = (req, res) => {
   let { page, limit, userId } = req.query
 
@@ -262,7 +233,40 @@ exports.getStarredArticleByUserId = (req, res) => {
     })
   })
 }
-exports.getArticleByKeyWordsFromPublishedAndStarredAndCollected = (req, res) => {
+exports.getLikedArticleByUserId = (req, res) => {
+  let { page, limit, userId } = req.query
+
+  let sql = `SELECT
+      article.id,
+      USER.nickname,
+      USER.username,
+      title,
+      content,
+      cover,
+      NAME AS 'article_type',
+      view_num,
+      like_num,
+      article.create_time,
+      USER.id AS user_id 
+    FROM
+      article
+      INNER JOIN article_type ON article.type_id = article_type.id
+      INNER JOIN USER ON article.user_id = USER.id 
+    WHERE
+      STATUS =1 and article.id in(select content_id from \`like\`  WHERE type_id=0 and user_id=${userId}) `
+
+  page && (sql += `limit ${(page - 1) * limit},${limit}`)
+  db.query(sql, (err, results) => {
+    if (err) return res.cc(err)
+    if (results.length === 0) return res.cc('没有更多了！', 0)
+    res.send({
+      status: 0,
+      message: '获取点赞文章成功！',
+      data: results
+    })
+  })
+}
+exports.getArticleByKeyWordsFromPublishedAndStarredAndLiked = (req, res) => {
   let { page, limit, userId, keyWords } = req.query
   keyWords && (keyWords = keyWords.replace(/'/g, ''))
 

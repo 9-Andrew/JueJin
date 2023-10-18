@@ -21,11 +21,25 @@
       <div class="list_block">
         <div class="tab_container" :class="{ active: isSearch }">
           <div class="header">
-            <div v-for="(item, index) in panes" :key="index" :class="{ active: activeIndex == index }"
-              @click="activeIndex = index">{{ item }}</div>
+            <div v-for="(item, index) in panes" v-show="index != 1 || (store.userInfo.id && store.userInfo.id == userId)"
+              :key="index" :class="{ active: activeIndex == index }" @click="getData(index)">{{ item }}</div>
             <SvgIcon name="sousuo" @click="isSearch = true"></SvgIcon>
           </div>
-          1
+          <div v-if="activeIndex != 3">
+            <ArticleItem v-for="al in articleList" :key="al.id" :article="al"></ArticleItem>
+          </div>
+          <div v-else>
+            <div class="follow_sub_tab">
+              <div class="sub_tab_title">关注</div>
+              <ul class="sub_tab_box">
+                <li v-for="(item, index) in followTabs" :key="index" :class="{ active: followTabIndex == index }"
+                  @click="gotoFollow(index)">{{ item }}</li>
+              </ul>
+            </div>
+            <UserItem v-for="ul in userList" :key="ul.id" :user="ul"></UserItem>
+          </div>
+          <el-skeleton v-if="isLoading" :rows="8" :loading="isLoading" animated />
+          <el-empty v-if="!isLoading && articleList.length == 0 && userList.length == 0" description="暂无内容"></el-empty>
         </div>
         <div class="search_container" :class="{ active: isSearch }">
           <div class="header">
@@ -45,8 +59,11 @@
     <div class="sidebar">
       <div class="fixed_container">
         <div class="follow_block">
-          <div class="follow_num">关注了<span>{{ userInfo.followNum }}</span></div>
-          <div class="followed_num">关注者<span>{{ userInfo.followedNum }}</span></div>
+          <div class="follow_num" @click="gotoFollow(0)">关注了<span>{{ userInfo.followNum }}</span>
+          </div>
+          <div class="followed_num" @click="gotoFollow(1)">关注者<span>{{ userInfo.followedNum
+          }}</span>
+          </div>
         </div>
         <div class="more_item"><span class="title">收藏文章</span>
           <div class="value">0</div>
@@ -66,6 +83,10 @@ import useUserInfoStore from '@/store/user.js';
 import { reqUserInfo } from '@/api/user';
 import { reqFollowNum, reqFollowedNum, reqDeleteFollow, reqAddFollow, reqIsFollow } from '@/api/interaction';
 import { ElMessage } from 'element-plus';
+import { reqArticleByUserId, reqStarredArticleByUserId, reqLikedArticleByUserId, reqArticleByKeyWordsFromPublishedAndStarredAndLiked } from '@/api/search.js';
+import { reqUserListByUserIdList } from '@/api/search.js';
+import ArticleItem from '@/components/ArticleItem/index.vue'
+
 
 const router = useRouter()
 const route = useRoute()
@@ -74,6 +95,8 @@ const isFollow = ref(false)
 const isFollowDone = ref(false)
 const activeIndex = ref(0)
 const panes = ref(['文章', '草稿', '收藏', '关注', '赞'])
+const followTabIndex = ref(0)
+const followTabs = ref(['关注的用户', '关注者'])
 const isSearch = ref(false)
 const userInfo = ref({
   followNum: 0,
@@ -81,7 +104,12 @@ const userInfo = ref({
 })
 const { proxy } = getCurrentInstance()
 const loginDialogVisible = inject('loginDialogVisible')
-const userId = computed(() => route.params.id)
+const userId = computed(() => parseInt(route.params.id))
+const isLoading = ref(true)
+const page = ref(1)
+const limit = ref(10)
+const articleList = ref([])
+const userList = ref([])
 
 const followHandler = async () => {
   if (store.userInfo.id) {
@@ -103,7 +131,7 @@ const followHandler = async () => {
     loginDialogVisible.value = true
   }
 }
-let isFollowHandler = async () => {
+const isFollowHandler = async () => {
   if (store.userInfo.id) {
     let followResult = await reqIsFollow(store.userInfo.id, userId.value)
     isFollow.value = followResult.data
@@ -116,14 +144,67 @@ let isFollowHandler = async () => {
   }
 }
 watch(() => store.userInfo.id, isFollowHandler)
-onMounted(async () => {
+const getUserInfo = async () => {
+  // 获取用户基本信息
   const result = await reqUserInfo(userId.value)
+  if (!result.data) {
+    ElMessage.info(result.message)
+    router.push('/404')
+    return
+  }
   userInfo.value = result.data
   const followNumResult = await reqFollowNum(userId.value)
   const followedNumResult = await reqFollowedNum(userId.value)
   userInfo.value.followNum = followNumResult.data.length
   userInfo.value.followedNum = followedNumResult.data.length
   isFollowHandler()
+}
+const getData = async (index) => {
+  let result
+  articleList.value.length = 0
+  userList.value.length = 0
+  isLoading.value = true
+  activeIndex.value = index
+  if (activeIndex.value == 0 || activeIndex.value == 1) {
+    result = await reqArticleByUserId(page.value, limit.value, userId.value, activeIndex.value == 0 ? 1 : 0)
+  } else if (activeIndex.value == 2) {
+    result = await reqStarredArticleByUserId(page.value, limit.value, userId.value)
+  } else if (activeIndex.value == 4) {
+    result = await reqLikedArticleByUserId(page.value, limit.value, userId.value)
+  } else {
+    if (followTabIndex.value == 0) {
+      result = await reqFollowNum(userId.value)
+    } else {
+      result = await reqFollowedNum(userId.value)
+    }
+    let userIdList = result.data.map(item => item.followed_user_id)
+    result = await reqUserListByUserIdList(page.value, limit.value, userIdList)
+  }
+  setTimeout(() => {
+    isLoading.value = false
+    if (activeIndex.value != 3) {
+      articleList.value = result.data
+    } else {
+      userList.value = result.data
+    }
+  }, 400)
+}
+const gotoFollow = (index) => {
+  activeIndex.value = 3
+  followTabIndex.value = index
+  getData(activeIndex.value)
+}
+watch(() => route.params.id, () => {
+  if (route.fullPath.indexOf('/user') != -1) {
+    getUserInfo()
+    getData(activeIndex.value)
+  }
+})
+
+
+onMounted(() => {
+  getUserInfo()
+  getData(activeIndex.value)
 })
 </script>
 
@@ -135,7 +216,8 @@ onMounted(async () => {
   justify-content: space-around;
 
   .main {
-    flex-grow: 1;
+    flex: 1;
+    overflow: hidden;
 
     .profile {
       display: flex;
@@ -239,6 +321,47 @@ onMounted(async () => {
         &.active {
           transform: translateX(-100%);
           opacity: .3;
+        }
+
+        .follow_sub_tab {
+          height: 50px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 28px;
+
+          .sub_tab_title {
+            font-weight: bold;
+          }
+
+          .sub_tab_box {
+            display: flex;
+            color: #72777b;
+
+            li {
+              cursor: pointer;
+              padding: 0 12px;
+              position: relative;
+
+              &:not(li:first-child)::before {
+                content: '';
+                width: 1px;
+                height: 70%;
+                background-color: var(--border-color);
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+              }
+
+              &.active {
+                color: #000;
+              }
+            }
+
+
+          }
         }
       }
 

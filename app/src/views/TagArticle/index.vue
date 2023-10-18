@@ -11,7 +11,7 @@
         {{ item }}
       </li>
     </ul>
-    <el-skeleton v-if="loading" :rows="5" :loading="loading" animated />
+    <el-skeleton v-if="loading" :rows="10" :loading="loading" animated />
     <div class="content" v-else>
       <el-empty v-if="resultList.length == 0" description="暂无内容"></el-empty>
       <div v-else>
@@ -29,13 +29,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import ArticleItem from '@/views/forum/ArticleItem/index.vue';
-import { useRoute } from 'vue-router';
+import ArticleItem from '@/components/ArticleItem/index.vue'
+import { useRoute,useRouter } from 'vue-router';
 import { reqArticleByTagId } from '@/api/search.js';
+import { ElMessage } from 'element-plus';
 
 const sort = ['热门', '最新', '最热']
 const limit = ref(10)
 const route = useRoute()
+const router = useRouter()
 const pageNo = ref(1)
 const sortParams = ref(0)
 const resultList = ref([])
@@ -46,6 +48,11 @@ const loading = ref(true)
 const getData = async () => {
   loading.value = true
   let result = await reqArticleByTagId(pageNo.value, limit.value, sortParams.value, route.params.id)
+  if (!result.tagName) {
+      ElMessage.info(result.message)
+      router.push('/404')
+      return
+    }
   tagName.value = result.tagName
   setTimeout(() => {
     resultList.value = result.data

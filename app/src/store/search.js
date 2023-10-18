@@ -35,7 +35,7 @@ const useSearchStore = defineStore('search', {
         this.total = result.total
         this.loading = false
       }, 400)
-      if (!this.searchHistory.find((item) => item == this.keyWords)) {
+      if (!this.searchHistory.find((item) => item == this.keyWords) && this.keyWords != '') {
         this.searchHistory.unshift(this.keyWords)
         localStorage.setItem('searchHistory', JSON.stringify(this.searchHistory))
       }

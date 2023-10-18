@@ -4,9 +4,9 @@
       <div class="content">
         <h1 class="article_title">{{ articleInfo.title }}</h1>
         <div class="author_info_wrapper">
-          <CustomedAvatar :userInfo="articleInfo" @click="router.push(`/user/${articleInfo.user_id}`)"></CustomedAvatar>
+          <CustomedAvatar :userInfo="articleInfo" @click="openInBlank(`/user/${articleInfo.user_id}`)"></CustomedAvatar>
           <div class="author_info">
-            <div class="author_name" @click="router.push(`/user/${articleInfo.user_id}`)">{{ articleInfo.nickname ||
+            <div class="author_name" @click="openInBlank(`/user/${articleInfo.user_id}`)">{{ articleInfo.nickname ||
               articleInfo.username }}</div>
             <div class="meta_info">
               {{ proxy.$moment(articleInfo.create_time).format('YYYY年MM月DD日 HH:mm')
@@ -37,7 +37,7 @@
     </div>
     <div class="sidebar">
       <div v-show="!isImmerse" class="author_info">
-        <div class="author_info_wrapper" @click="router.push(`/user/${articleInfo.user_id}`)">
+        <div class="author_info_wrapper" @click="openInBlank(`/user/${articleInfo.user_id}`)">
           <CustomedAvatar :userInfo="articleInfo"></CustomedAvatar>
           <div class="author_name">{{ articleInfo.nickname || articleInfo.username }}</div>
         </div>

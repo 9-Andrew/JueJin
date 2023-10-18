@@ -11,7 +11,7 @@
     </div>
     <div class="content_container">
       <div class="content_main">
-        <div class="title" v-html="keyWords ? highLight(article.title) : parseText(article.title)"></div>
+        <div class="title" v-html="keyWords ? highLight(article.title) : parseText(article.title)||'无标题'"></div>
         <div class="article_content" v-html="keyWords ? highLight(article.content) : parseText(article.content)">
         </div>
         <ul class="action_list">
@@ -61,6 +61,9 @@ const loginDialogVisible = inject('loginDialogVisible')
 const BASEURL = computed(() => import.meta.env.VITE_APP_BASEURL)
 
 const parseText = (original) => {
+  if (typeof original !== 'string') {
+    return
+  }
   // 将 Markdown 文本转换为纯文本内容，去除其中的所有 HTML 标签，只保留纯文本部分
   return new MarkdownIt().render(original).replace(/<[^>]+>/g, '')
 }
@@ -176,7 +179,7 @@ a {
       display: flex;
       flex-flow: column;
       justify-content: space-around;
-      flex: auto;
+      flex: 1;
 
       .title {
         font-weight: bolder;
@@ -216,13 +219,13 @@ a {
     }
 
     .cover {
-      flex: auto;
       width: 140px;
       margin-left: 60px;
 
       .el-image {
         border-radius: 3px;
         height: 100%;
+        width: 100%;
       }
     }
   }

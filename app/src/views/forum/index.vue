@@ -5,7 +5,7 @@
         <el-tab-pane label="推荐" name="recommend"></el-tab-pane>
         <el-tab-pane label="最新" name="news"></el-tab-pane>
       </el-tabs>
-      <el-skeleton :rows="5" :loading="loading" animated />
+      <el-skeleton :rows="8" :loading="loading" animated />
       <el-empty v-if="route.params.type == 'follow' && articleList.length == 0 && !loading"
         description="暂无关注人发布的文章"></el-empty>
       <ArticleItem v-for="al in articleList" :key="al.id" :article="al"></ArticleItem>
@@ -40,7 +40,7 @@
 <script setup>
 import { ref, onMounted, reactive, onBeforeUnmount, getCurrentInstance, watch, computed, inject } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import ArticleItem from './ArticleItem/index.vue'
+import ArticleItem from '@/components/ArticleItem/index.vue'
 import { getArticle } from '@/api/article.js'
 import { reqFollowNum } from '@/api/interaction.js';
 import { reqArticleByUserIdList } from '@/api/search.js'
@@ -119,7 +119,11 @@ let reload = () => {
   }
 }
 watch([() => route.params, activeName], reload)
-watch(() => store.userInfo.id, initCategoryList)
+watch(() => store.userInfo.id, () => {
+  if (route.params.type == 'follow') {
+    initCategoryList()
+  }
+})
 onMounted(() => {
   window.addEventListener('scroll', loadingMore, { passive: true })
   reload()
