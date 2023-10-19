@@ -20,15 +20,15 @@
           </ArticleItem>
         </div>
         <el-pagination v-model:current-page="pageNo" v-model:page-size="limit" background :page-sizes="[10, 20, 30]"
-          layout=" prev, pager, next, jumper,->,sizes,total" :total="total" @current-change="getData()"
-          @size-change="pageNo = 1; getData()" />
+          layout=" prev, pager, next, jumper,->,sizes,total" :total="total" @current-change="goTop();getData()"
+          @size-change="pageNo = 1;goTop(); getData()" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,inject } from 'vue';
 import ArticleItem from '@/components/ArticleItem/index.vue'
 import { useRoute,useRouter } from 'vue-router';
 import { reqArticleByTagId } from '@/api/search.js';
@@ -44,6 +44,7 @@ const resultList = ref([])
 const total = ref(0)
 const tagName = ref('')
 const loading = ref(true)
+const goTop=inject('goTop')
 
 const getData = async () => {
   loading.value = true

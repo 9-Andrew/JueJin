@@ -18,6 +18,6 @@ export const reqStarredArticleByUserId = (page, limit, userId) =>
 export const reqLikedArticleByUserId = (page, limit, userId) =>
   request({ url: 'search/liked_article_byUserId', params: { page, limit, userId } })
 export const reqArticleByKeyWordsFromPublishedAndStarredAndLiked = (page, limit, userId, keyWords) =>
-  request({ url: 'article_byKeyWords_fromPSL', params: { page, limit, userId, keyWords } })
+  request({ url: 'search/article_byKeyWords_fromPSL', params: { page, limit, userId, keyWords } })
 export const reqUserListByUserIdList = (page, limit, userIdList) =>
   request({ url: 'search/user', params: { page, limit, userIdList } })

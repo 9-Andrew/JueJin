@@ -97,6 +97,7 @@ import { getArticleType } from '@/api/article.js'
 
 const loginDialogVisible = ref(false)
 provide('loginDialogVisible', loginDialogVisible)
+provide('goTop', goTop)
 const isHideHeader = ref(false)
 const articleType = reactive([])
 const userInfoStore = useUserInfoStore()

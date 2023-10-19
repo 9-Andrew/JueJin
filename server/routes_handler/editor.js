@@ -24,10 +24,7 @@ exports.getUpdateArticle = (req, res) => {
     if (results.length === 0) return res.cc('没有权限修改该文章！')
 
     const currentTime = new Date()
-    const formattedTime = currentTime
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ')
+    const formattedTime = currentTime.toLocaleString().replace('/', '-')
     let sql1 = `UPDATE article SET title=?,content=?,type_id=?
     ${cover ? `,cover='${cover}'` : ''},create_time=? WHERE id=?`
 
@@ -71,10 +68,7 @@ exports.getPublishArticle = (req, res) => {
     if (results.length === 0) return res.cc('没有权限修改该文章！')
 
     const currentTime = new Date()
-    const formattedTime = currentTime
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ')
+    const formattedTime = currentTime.toLocaleString().replace('/', '-')
     let sql1 = `UPDATE article SET title=?,content=?,type_id=?
       ${cover ? `,cover='${cover}'` : ''},create_time=?,status='1' WHERE id=?`
 

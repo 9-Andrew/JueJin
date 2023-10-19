@@ -23,7 +23,7 @@
           <div class="header">
             <div v-for="(item, index) in panes" v-show="index != 1 || (store.userInfo.id && store.userInfo.id == userId)"
               :key="index" :class="{ active: activeIndex == index }" @click="getData(index)">{{ item }}</div>
-            <SvgIcon name="sousuo" @click="isSearch = true"></SvgIcon>
+            <SvgIcon name="sousuo" @click="changeIsSearch(true)"></SvgIcon>
           </div>
           <div v-if="activeIndex != 3">
             <ArticleItem v-for="al in articleList" :key="al.id" :article="al"></ArticleItem>
@@ -33,7 +33,7 @@
               <div class="sub_tab_title">关注</div>
               <ul class="sub_tab_box">
                 <li v-for="(item, index) in followTabs" :key="index" :class="{ active: followTabIndex == index }"
-                  @click="gotoFollow(index)">{{ item }}</li>
+                  @click="switchTab(3, index)">{{ item }}</li>
               </ul>
             </div>
             <UserItem v-for="ul in userList" :key="ul.id" :user="ul"></UserItem>
@@ -43,30 +43,38 @@
         </div>
         <div class="search_container" :class="{ active: isSearch }">
           <div class="header">
-            <div class="search_show" @click="isSearch = false">
+            <div class="search_show" @click="changeIsSearch(false)">
               <div class="search_return">
                 <SvgIcon name="fanhui"></SvgIcon>
                 返回
               </div>
               搜索文章
             </div>
-            <el-input class="search" :class="{ active: isSearch }" placeholder="搜索 发布/点赞/收藏的文章" suffix-icon="Search" />
+            <el-input v-model="keyWords" ref="searchInput" placeholder="搜索 发布/点赞/收藏的文章" class="search"
+              :class="{ active: isSearch }" clearable @keyup.enter="search(false)">
+              <template #append>
+                <el-button icon="Search" @click="search(false)" />
+              </template>
+            </el-input>
           </div>
-          2
+          <el-skeleton v-if="isLoading" :rows="8" :loading="isLoading" animated />
+          <ArticleItem v-for="al in articleList" :key="al.id" :article="al" :keyWords="keyWordsProps"></ArticleItem>
+          <el-empty v-if="!isLoading && articleList.length == 0"
+            :description="keyWordsProps ? '暂无相关内容' : '输入关键词，找找 TA 发布/点赞/收藏的文章~'"></el-empty>
         </div>
       </div>
     </div>
     <div class="sidebar">
       <div class="fixed_container">
         <div class="follow_block">
-          <div class="follow_num" @click="gotoFollow(0)">关注了<span>{{ userInfo.followNum }}</span>
+          <div class="follow_num" @click="switchTab(3, 0)">关注了<span>{{ userInfo.followNum }}</span>
           </div>
-          <div class="followed_num" @click="gotoFollow(1)">关注者<span>{{ userInfo.followedNum
+          <div class="followed_num" @click="switchTab(3, 1)">关注者<span>{{ userInfo.followedNum
           }}</span>
           </div>
         </div>
-        <div class="more_item"><span class="title">收藏文章</span>
-          <div class="value">0</div>
+        <div class="more_item star_item" @click="switchTab(2)"><span class="title">收藏文章</span>
+          <div class="value">{{ userInfo.starredNum }} </div>
         </div>
         <div class="more_item"><span class="title">加入于</span>
           <div class="value">{{ proxy.$moment(userInfo.create_time).format('YYYY-MM-DD') }}</div>
@@ -77,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, getCurrentInstance, computed, inject, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, getCurrentInstance, computed, inject, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import useUserInfoStore from '@/store/user.js';
 import { reqUserInfo } from '@/api/user';
@@ -100,7 +108,8 @@ const followTabs = ref(['关注的用户', '关注者'])
 const isSearch = ref(false)
 const userInfo = ref({
   followNum: 0,
-  followedNum: 0
+  followedNum: 0,
+  starredNum: 0
 })
 const { proxy } = getCurrentInstance()
 const loginDialogVisible = inject('loginDialogVisible')
@@ -110,6 +119,9 @@ const page = ref(1)
 const limit = ref(10)
 const articleList = ref([])
 const userList = ref([])
+const keyWords = ref('')
+let keyWordsProps = ''
+const searchInput = ref()
 
 const followHandler = async () => {
   if (store.userInfo.id) {
@@ -159,11 +171,14 @@ const getUserInfo = async () => {
   userInfo.value.followedNum = followedNumResult.data.length
   isFollowHandler()
 }
-const getData = async (index) => {
+const getData = async (index, isPush) => {
   let result
-  articleList.value.length = 0
-  userList.value.length = 0
-  isLoading.value = true
+  if (!isPush) {
+    articleList.value.length = 0
+    userList.value.length = 0
+    isLoading.value = true
+    page.value = 1
+  }
   activeIndex.value = index
   if (activeIndex.value == 0 || activeIndex.value == 1) {
     result = await reqArticleByUserId(page.value, limit.value, userId.value, activeIndex.value == 0 ? 1 : 0)
@@ -177,34 +192,74 @@ const getData = async (index) => {
     } else {
       result = await reqFollowedNum(userId.value)
     }
-    let userIdList = result.data.map(item => item.followed_user_id)
+    let userIdList = result.data.map(item => followTabIndex.value == 0 ? item.followed_user_id : item.user_id)
     result = await reqUserListByUserIdList(page.value, limit.value, userIdList)
   }
   setTimeout(() => {
     isLoading.value = false
     if (activeIndex.value != 3) {
-      articleList.value = result.data
+      result.data && articleList.value.push(...result.data)
     } else {
-      userList.value = result.data
+      result.data && userList.value.push(...result.data)
     }
   }, 400)
 }
-const gotoFollow = (index) => {
-  activeIndex.value = 3
-  followTabIndex.value = index
+const switchTab = (aIndex, fIndex) => {
+  activeIndex.value = aIndex
+  typeof fIndex == 'number' && (followTabIndex.value = fIndex)
   getData(activeIndex.value)
 }
+const loadingMore = proxy.$throttle(() => {
+  let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+  let clientHeight = document.documentElement.clientHeight
+  let scrollHeight = document.documentElement.scrollHeight
+  if (scrollTop + clientHeight >= scrollHeight) {
+    page.value++
+    isSearch.value ? search(true) : getData(activeIndex.value, true)
+  }
+}, 1000)
 watch(() => route.params.id, () => {
   if (route.fullPath.indexOf('/user') != -1) {
     getUserInfo()
     getData(activeIndex.value)
   }
 })
+const search = async (isPush) => {
+  if (keyWords.value.length==0) {
+    return
+  }
+  if (!isPush) {
+    articleList.value.length = 0
+    isLoading.value = true
+    page.value = 1
+  }
+  keyWordsProps = keyWords.value
+  const result = await reqArticleByKeyWordsFromPublishedAndStarredAndLiked(page.value, limit.value, userId.value, keyWords.value)
+  setTimeout(() => {
+    isLoading.value = false
+    result.data && articleList.value.push(...result.data)
+  }, 400)
+  searchInput.value.blur()
+}
+const changeIsSearch = (value) => {
+  isSearch.value = value
+  articleList.value.length = 0
+  page.value = 1
+  keyWords.value = ''
+  keyWordsProps = ''
+  value || getData(activeIndex.value)
+}
 
 
-onMounted(() => {
+onMounted(async () => {
   getUserInfo()
+  const result = await reqStarredArticleByUserId(page.value, limit.value, userId.value)
+  userInfo.value.starredNum = result.total
   getData(activeIndex.value)
+  window.addEventListener('scroll', loadingMore, { passive: true })
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', loadingMore)
 })
 </script>
 
@@ -329,6 +384,7 @@ onMounted(() => {
           justify-content: space-between;
           align-items: center;
           padding: 0 28px;
+          border-bottom: 2px solid rgba(230, 230, 231, .5);
 
           .sub_tab_title {
             font-weight: bold;
@@ -377,6 +433,7 @@ onMounted(() => {
           align-items: center;
           font-size: 14px;
           padding: 0 20px;
+          border-bottom: 1px solid var(--border-color);
 
           .search_show {
             display: flex;
@@ -409,7 +466,7 @@ onMounted(() => {
           }
 
           .search.active {
-            width: 264px;
+            width: 240px;
           }
 
         }
@@ -466,6 +523,9 @@ onMounted(() => {
           border-top: 1px solid rgba(230, 230, 231, .5);
         }
 
+        &.star_item {
+          cursor: pointer;
+        }
       }
     }
   }

@@ -28,18 +28,18 @@
         </div>
         <el-pagination v-model:current-page="store.pageNo" v-model:page-size="limit" background :page-sizes="[10, 20, 30]"
           layout=" prev, pager, next, jumper,->,sizes,total" :total="store.total"
-          @current-change="store.getData(store.pageNo, limit)" @size-change="store.getData(store.pageNo, limit)" />
+          @current-change="goTop();store.getData(store.pageNo, limit)" @size-change="goTop();store.getData(store.pageNo, limit)" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick, inject } from 'vue';
 import useSearchStore from '@/store/search.js';
 import ArticleItem from '@/components/ArticleItem/index.vue'
 import UserItem from '@/components/UserItem/index.vue';
-import {  useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 const category = ['综合', '文章', '用户']
 const sort = ['综合排序', '最新优先', '最热优先']
@@ -47,6 +47,7 @@ const limit = ref(20)
 const isTeleportReady = ref(false)
 const store = useSearchStore()
 const route = useRoute()
+const goTop=inject('goTop')
 
 onMounted(async () => {
   await nextTick()

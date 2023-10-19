@@ -221,6 +221,7 @@ exports.getStarredArticleByUserId = (req, res) => {
       INNER JOIN USER ON article.user_id = USER.id 
     WHERE
       STATUS =1 and article.id in(select article_id from star WHERE user_id=${userId}) `
+  db.query(sql, (_err, results) => (total = results.length))
 
   page && (sql += `limit ${(page - 1) * limit},${limit}`)
   db.query(sql, (err, results) => {
@@ -229,7 +230,8 @@ exports.getStarredArticleByUserId = (req, res) => {
     res.send({
       status: 0,
       message: '获取收藏文章成功！',
-      data: results
+      data: results,
+      total
     })
   })
 }
