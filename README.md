@@ -1,6 +1,6 @@
 # 简介
 ![image](./app/src/assets/logo.png)<br/>
-🔥 Vue3 + Express + Mysql 前后端分离的论坛系统
+🔥 Vue3 + Express + Mysql 前后端分离的论坛系统。传送门：[在线地址](http://43.138.113.163:81/)。
 
 ## 预览
 ![image](./app/src/assets/screenshots.gif)
