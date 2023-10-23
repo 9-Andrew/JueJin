@@ -3,6 +3,7 @@
 🔥 Vue3 + Express + Mysql 前后端分离的论坛系统
 
 ## 预览
+![image](./app/src/assets/screenshots.gif)
 
 ## 技术栈
 * 前端：Vue3 + vite + vue-router + pinia + Element-Plus + md-editor-v3
@@ -53,12 +54,14 @@
 |   ├─routes_handler
 |   |       ├─article.js
 |   |       ├─editor.js
+|   |       ├─interaction.js
 |   |       ├─search.js
 |   |       ├─user.js
 |   |       └userinfo.js
 |   ├─routes
 |   |   ├─article.js
 |   |   ├─editor.js
+|   |   ├─interaction.js
 |   |   ├─search.js
 |   |   ├─user.js
 |   |   └userinfo.js
@@ -78,28 +81,33 @@
 |  |  ├─views
 |  |  |   ├─user
 |  |  |   ├─TagArticle
+|  |  |   ├─setting
 |  |  |   ├─search
 |  |  |   ├─layout
 |  |  |   |   ├─LoginDialog
 |  |  |   ├─forum
-|  |  |   |   ├─ArticleItem
 |  |  |   ├─editor
 |  |  |   ├─detail
+|  |  |   |   ├─comment
 |  |  |   ├─404
 |  |  ├─utils
 |  |  |   └request.js
 |  |  ├─store
 |  |  |   ├─search.js
+|  |  |   ├─settings.js
 |  |  |   └user.js
 |  |  ├─router
 |  |  |   └index.js
 |  |  ├─components
 |  |  |     ├─index.js
+|  |  |     ├─UserItem
 |  |  |     ├─SvgIcon
 |  |  |     ├─CustomedAvatar
+|  |  |     ├─ArticleItem
 |  |  ├─api
 |  |  |  ├─article.js
 |  |  |  ├─editor.js
+|  |  |  ├─interaction.js
 |  |  |  ├─search.js
 |  |  |  ├─user.js
 |  |  |  └userinfo.js

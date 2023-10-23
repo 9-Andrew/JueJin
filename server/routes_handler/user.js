@@ -98,7 +98,7 @@ exports.githubOAuth = async (req, res) => {
           jwt.sign({ username }, config.jwtSecretKey, {
             expiresIn: config.expiresIn
           })
-        res.redirect(`http://localhost:5173/?token=${token}`)
+        res.redirect(`http://localhost:5172/?token=${token}`)
       })
     } else {
       res.cc('授权登录失败')
