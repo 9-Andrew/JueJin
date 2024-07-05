@@ -12,7 +12,7 @@
 ## 快速开始
 ```javascript 
 1.克隆项目
-  git clone https://github.com/Anjiu1/JueJin.git
+  git clone https://github.com/9-Andrew/JueJin.git
   cd JueJin
 2.创建数据库
   mysql -u用户名 -p密码 <.\server\juejin.sql
